@@ -1,0 +1,49 @@
+{
+	"Mathematics_Degree_Requirements": {
+		"List_A": {
+			"CS_Requirement": [["CS115", "CS135", "CS145"]],
+			"CS_Requirement_2": [["CS116", "CS136", "CS146"]], 
+			"Linear_Algebra": [["MATH106", "MATH136", "MATH146"]],
+			"Calculus_1": [["MATH127", "MATH137", "MATH147"]],
+			"Calculus_2": [["MATH128", "MATH138", "MATH148"]],
+			"Algebra": [["MATH135", "MATH145"]],
+			"Linear_Algebra_2": [["MATH235", "MATH245"]],
+			"Calculus_3": [["MATH237", "MATH239", "MATH247", "MATH249"]],
+			"Probability": [["STAT230", "STAT240"]], 
+			"Statistics": [["STAT231", "STAT241"]]
+		},
+		"List_1": {
+			"Communications_Requirement": [
+				[
+					"COMMST100",
+					"COMMST223",
+					"EMLS101R",
+					"EMLS102R",
+					"EMLS129R",
+					"ENGL109",
+					"ENGL129R"
+				]
+			],
+			"Additional_Communications": [
+				[
+					"COMMST225",
+					"COMMST227",
+					"COMMST228",
+					"EMLS103R",
+					"EMLS104R",
+					"EMLS110R",
+					"ENGL101B",
+					"ENGL108B",
+					"ENGL108D",
+					"ENGL119",
+					"ENGL208B",
+					"ENGL209",
+					"ENGL210E",
+					"ENGL210F",
+					"ENGL378",
+					"MTHEL300"
+				]
+			]
+		}
+	}
+}
