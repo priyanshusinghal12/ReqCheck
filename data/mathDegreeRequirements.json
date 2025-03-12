@@ -12,8 +12,8 @@
 			["STAT 230", "STAT 240"],
 			["STAT 231", "STAT 241"],
 			[
-				"COMMST 100",
-				"COMMST 223",
+				"SPCOM 100",
+				"SPCOM 223",
 				"EMLS 101R",
 				"EMLS 102R",
 				"EMLS 129R",
@@ -21,9 +21,9 @@
 				"ENGL 129R"
 			],
 			[
-				"COMMST 225",
-				"COMMST 227",
-				"COMMST 228",
+				"SPCOM 225",
+				"SPCOM 227",
+				"SPCOM 228",
 				"EMLS 103R",
 				"EMLS 104R",
 				"EMLS 110R",
