@@ -135,4 +135,4 @@ statistics_results = check_statistics_requirements(student_courses, statistics_r
 
 # Print Results
 print("\n=== Statistics Degree Requirements ===")
-print(json.dumps(statistics_results, indent=4))  # Now includes used_courses in output
+print(json.dumps(statistics_results, indent=4))
