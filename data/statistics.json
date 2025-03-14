@@ -1,51 +1,22 @@
 {
 	"Statistics_Degree_Requirements": {
 		"Requirements": [
-			{
-				"Requirement": "Complete all the following required Statistics courses",
-				"Courses": ["STAT 330", "STAT 331", "STAT 332", "STAT 333"]
-			},
-			{
-				"Requirement": "Complete 1 of the following Communications courses",
-				"Courses": ["ENGL 378", "MTHEL 300"]
-			},
-			{
-				"Requirement": "Complete 1 of the following Calculus 3 courses",
-				"Courses": ["MATH 237", "MATH 247"]
-			},
-			{
-				"Requirement": "Complete 1 of the following Advanced Math/CS courses",
-				"Courses": [
-					"AMATH 231",
-					"AMATH 242",
-					"AMATH 250",
-					"AMATH 251",
-					"AMATH 350",
-					"CS 371",
-					"MATH 239",
-					"MATH 249"
-				]
-			},
-			{
-				"Requirement": "Complete 2 STAT courses at the 400-level",
-				"Courses": "STAT 4XX"
-			},
-			{
-				"Requirement": "Complete 1 additional STAT course at the 300- or 400-level",
-				"Courses": "STAT 3XX or STAT 4XX"
-			},
-			{
-				"Requirement": "Complete 1 additional STAT course at the 400-level OR an Advanced CS Course",
-				"Courses": ["STAT 4XX", "CS 457", "CS 485", "CS 486"]
-			},
-			{
-				"Requirement": "Complete 4 additional 300/400-level courses from ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT",
-				"Courses": "ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT (300 or 400 level)"
-			},
-			{
-				"Requirement": "Complete 3 additional courses from ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT",
-				"Courses": "ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT (any level)"
-			}
+			["STAT 330"],
+			["STAT 331"],
+			["STAT 332"],
+			["STAT 333"],
+			["ENGL 378", "MTHEL 300"],
+			["MATH 237", "MATH 247"],
+			[
+				"AMATH 231",
+				"AMATH 242",
+				"AMATH 250",
+				"AMATH 251",
+				"AMATH 350",
+				"CS 371",
+				"MATH 239",
+				"MATH 249"
+			]
 		]
 	}
 }
