@@ -88,12 +88,50 @@ def check_statistics_requirements(student_courses, degree_requirements):
 with open("../data/statistics.json", "r") as f:
     statistics_requirements = json.load(f)["Statistics_Degree_Requirements"]
 
-# Example student course completion
-student_courses = ['PMATH 333', 'CS 479', 'AFM 101', 'CS 135', 'MATH 135', 'MATH 137', 'MTHEL 99', 'STAT 444', 
-                   'CS 136', 'ECON 102', 'STAT 443', 'MATH 136', 'MATH 138', 'SPCOM 223', 'CS 371',
-                   'MATH 235', 'CS 231', 'CS 234', 'MATH 237', 'AMATH 250', 'BET 100', 'CLAS 104',
-                   'CS 230', 'PSYCH 101', 'STAT 231', 'BET 210', 'CS 330', 'ECON 101', 'STAT 330', 'STAT 331', 
-                   'STAT 341', 'STAT 332', 'STAT 333', 'CS 485', 'MTHEL 300']
+def remove_courses(student_courses):
+    course_lists = [
+        ["CS 115", "CS 135", "CS 145"],
+        ["CS 116", "CS 136", "CS 146"],
+        ["MATH 106", "MATH 136", "MATH 146"],
+        ["MATH 127", "MATH 137", "MATH 147"],
+        ["MATH 128", "MATH 138", "MATH 148"],
+        ["MATH 135", "MATH 145"],
+        ["MATH 235", "MATH 245"],
+        ["STAT 230", "STAT 240"],
+        ["STAT 231", "STAT 241"]
+    ]
+    
+    # Loop over each list of courses
+    for course_list in course_lists:
+        # Find the intersection between the student's completed courses and the course list
+        common_courses = list(set(student_courses) & set(course_list))
+        
+        # If there are any common courses, remove one of them from the student's courses
+        if common_courses:
+            course_to_remove = common_courses[0]
+            student_courses.remove(course_to_remove)
+    
+    # Remove courses that end with 'L' or start with 'COOP' or 'PD'
+    student_courses = [course for course in student_courses if not (course.endswith('L') or course.startswith('COOP') or course.startswith('PD'))]
+    
+    return student_courses
+ 
+ 
+# Example usage:
+ 
+# student_courses = ['MATH 237', 'MATH 239', 'CS 116', 'CS 136', 'CS 136L', 'STAT 230', 'STAT 240', 'MATH 148', 'COOP 13', 'PD 1']
+ 
+student_courses = ['PMATH 333', 'CS 479', 'AFM 101', 'CS 135', 'MATH 135',
+                   'MATH 137', 'MTHEL 99', 'STAT 444', 'CS 136', 'CS 136L',
+                   'ECON 102', 'STAT 443', 'MATH 136', 'MATH 138', 'SPCOM 223',
+                   'CS 371', 'CS 486', 'MATH 235', 'CS 231', 'CS 234', 'MATH 237',
+                   'PD 1', 'STAT 230', 'COOP 1', 'PD 11', 'AMATH 250', 'BET 100',
+                   'CLAS 104', 'CS 230', 'PSYCH 101', 'STAT 231', 'COOP 2', 'PD 13',
+                   'BET 210', 'CS 330', 'ECON 101', 'STAT 330', 'STAT 331', 'MTHEL 300']
+
+student_courses = remove_courses(student_courses)
+
+print(student_courses)
 
 # Step 2: Check Statistics Degree Requirements
 statistics_results = check_statistics_requirements(student_courses, statistics_requirements)
