@@ -1,76 +1,66 @@
-import json
-import re
+def check_math_econ_reqs(student_courses):
 
-def check_math_econ_requirements(student_courses, degree_requirements):
-    """
-    Checks if a student's courses satisfy the Mathematical Economics
-    degree requirements, including specific ECON, MATH, AMATH, PMATH, 
-    STAT, CO, and general additional course requirements.
-    """
-    satisfied_requirements = []
-    missing_requirements = []
-    used_courses = set()
-
-    for requirement in degree_requirements["Requirements"]:
-        requirement_name = requirement["Requirement"]
-        if isinstance(requirement["Courses"], list):  # Specific courses
-            satisfied = False
-            for course in requirement["Courses"]:
-                if course in student_courses and course not in used_courses:
-                    satisfied = True
-                    used_courses.add(course)
-                    break
-            if satisfied:
-                satisfied_requirements.append(requirement_name)
-            else:
-                missing_requirements.append(requirement_name)
-
-        elif "ECON 3XX" in requirement["Courses"] or "ECON 4XX" in requirement["Courses"]:
-            econ_300_400_courses = {c for c in student_courses if re.search(r'\bECON\s[34]\d{2}\b', c)}
-            if len(econ_300_400_courses) >= 4:
-                satisfied_requirements.append(requirement_name)
-                used_courses.update(list(econ_300_400_courses)[:4])
-            else:
-                missing_requirements.append(requirement_name)
-
-        elif "ACTSC" in requirement["Courses"]:
-            valid_courses = {c for c in student_courses if any(c.startswith(prefix) for prefix in ["ACTSC", "AMATH", "CO", "CS", "MATBUS", "MATH", "PMATH", "STAT"])}
-            if len(valid_courses) >= 7:
-                satisfied_requirements.append(requirement_name)
-                used_courses.update(list(valid_courses)[:7])
-            else:
-                missing_requirements.append(requirement_name)
-
-        elif "Any course" in requirement["Courses"]:
-            additional_courses = set(student_courses) - used_courses
-            if len(additional_courses) >= 2:
-                satisfied_requirements.append(requirement_name)
-                used_courses.update(list(additional_courses)[:2])
-            else:
-                missing_requirements.append(requirement_name)
-
-    return {
-        "satisfied": satisfied_requirements,
-        "missing": missing_requirements,
-        "used_courses": list(used_courses)  # Convert to list for JSON serialization
+    math_econ_reqs = {
+        "Complete all the following: ECON 101/102/290/306/391/393/472/491/496": [False, []],
+        "Complete one of the following: ECON 406/407/408/409": [False, []],
+        "Complete 4 additional ECON courses at the 300/400 level": [False, []],
+        "Complete all the following: AMATH 350/STAT 331/STAT 443": [False, []],
+        "Complete one of the following: AMATH 331/PMATH 331/PMATH 333/PMATH 351": [False, []],
+        "Complete one of the following: CO 250/255": [False, []],
+        "Complete one of the following: MATH 237/247": [False, []],
+        "Complete 7 additional courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [False, []],
+        "Complete 2 additional courses": [False, []]
     }
 
-# Load Mathematical Economics requirements
-with open("../data/mathEcon.json", "r") as f:
-    math_econ_requirements = json.load(f)["Mathematical_Economics_Degree_Requirements"]
+    # Req 1: Core ECON courses
+    check_complete_all("Complete all the following: ECON 101/102/290/306/391/393/472/491/496",
+                       ["ECON 101", "ECON 102", "ECON 290", "ECON 306", "ECON 391", "ECON 393", "ECON 472", "ECON 491", "ECON 496"],
+                       student_courses, math_econ_reqs)
 
-# Example student course completion
-student_courses = [
-    "ECON 101", "ECON 102", "ECON 209", "ECON 306", "ECON 391", "ECON 393", "ECON 472",
-    "ECON 491", "ECON 496", "ECON 406", "ECON 308", "ECON 342", "ECON 401", "ECON 411",
-    "AMATH 350", "STAT 331", "STAT 443", "PMATH 351", "CO 255", "MATH 237",
-    "ACTSC 231", "CO 350", "STAT 330", "MATH 239", "CS 330", "PMATH 333", "AMATH 242",
-    "ECON 201", "PHYS 121"
-]
+    # Req 2: One advanced ECON course
+    check_n_from_list("Complete one of the following: ECON 406/407/408/409",
+                      ["ECON 406", "ECON 407", "ECON 408", "ECON 409"],
+                      n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
 
-# Check Mathematical Economics Degree Requirements
-math_econ_results = check_math_econ_requirements(student_courses, math_econ_requirements)
+    # Req 3: 4 additional ECON 300/400 level courses
+    check_n_courses("Complete 4 additional ECON courses at the 300/400 level",
+                    eligible_levels=300,
+                    subject_codes=["ECON"],
+                    n=4,
+                    student_courses=student_courses,
+                    major_reqs=math_econ_reqs)
 
-# Print Results
-print("\n=== Mathematical Economics Degree Requirements ===")
-print(json.dumps(math_econ_results, indent=4))
+    # Req 4: Core math/stat courses
+    check_complete_all("Complete all the following: AMATH 350/STAT 331/STAT 443",
+                       ["AMATH 350", "STAT 331", "STAT 443"],
+                       student_courses, math_econ_reqs)
+
+    # Req 5: One advanced math course
+    check_n_from_list("Complete one of the following: AMATH 331/PMATH 331/PMATH 333/PMATH 351",
+                      ["AMATH 331", "PMATH 331", "PMATH 333", "PMATH 351"],
+                      n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
+
+    # Req 6: One combinatorics/optimization course
+    check_n_from_list("Complete one of the following: CO 250/255",
+                      ["CO 250", "CO 255"],
+                      n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
+
+    # Req 7: One advanced calculus course
+    check_n_from_list("Complete one of the following: MATH 237/247",
+                      ["MATH 237", "MATH 247"],
+                      n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
+
+    # Req 8: 7 additional math-related courses at any level
+    check_n_courses("Complete 7 additional courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT",
+                    eligible_levels=100,
+                    subject_codes=["ACTSC", "AMATH", "CO", "CS", "MATBUS", "MATH", "PMATH", "STAT"],
+                    n=7,
+                    student_courses=student_courses,
+                    major_reqs=math_econ_reqs)
+
+    # Req 9: Any 2 additional courses
+    if len(student_courses) >= 2:
+        math_econ_reqs["Complete 2 additional courses"][0] = True
+        math_econ_reqs["Complete 2 additional courses"][1].extend(student_courses[:2])
+
+    return math_econ_reqs
