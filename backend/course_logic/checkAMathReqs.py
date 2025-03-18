@@ -1,4 +1,4 @@
-from helper import *
+from course_logic.helper import *
 
 # Helper to check concentration
 def check_amath_concentration(current_req, student_courses, amath_reqs):

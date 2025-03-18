@@ -1,5 +1,5 @@
 from pickle import FALSE
-from "./check*" import *
+# from "./check*" import *
 
 # # Test case currently being used is the one where a student has met all the requirements
 # stat_tests1 = [

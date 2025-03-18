@@ -1,4 +1,4 @@
-from backend.course_logic.helper import *
+from course_logic.helper import *
 
 def check_stats_major(student_courses):
 

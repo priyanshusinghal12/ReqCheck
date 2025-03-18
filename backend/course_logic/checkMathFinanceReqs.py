@@ -1,4 +1,5 @@
-from helper import *
+from course_logic.helper import *
+# from helper import *
 
 def check_math_finance_reqs(student_courses):
 
@@ -74,3 +75,15 @@ def check_math_finance_reqs(student_courses):
         student_courses.remove("PMATH 333")
 
     return math_finance_reqs
+
+# math_finance_tests = [
+#     "ACTSC 231", "ACTSC 372", "ACTSC 445", "ACTSC 446", "PMATH 351", "PMATH 450", "PMATH 451", "STAT 330",
+#     "STAT 331", "STAT 333", "STAT 443",  # Core courses
+
+#     "BUS 127W", "BUS 247W", "ARBUS 101", "AMATH 250", "CS 371", "CO 250", "CO 372",
+#     "ECON 120W", "ECON 140W", "ECON 260W",  # Required business, finance, and econ courses
+
+#     "MATH 247"  # Completing the special condition (MATH 237 and PMATH 333)
+# ]
+
+# print(check_math_finance_reqs(math_finance_tests))

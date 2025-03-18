@@ -1,4 +1,4 @@
-from helper import *
+from course_logic.helper import *
 
 def math_studies_business_reqs(student_courses,minorDoing):
     """

@@ -1,4 +1,5 @@
-from helper import *
+from course_logic.helper import *
+
 def check_computer_science_major(student_courses):
     """
     Checks if a student has completed the requirements for the Computer Science Major.

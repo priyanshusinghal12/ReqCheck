@@ -1,4 +1,4 @@
-from helper import *
+from course_logic.helper import *
 
 def math_studies_reqs(student_courses,minorDoing):
     """
@@ -118,3 +118,4 @@ def math_studies_reqs(student_courses,minorDoing):
         student_courses = student_courses[4:]
 
     return math_studies_reqs
+

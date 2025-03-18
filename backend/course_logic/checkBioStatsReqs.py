@@ -1,4 +1,4 @@
-from helper import *
+from course_logic.helper import *
 
 def check_biostats_major(student_courses):
 

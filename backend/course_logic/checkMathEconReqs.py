@@ -1,4 +1,5 @@
-from helper import *
+from course_logic.helper import *
+# from helper import *
 
 def check_math_econ_reqs(student_courses):
 
@@ -66,3 +67,8 @@ def check_math_econ_reqs(student_courses):
         math_econ_reqs["Complete 2 additional courses"][1].extend(student_courses[:2])
 
     return math_econ_reqs
+
+
+# math_econ_tests = ["ECON101","ECON102","ECON290","ECON306","ECON391","ECON393","ECON472","ECON491","ECON496","ECON406","ECON310","ECON320","ECON330","ECON440","AMATH350","STAT331","STAT443","PMATH331","CO250","MATH237","AMATH101","AMATH450","CO487","CS371","MATBUS471","MATH340","PMATH450","BET100","CLAS104"]
+
+# print(check_math_econ_reqs(math_econ_tests))

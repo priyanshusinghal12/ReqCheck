@@ -1,4 +1,4 @@
-from helper import *
+from course_logic.helper import *
 
 def check_co_major(student_courses):
     """

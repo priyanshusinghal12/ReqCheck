@@ -1,4 +1,4 @@
-from helper import *
+from course_logic.helper import *
 
 def check_data_science_major(student_courses):
     """
@@ -12,6 +12,8 @@ def check_data_science_major(student_courses):
     """
 
     #Core Courses Check required
+    
+    #modify student courses to remove core courses 
 
     data_science_reqs = {
         "Complete all of the following: CS136L, CS341, CS348, CS431, STAT330, STAT331, STAT332, STAT333, STAT341": [False, []],

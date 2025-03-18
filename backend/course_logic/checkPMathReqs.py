@@ -1,4 +1,5 @@
-from helper import *
+from course_logic.helper import *
+# from helper import *
 
 def check_pmath_major(student_courses):
 
@@ -48,3 +49,7 @@ def check_pmath_major(student_courses):
                   major_reqs = pmath_reqs)
 
   return pmath_reqs
+
+# test = ["ECON 201", "AFM 101", "PMATH 347", "PMATH 348", "PMATH 351", "PMATH 352", "PMATH 450", "MATH 237", "MATH 239", "PMATH 365", "PMATH 451", "PMATH 452", "PMATH 453", "STAT 440", "CS 486"]
+
+# print(check_pmath_major(test))

@@ -1,4 +1,4 @@
-from helper import *
+from course_logic.helper import *
 
 def check_math_opt_ops_specialization(student_courses):
 
