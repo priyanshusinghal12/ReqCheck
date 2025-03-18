@@ -1,4 +1,3 @@
-# Complete_all_of
 def check_complete_all(current_requirement, core_courses, student_courses, major_reqs):
     """
     Updates major_reqs and student_courses based on completed core courses.
