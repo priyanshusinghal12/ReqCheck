@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload } from "react-icons/fa";
 import { Combobox } from "@headlessui/react";
-import Logo from "../assets/Logo-watcourse.png"; // Import logo
+import Logo from "../assets/Logo-watcourse.png";
 
 const majors = [
 	"Actuarial Science",
@@ -27,6 +27,20 @@ const Hero = () => {
 	const [query, setQuery] = useState("");
 	const [isDropdownOpen, setDropdownOpen] = useState(false);
 
+	const dropdownRef = useRef();
+
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+				setDropdownOpen(false);
+			}
+		};
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
 	const handleFileChange = (event) => {
 		const file = event.target.files[0];
 		if (file && file.type === "application/pdf") {
@@ -44,109 +58,112 @@ const Hero = () => {
 			  );
 
 	return (
-		<section className="relative flex flex-col items-center justify-center text-center px-6 py-16 bg-[#0D1117] text-white min-h-screen">
-			{/* Subtle Background Gradient */}
+		<section className="relative flex flex-col items-center justify-center text-center px-4 py-16 bg-[#0D1117] text-white min-h-screen">
+			{/* Background gradient for style */}
 			<div className="absolute inset-0 bg-gradient-to-br from-black via-[#0D1117] to-gray-900 opacity-40"></div>
 
-			{/* Animated Logo */}
-			<motion.img
-				src={Logo}
-				alt="WatCourse Logo"
-				className="w-72 md:w-80 lg:w-96 h-auto mb-6 relative"
-				initial={{ opacity: 0, scale: 0.85 }}
-				animate={{ opacity: 1, scale: 1 }}
-				transition={{ duration: 0.8 }}
-			/>
+			{/* Content wrapper */}
+			<div className="relative z-10 w-full max-w-xl px-2">
+				{/* Logo */}
+				<motion.img
+					src={Logo}
+					alt="WatCourse Logo"
+					className="w-56 sm:w-64 md:w-72 lg:w-80 h-auto mx-auto mb-6"
+					initial={{ opacity: 0, scale: 0.85 }}
+					animate={{ opacity: 1, scale: 1 }}
+					transition={{ duration: 0.8 }}
+				/>
 
-			{/* Tagline (Softer gold, Smaller text) */}
-			<motion.p
-				className="text-[#C49A3A] text-lg font-medium max-w-2xl mb-2 relative"
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ delay: 0.5, duration: 0.8 }}>
-				"Your Personalized Requirement Tracker"
-			</motion.p>
-
-			{/* Subtitle */}
-			<motion.p
-				className="text-gray-400 max-w-2xl mb-8 text-base relative"
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ delay: 0.3, duration: 0.8 }}>
-				Check which major requirements you have met so far—simply upload your
-				unofficial transcript PDF downloaded from Quest. None of your
-				information is stored.
-			</motion.p>
-
-			{/* Upload & Major Selection */}
-			<div className="flex flex-col md:flex-row gap-4 relative">
-				{/* Upload Button with Softer Glow */}
-				<motion.label
-					className="flex items-center gap-2 bg-[#C49A3A] hover:bg-[#B38A2E] hover:scale-105 active:scale-95 transition-transform px-6 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#C49A3A]/40"
-					whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}>
-					<FaUpload />
-					Upload Transcript
-					<input
-						type="file"
-						accept=".pdf"
-						className="hidden"
-						onChange={handleFileChange}
-					/>
-				</motion.label>
-
-				{/* Fancy Dropdown */}
-				<Combobox
-					value={selectedMajor}
-					onChange={setSelectedMajor}
-					open={isDropdownOpen}
-					onOpenChange={setDropdownOpen}>
-					<div className="relative w-64">
-						<Combobox.Input
-							className="bg-gray-800 border border-gray-600 px-4 py-3 rounded-xl text-white w-full cursor-pointer"
-							placeholder="Select Major"
-							onClick={() => setDropdownOpen(!isDropdownOpen)}
-							onChange={(event) => setQuery(event.target.value)}
-						/>
-						{isDropdownOpen && (
-							<Combobox.Options className="absolute mt-2 w-full bg-gray-900 border border-gray-700 rounded-lg shadow-lg overflow-hidden max-h-48 overflow-y-auto">
-								{filteredMajors.length === 0 ? (
-									<Combobox.Option
-										className="p-2 text-gray-400"
-										value=""
-										disabled>
-										No majors found
-									</Combobox.Option>
-								) : (
-									filteredMajors.map((major, index) => (
-										<Combobox.Option
-											key={index}
-											value={major}
-											className={({ active }) =>
-												`p-3 cursor-pointer ${
-													active ? "bg-[#C49A3A] text-black" : "text-gray-300"
-												}`
-											}>
-											{major}
-										</Combobox.Option>
-									))
-								)}
-							</Combobox.Options>
-						)}
-					</div>
-				</Combobox>
-			</div>
-
-			{/* Display Selected File Name */}
-			{selectedFile && (
+				{/* Tagline */}
 				<motion.p
-					className="mt-4 text-sm text-gray-400 relative"
+					className="text-[#C49A3A] text-base sm:text-lg font-medium mb-2"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
-					transition={{ duration: 0.5 }}>
-					Selected: {selectedFile}
+					transition={{ delay: 0.5, duration: 0.8 }}>
+					"Your Personalized Requirement Tracker"
 				</motion.p>
-			)}
+
+				{/* Description */}
+				<motion.p
+					className="text-gray-400 mb-6 text-sm sm:text-base"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 0.3, duration: 0.8 }}>
+					Check which major requirements you have met so far—simply upload your
+					unofficial transcript PDF downloaded from Quest. None of your
+					information is stored.
+				</motion.p>
+
+				{/* Buttons */}
+				<div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+					{/* Upload button */}
+					<motion.label
+						className="flex items-center justify-center gap-2 bg-[#C49A3A] hover:bg-[#B38A2E] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#C49A3A]/40 w-full sm:w-56"
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}>
+						<FaUpload />
+						Upload Transcript
+						<input
+							type="file"
+							accept=".pdf"
+							className="hidden"
+							onChange={handleFileChange}
+						/>
+					</motion.label>
+
+					{/* Dropdown */}
+					<Combobox value={selectedMajor} onChange={setSelectedMajor}>
+						<div className="relative w-full sm:w-56" ref={dropdownRef}>
+							<Combobox.Input
+								className="bg-gray-800 border border-gray-600 px-4 py-3 rounded-xl text-white w-full cursor-pointer"
+								placeholder="Select Major"
+								onClick={() => setDropdownOpen(true)}
+								onChange={(e) => {
+									setQuery(e.target.value);
+									setDropdownOpen(true);
+								}}
+								onFocus={() => setDropdownOpen(true)}
+							/>
+							{isDropdownOpen && (
+								<Combobox.Options className="absolute mt-2 w-full bg-gray-900 border border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
+									{filteredMajors.length === 0 ? (
+										<Combobox.Option
+											className="p-2 text-gray-400"
+											value=""
+											disabled>
+											No majors found
+										</Combobox.Option>
+									) : (
+										filteredMajors.map((major, index) => (
+											<Combobox.Option
+												key={index}
+												value={major}
+												className={({ active }) =>
+													`p-3 cursor-pointer ${
+														active ? "bg-[#C49A3A] text-black" : "text-gray-300"
+													}`
+												}>
+												{major}
+											</Combobox.Option>
+										))
+									)}
+								</Combobox.Options>
+							)}
+						</div>
+					</Combobox>
+				</div>
+
+				{/* File Name Display */}
+				{selectedFile && (
+					<motion.p
+						className="mt-4 text-sm text-gray-400"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ duration: 0.5 }}>
+						Selected: {selectedFile}
+					</motion.p>
+				)}
+			</div>
 		</section>
 	);
 };
