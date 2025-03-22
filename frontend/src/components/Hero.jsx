@@ -26,7 +26,6 @@ const Hero = () => {
 	const [selectedMajor, setSelectedMajor] = useState("");
 	const [query, setQuery] = useState("");
 	const [isDropdownOpen, setDropdownOpen] = useState(false);
-
 	const dropdownRef = useRef();
 
 	useEffect(() => {
@@ -36,9 +35,7 @@ const Hero = () => {
 			}
 		};
 		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
+		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
 	const handleFileChange = (event) => {
@@ -59,31 +56,29 @@ const Hero = () => {
 
 	return (
 		<section className="relative flex flex-col items-center justify-center text-center px-4 py-16 bg-[#0D1117] text-white min-h-screen">
-			{/* Background gradient for style */}
-			<div className="absolute inset-0 bg-gradient-to-br from-black via-[#0D1117] to-gray-900 opacity-40"></div>
-
-			{/* Content wrapper */}
-			<div className="relative z-10 w-full max-w-xl px-2">
-				{/* Logo */}
+			<motion.div
+				initial={{ opacity: 0, y: 30 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.6 }}
+				viewport={{ once: true }}
+				className="relative z-10 w-full max-w-2xl flex flex-col items-center">
 				<motion.img
 					src={Logo}
 					alt="WatCourse Logo"
-					className="w-56 sm:w-64 md:w-72 lg:w-80 h-auto mx-auto mb-6"
+					className="w-96 md:w-[28rem] h-auto mb-6"
 					initial={{ opacity: 0, scale: 0.85 }}
 					animate={{ opacity: 1, scale: 1 }}
 					transition={{ duration: 0.8 }}
 				/>
 
-				{/* Tagline */}
 				<motion.p
-					className="text-[#C49A3A] text-base sm:text-lg font-medium mb-2"
+					className="text-[#FED34C] text-base sm:text-lg font-medium mb-2"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.5, duration: 0.8 }}>
 					"Your Personalized Requirement Tracker"
 				</motion.p>
 
-				{/* Description */}
 				<motion.p
 					className="text-gray-400 mb-6 text-sm sm:text-base"
 					initial={{ opacity: 0 }}
@@ -94,11 +89,9 @@ const Hero = () => {
 					information is stored.
 				</motion.p>
 
-				{/* Buttons */}
-				<div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-					{/* Upload button */}
+				<div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full">
 					<motion.label
-						className="flex items-center justify-center gap-2 bg-[#C49A3A] hover:bg-[#B38A2E] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#C49A3A]/40 w-full sm:w-56"
+						className="flex items-center justify-center gap-2 bg-[#FED34C] hover:bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#FED34C]/40 w-full sm:w-56"
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}>
 						<FaUpload />
@@ -111,7 +104,6 @@ const Hero = () => {
 						/>
 					</motion.label>
 
-					{/* Dropdown */}
 					<Combobox value={selectedMajor} onChange={setSelectedMajor}>
 						<div className="relative w-full sm:w-56" ref={dropdownRef}>
 							<Combobox.Input
@@ -140,7 +132,7 @@ const Hero = () => {
 												value={major}
 												className={({ active }) =>
 													`p-3 cursor-pointer ${
-														active ? "bg-[#C49A3A] text-black" : "text-gray-300"
+														active ? "bg-[#FED34C] text-black" : "text-gray-300"
 													}`
 												}>
 												{major}
@@ -153,7 +145,6 @@ const Hero = () => {
 					</Combobox>
 				</div>
 
-				{/* File Name Display */}
 				{selectedFile && (
 					<motion.p
 						className="mt-4 text-sm text-gray-400"
@@ -163,7 +154,8 @@ const Hero = () => {
 						Selected: {selectedFile}
 					</motion.p>
 				)}
-			</div>
+			</motion.div>
+			<div className="mt-24"></div> {/* Added spacing after Hero */}
 		</section>
 	);
 };
