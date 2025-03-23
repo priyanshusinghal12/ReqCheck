@@ -32,7 +32,6 @@ const features = [
 export default function Features() {
 	return (
 		<section className="bg-[#0D1117] text-white px-4 sm:px-10 py-20">
-			<ParticlesBackground />
 			<motion.h2
 				className="text-3xl sm:text-4xl font-extrabold text-center text-[#FED34C] mb-12"
 				initial={{ opacity: 0, y: 30 }}
