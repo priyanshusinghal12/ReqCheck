@@ -1,8 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+// src/components/Hero.jsx
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload } from "react-icons/fa";
 import { Combobox } from "@headlessui/react";
 import Logo from "../assets/Logo-watcourse.png";
+import ParticlesBackground from "./ParticlesBackground";
 
 const majors = [
 	"Actuarial Science",
@@ -21,7 +23,7 @@ const majors = [
 	"Mathematics/Teaching",
 ];
 
-const Hero = () => {
+export default function Hero() {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [selectedMajor, setSelectedMajor] = useState("");
 	const [query, setQuery] = useState("");
@@ -55,13 +57,17 @@ const Hero = () => {
 			  );
 
 	return (
-		<section className="relative flex flex-col items-center justify-center text-center px-4 py-16 bg-[#0D1117] text-white min-h-screen">
+		<section className="relative h-screen flex items-center justify-center text-white text-center overflow-hidden bg-[#0D1117] px-4">
+			{/* ✅ Particle Background */}
+			<ParticlesBackground />
+
+			{/* ✅ Hero Content */}
 			<motion.div
+				className="relative z-10 w-full max-w-2xl flex flex-col items-center"
 				initial={{ opacity: 0, y: 30 }}
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
-				viewport={{ once: true }}
-				className="relative z-10 w-full max-w-2xl flex flex-col items-center">
+				viewport={{ once: true }}>
 				<motion.img
 					src={Logo}
 					alt="WatCourse Logo"
@@ -155,9 +161,6 @@ const Hero = () => {
 					</motion.p>
 				)}
 			</motion.div>
-			<div className="mt-24"></div> {/* Added spacing after Hero */}
 		</section>
 	);
-};
-
-export default Hero;
+}
