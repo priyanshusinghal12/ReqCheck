@@ -29,7 +29,7 @@ export default function FAQ() {
 	return (
 		<section id="faq" className="bg-black text-white px-4 sm:px-10 py-20">
 			<motion.h2
-				className="text-3xl sm:text-4xl font-bold text-center text-[#FED34C] mb-12"
+				className="text-3xl sm:text-4xl font-bold text-center text-[#FFFFFF] mb-12"
 				initial={{ opacity: 0, y: 30 }}
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
