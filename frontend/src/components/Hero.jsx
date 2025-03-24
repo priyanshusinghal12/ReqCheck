@@ -1,9 +1,7 @@
-// src/components/Hero.jsx
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload } from "react-icons/fa";
 import { Combobox } from "@headlessui/react";
-import Logo from "../assets/Logo-watcourse.png";
 import ParticlesBackground from "./ParticlesBackground";
 
 const majors = [
@@ -66,21 +64,21 @@ export default function Hero() {
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
 				viewport={{ once: true }}>
-				<motion.img
-					src={Logo}
-					alt="WatCourse Logo"
-					className="w-96 md:w-[28rem] h-auto mb-6"
+				<motion.h1
+					className="text-5xl sm:text-6xl font-medium mb-4"
 					initial={{ opacity: 0, scale: 0.85 }}
 					animate={{ opacity: 1, scale: 1 }}
-					transition={{ duration: 0.8 }}
-				/>
+					transition={{ duration: 0.8 }}>
+					<span className="text-[#FED34C]">Wat</span>Course
+				</motion.h1>
 
 				<motion.p
 					className="text-base sm:text-lg font-medium mb-2"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.5, duration: 0.8 }}>
-					Your Personalized Requirement Tracker
+					The one-click tool to check your mq
+					ajor progress
 				</motion.p>
 
 				<motion.p
