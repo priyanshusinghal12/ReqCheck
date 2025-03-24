@@ -1,8 +1,11 @@
+// src/components/Hero.jsx
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload } from "react-icons/fa";
 import { Combobox } from "@headlessui/react";
+import Logo from "../assets/Logo-watcourse.png";
 import ParticlesBackground from "./ParticlesBackground";
+import { useNavigate } from "react-router-dom";
 
 const majors = [
 	"Actuarial Science",
@@ -23,10 +26,12 @@ const majors = [
 
 export default function Hero() {
 	const [selectedFile, setSelectedFile] = useState(null);
+	const [fileContent, setFileContent] = useState(null);
 	const [selectedMajor, setSelectedMajor] = useState("");
 	const [query, setQuery] = useState("");
 	const [isDropdownOpen, setDropdownOpen] = useState(false);
 	const dropdownRef = useRef();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -38,13 +43,51 @@ export default function Hero() {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
-	const handleFileChange = (event) => {
+	const handleFileChange = async (event) => {
 		const file = event.target.files[0];
 		if (file && file.type === "application/pdf") {
 			setSelectedFile(file.name);
+			const reader = new FileReader();
+			reader.onload = async () => {
+				const base64 = reader.result.split(",")[1];
+				const response = await fetch(
+					"http://127.0.0.1:8000/parse-transcript/",
+					{
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ base64_pdf: base64 }),
+					}
+				);
+				const data = await response.json();
+				setFileContent(data.courses);
+			};
+			reader.readAsDataURL(file);
 		} else {
 			alert("Please upload a valid PDF file.");
 		}
+	};
+
+	const handleGoClick = async () => {
+		if (!fileContent || !selectedMajor) {
+			alert("Please select a major and upload a transcript.");
+			return;
+		}
+		const response = await fetch("http://127.0.0.1:8000/check-requirements/", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				major: selectedMajor.toLowerCase(),
+				completed_courses: fileContent,
+			}),
+		});
+
+		const data = await response.json();
+		if (data.error) {
+			alert("Invalid major selected or backend error.");
+			return;
+		}
+
+		navigate("/results", { state: { results: data } });
 	};
 
 	const filteredMajors =
@@ -57,43 +100,32 @@ export default function Hero() {
 	return (
 		<section className="relative h-screen flex items-center justify-center text-white text-center overflow-hidden bg-black px-4">
 			<ParticlesBackground />
-
 			<motion.div
 				className="relative z-10 w-full max-w-2xl flex flex-col items-center"
 				initial={{ opacity: 0, y: 30 }}
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
 				viewport={{ once: true }}>
-				<motion.h1
-					className="text-5xl sm:text-6xl font-medium mb-4"
+				<motion.img
+					src={Logo}
+					alt="WatCourse Logo"
+					className="w-96 md:w-[28rem] h-auto mb-6"
 					initial={{ opacity: 0, scale: 0.85 }}
 					animate={{ opacity: 1, scale: 1 }}
-					transition={{ duration: 0.8 }}>
-					<span className="text-[#FED34C]">Wat</span>Course
-				</motion.h1>
+					transition={{ duration: 0.8 }}
+				/>
 
-				<motion.p
-					className="text-base sm:text-lg font-medium mb-2"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 0.5, duration: 0.8 }}>
-					The one-click tool to check your mq
-					ajor progress
+				<motion.p className="text-base sm:text-lg font-medium mb-2">
+					Your Personalized Requirement Tracker
 				</motion.p>
-
-				<motion.p
-					className="text-gray-400 mb-6 text-sm sm:text-base"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 0.3, duration: 0.8 }}>
+				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base">
 					Check which major requirements you have met so far—simply upload your
-					unofficial transcript PDF downloaded from Quest. None of your
-					information is stored.
+					unofficial transcript PDF downloaded from Quest.
 				</motion.p>
 
-				<div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full">
+				<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 items-center justify-center w-full">
 					<motion.label
-						className="flex items-center justify-center gap-2 bg-[#FED34C] hover:bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#FED34C]/40 w-full sm:w-56"
+						className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#FED34C]/40 w-full sm:w-56"
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}>
 						<FaUpload />
@@ -148,14 +180,18 @@ export default function Hero() {
 				</div>
 
 				{selectedFile && (
-					<motion.p
-						className="mt-4 text-sm text-gray-400"
-						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
-						transition={{ duration: 0.5 }}>
+					<motion.p className="mt-4 text-sm text-gray-400">
 						Selected: {selectedFile}
 					</motion.p>
 				)}
+
+				<motion.button
+					onClick={handleGoClick}
+					className="mt-4 bg-[#1E2633] text-white font-medium px-6 py-2 rounded-xl hover:scale-105 active:scale-95 transition-transform shadow-md"
+					whileHover={{ scale: 1.05 }}
+					whileTap={{ scale: 0.95 }}>
+					Go
+				</motion.button>
 			</motion.div>
 		</section>
 	);
