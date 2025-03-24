@@ -57,11 +57,9 @@ export default function Hero() {
 			  );
 
 	return (
-		<section className="relative h-screen flex items-center justify-center text-white text-center overflow-hidden bg-[#0D1117] px-4">
-			{/* ✅ Particle Background */}
+		<section className="relative h-screen flex items-center justify-center text-white text-center overflow-hidden bg-black px-4">
 			<ParticlesBackground />
 
-			{/* ✅ Hero Content */}
 			<motion.div
 				className="relative z-10 w-full max-w-2xl flex flex-col items-center"
 				initial={{ opacity: 0, y: 30 }}
@@ -78,11 +76,11 @@ export default function Hero() {
 				/>
 
 				<motion.p
-					className="text-[#FED34C] text-base sm:text-lg font-medium mb-2"
+					className="text-base sm:text-lg font-medium mb-2"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.5, duration: 0.8 }}>
-					"Your Personalized Requirement Tracker"
+					Your Personalized Requirement Tracker
 				</motion.p>
 
 				<motion.p

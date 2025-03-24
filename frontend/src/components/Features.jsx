@@ -31,7 +31,7 @@ const features = [
 
 export default function Features() {
 	return (
-		<section className="bg-[#0D1117] text-white px-4 sm:px-10 py-20">
+		<section className="bg-black text-white px-4 sm:px-10 py-20">
 			<motion.h2
 				className="text-3xl sm:text-4xl font-extrabold text-center text-[#FFFFFF] mb-12"
 				initial={{ opacity: 0, y: 30 }}
@@ -55,7 +55,6 @@ export default function Features() {
 					</motion.div>
 				))}
 			</div>
-			<div className="mt-20"></div> {/* Add spacing before FAQ section */}
 		</section>
 	);
 }
