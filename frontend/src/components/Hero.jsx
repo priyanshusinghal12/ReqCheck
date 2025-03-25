@@ -1,4 +1,3 @@
-// src/components/Hero.jsx
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload } from "react-icons/fa";
@@ -45,20 +44,23 @@ export default function Hero() {
 	const handleFileChange = async (event) => {
 		const file = event.target.files[0];
 		if (file && file.type === "application/pdf") {
-			setSelectedFile(file.name);
+			setSelectedFile(file);
 			const reader = new FileReader();
 			reader.onload = async () => {
-				const base64 = reader.result.split(",")[1];
-				const response = await fetch(
-					"http://127.0.0.1:8000/parse-transcript/",
-					{
+				try {
+					const base64 = reader.result.split(",")[1];
+					const response = await fetch("/parse-transcript/", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ base64_pdf: base64 }),
-					}
-				);
-				const data = await response.json();
-				setFileContent(data.courses);
+					});
+					const data = await response.json();
+					console.log("Parsed courses:", data.courses);
+					setFileContent(data.courses);
+				} catch (error) {
+					alert("Failed to parse transcript.");
+					console.error(error);
+				}
 			};
 			reader.readAsDataURL(file);
 		} else {
@@ -71,22 +73,25 @@ export default function Hero() {
 			alert("Please select a major and upload a transcript.");
 			return;
 		}
-		const response = await fetch("http://127.0.0.1:8000/check-requirements/", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				major: selectedMajor.toLowerCase(),
-				completed_courses: fileContent,
-			}),
-		});
-
-		const data = await response.json();
-		if (data.error) {
-			alert("Invalid major selected or backend error.");
-			return;
+		try {
+			const response = await fetch("/check-requirements/", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					major: selectedMajor.toLowerCase(),
+					completed_courses: fileContent,
+				}),
+			});
+			const data = await response.json();
+			if (data.error) {
+				alert("Invalid major selected or backend error.");
+				return;
+			}
+			navigate("/results", { state: { results: data } });
+		} catch (error) {
+			alert("Failed to fetch requirements.");
+			console.error(error);
 		}
-
-		navigate("/results", { state: { results: data } });
 	};
 
 	const filteredMajors =
@@ -118,7 +123,7 @@ export default function Hero() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.5, duration: 0.8 }}>
-					The one-click tool to check your mq ajor progress
+					The one-click tool to check your major progress
 				</motion.p>
 				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base">
 					Check which major requirements you have met so far—simply upload your
@@ -183,7 +188,7 @@ export default function Hero() {
 
 				{selectedFile && (
 					<motion.p className="mt-4 text-sm text-gray-400">
-						Selected: {selectedFile}
+						Selected: {selectedFile.name}
 					</motion.p>
 				)}
 

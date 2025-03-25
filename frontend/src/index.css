@@ -11,4 +11,5 @@ html {
 	background: #1c1c1e; /* dark background */
 	color: white;
 	font-family: "Inter", sans-serif;
+	box-sizing: border-box;
 }
