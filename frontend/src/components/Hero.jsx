@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload } from "react-icons/fa";
 import { Combobox } from "@headlessui/react";
-import Logo from "../assets/Logo-watcourse.png";
 import ParticlesBackground from "./ParticlesBackground";
 import { useNavigate } from "react-router-dom";
 
