@@ -33,25 +33,29 @@ const AboutUs = () => {
 		<>
 			<Navbar />
 			<div className="min-h-screen bg-black-to-b from-[#1a1a1a] via-[#1e1e1f] to-[#111] text-white">
+				{/* About Section */}
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="text-center max-w-4xl mx-auto mt-24 px-6">
-					<h1 className="text-5xl font-bold mb-4">About</h1>
-					<p className="text-gray-300 text-lg leading-relaxed">
-						WatCourse is your academic sidekick, built to make your life easier.
-						Our goal is simple: help you understand what you’ve completed,
-						what’s left, and how you can plan ahead smarter. With a quick PDF
-						upload, we analyze your transcript, break down your major’s
-						requirements, and even let you test out future course plans with our
-						What-If simulator. Whether you’re grinding for grad school or
-						winging your last electives, WatCourse is here for you.
+					className="text-left max-w-4xl mx-auto mt-32 px-6"> {/* Added mt-32 for spacing above */}
+					<h1 className="text-4xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center">About WatCourse</h1>
+					<p className="text-gray-300 text-base sm:text-base leading-relaxed mb-8">
+						WatCourse is, first and foremost, a brainchild of intense desperation born out of sheer frustration at the new undergrad calendar, and a sincere desire to reduce students' suffering through a quick, convenient way to verify course progression by checking transcripts against major requirements. It is also the product of a lot of free time.
 					</p>
 				</motion.div>
 
+				{/* The Team */}
+				<motion.div
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8 }}
+					className="text-left max-w-4xl mx-auto mt-16 px-6">
+					<h2 className="text-4xl sm:text-4xl font-bold mb-8 text-center">The Team</h2>
+				</motion.div>
+
 				{/* Team Members */}
-				<div className="mt-24 max-w-5xl mx-auto px-6 space-y-24 pb-24">
+				<div className="mt-16 sm:mt-20 max-w-5xl mx-auto px-6 space-y-20 sm:space-y-24 pb-16">
 					{teamMembers.map((member, index) => (
 						<motion.div
 							key={index}
@@ -61,7 +65,7 @@ const AboutUs = () => {
 							viewport={{ once: true }}
 							className={`flex flex-col md:flex-row ${
 								member.imagePosition === "left" ? "" : "md:flex-row-reverse"
-							} items-center gap-10`}>
+							} items-center gap-12 sm:gap-16`}>
 							{/* Profile Image */}
 							<div className="flex justify-center w-full md:w-1/2">
 								<img
@@ -72,8 +76,8 @@ const AboutUs = () => {
 							</div>
 
 							{/* Info Card */}
-							<div className="w-full bg-gradient-to-br from-[#1a1a1c] via-[#2a2a2d] to-[#1c1c1f] border border-[#FED34C] rounded-2xl shadow-xl p-8">
-								<h2 className="text-3xl font-bold mb-1 text-center md:text-left">
+							<div className="w-full bg-gradient-to-br from-[#1a1a1c] via-[#2a2a2d] to-[#1c1c1f] border border-gray-600 rounded-2xl shadow-xl p-8">
+								<h2 className="text-2xl sm:text-3xl font-bold mb-2 text-center md:text-left">
 									{member.name}
 								</h2>
 								<h3 className="text-gray-400 text-lg mb-4 text-center md:text-left">
