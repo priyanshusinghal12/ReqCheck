@@ -12,7 +12,7 @@ const Navbar = () => {
 					FAQ
 				</a>
 				<a href="/about" className="hover:text-[#FED34C] transition">
-					About Us
+					About
 				</a>
 			</nav>
 		</header>
