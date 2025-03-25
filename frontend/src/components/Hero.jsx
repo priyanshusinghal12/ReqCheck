@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUpload } from "react-icons/fa";
+import { FaUpload, FaArrowRight } from "react-icons/fa";
 import { Combobox } from "@headlessui/react";
 import ParticlesBackground from "./ParticlesBackground";
 import { useNavigate } from "react-router-dom";
@@ -131,6 +131,7 @@ export default function Hero() {
 				</motion.p>
 
 				<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 items-center justify-center w-full">
+					{/* Upload Transcript */}
 					<motion.label
 						className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#FED34C]/40 w-full sm:w-56"
 						whileHover={{ scale: 1.05 }}
@@ -145,6 +146,7 @@ export default function Hero() {
 						/>
 					</motion.label>
 
+					{/* Major Dropdown */}
 					<Combobox value={selectedMajor} onChange={setSelectedMajor}>
 						<div className="relative w-full sm:w-56" ref={dropdownRef}>
 							<Combobox.Input
@@ -184,21 +186,23 @@ export default function Hero() {
 							)}
 						</div>
 					</Combobox>
+
+					{/* Arrow Button (acts like Go) */}
+					<motion.button
+						onClick={handleGoClick}
+						className="bg-[#1E2633] hover:bg-white hover:text-black text-white px-4 py-3 rounded-xl shadow-md transition-all duration-300 mt-4 sm:mt-0"
+						whileHover={{ scale: 1.1 }}
+						whileTap={{ scale: 0.95 }}>
+						<FaArrowRight />
+					</motion.button>
 				</div>
 
+				{/* Optional: Show selected file name */}
 				{selectedFile && (
-					<motion.p className="mt-4 text-sm text-gray-400">
+					<motion.p className="mt-4 text-sm text-gray-400 text-center">
 						Selected: {selectedFile.name}
 					</motion.p>
 				)}
-
-				<motion.button
-					onClick={handleGoClick}
-					className="mt-4 bg-[#1E2633] text-white font-medium px-6 py-2 rounded-xl hover:scale-105 active:scale-95 transition-transform shadow-md"
-					whileHover={{ scale: 1.05 }}
-					whileTap={{ scale: 0.95 }}>
-					Go
-				</motion.button>
 			</motion.div>
 		</section>
 	);

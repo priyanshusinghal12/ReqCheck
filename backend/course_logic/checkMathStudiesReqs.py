@@ -1,6 +1,6 @@
 from course_logic.helper import *
 
-def math_studies_reqs(student_courses,minorDoing):
+def math_studies_reqs(student_courses):
     """
     Checks if a student has completed the requirements for the General Math Major.
 
@@ -97,18 +97,13 @@ def math_studies_reqs(student_courses,minorDoing):
 
     # Requirements 15: 2 additional math courses or 2 courses contributing to a minor.
 
-    if (minorDoing):
-        math_studies_reqs["Two additional math courses or two courses that contribute to a minor outside of Mathematics"][0] = True
-        #code to add the courses
-
-    else: #we just check for the 2 additional math courses.
-        print("in here")
-        check_n_courses("Two additional math courses or two courses that contribute to a minor outside of Mathematics",
-          eligible_levels=100,
-          subject_codes=math_subject_codes,
-          n=2,
-          student_courses=student_courses,
-          major_reqs=math_studies_reqs)
+   
+    check_n_courses("Two additional math courses or two courses that contribute to a minor outside of Mathematics",
+                    eligible_levels=100,
+                    subject_codes=math_subject_codes,
+                    n=2,
+                    student_courses=student_courses,
+                    major_reqs=math_studies_reqs)
 
 
     #Req 16 - 4 free choice electives.

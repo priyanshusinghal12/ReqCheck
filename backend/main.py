@@ -1,15 +1,19 @@
 import sys
 import os
+import base64
+import tempfile
+import pdfplumber
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
-# Add backend directory to sys.path to ensure imports work
+# Add backend and logic directories to path
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
-# Add course_logic explicitly to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "course_logic")))
 
+# Imports
+from parseTranscript import extract_courses_from_file
 from course_logic.checkStatisticsReqs import check_stats_major  
 from course_logic.checkActSciReqs import check_actsci_major
 from course_logic.checkAMathReqs import check_amath_major
@@ -28,56 +32,95 @@ from course_logic.checkMathStudiesReqs import math_studies_reqs
 from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major
 
-
 app = FastAPI()
 
-# Define the request structure
+# CORS setup
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# Data models
 class TranscriptRequest(BaseModel):
     major: str
     minor: str = None
     completed_courses: List[str]
 
-# API endpoint for checking requirements
+class TranscriptUpload(BaseModel):
+    base64_pdf: str
+
+# === MAIN ENDPOINT ===
 @app.post("/check-requirements/")
 def check_requirements(request: TranscriptRequest):
     major = request.major.lower()
     completed_courses = request.completed_courses
-    
-    if major == "degree requirements for all math students (math studies exempt)":
-        result = check_math_degree_reqs(completed_courses)
-    elif major == "statistics":
-        result = check_stats_major(completed_courses)
-    elif major == "actuarial science":
-        result = check_actsci_major(completed_courses)
-    elif major == "applied mathematics":
-        result = check_amath_major(completed_courses)
-    elif major == "biostatistics":
-        result = check_biostats_major(completed_courses)
-    elif major == "computational mathematics":
-        result = check_comp_math_reqs(completed_courses)
-    elif major == "computer science":
-        result = check_computer_science_major(completed_courses)
-    elif major == "data science":
-        result = check_data_science_major(completed_courses)
-    elif major == "mathematical studies":
-        result = math_studies_reqs(completed_courses)
-    elif major == "mathematical studies (business)":
-        result = math_studies_business_reqs(completed_courses)
-    elif major == "mathematical economics":
-        result = check_math_econ_reqs(completed_courses)
-    elif major == "mathematical finance":
-        result = check_math_finance_reqs(completed_courses)
-    elif major == "mathematical physics":
-        result = check_math_physics_reqs(completed_courses)
-    elif major == "pure mathematics":
-        result = check_pmath_major(completed_courses)
-    elif major == "mathematical optimization (business specialization)":
-        result = check_math_opt_bus_specialization(completed_courses)
-    elif major == "mathematical optimization (operations specialization)":
-        result = check_math_opt_ops_specialization(completed_courses)
-    elif major == "mathematics teaching":
-        result = check_math_teaching_major(completed_courses)
-    else:
-        return {"error": "Major not supported"}
+
+    match major:
+        case "degree requirements for all math students (math studies exempt)":
+            result = check_math_degree_reqs(completed_courses)
+        case "statistics":
+            result = check_stats_major(completed_courses)
+        case "actuarial science":
+            result = check_actsci_major(completed_courses)
+        case "applied mathematics":
+            result = check_amath_major(completed_courses)
+        case "biostatistics":
+            result = check_biostats_major(completed_courses)
+        case "computational mathematics":
+            result = check_comp_math_reqs(completed_courses)
+        case "computer science":
+            result = check_computer_science_major(completed_courses)
+        case "data science":
+            result = check_data_science_major(completed_courses)
+        case "mathematical studies":
+            result = math_studies_reqs(completed_courses)
+        case "mathematical studies (business)":
+            result = math_studies_business_reqs(completed_courses)
+        case "mathematical economics":
+            result = check_math_econ_reqs(completed_courses)
+        case "mathematical finance":
+            result = check_math_finance_reqs(completed_courses)
+        case "mathematical physics":
+            result = check_math_physics_reqs(completed_courses)
+        case "pure mathematics":
+            result = check_pmath_major(completed_courses)
+        case "mathematical optimization (business specialization)":
+            result = check_math_opt_bus_specialization(completed_courses)
+        case "mathematical optimization (operations specialization)":
+            result = check_math_opt_ops_specialization(completed_courses)
+        case "mathematics teaching":
+            result = check_math_teaching_major(completed_courses)
+        case _:
+            return {"error": "Major not supported"}
     
     return {"major": major, "requirements": result}
+
+
+# === TRANSCRIPT PARSING ENDPOINT ===
+@app.post("/parse-transcript/")
+def parse_transcript(upload: TranscriptUpload):
+    pdf_data = base64.b64decode(upload.base64_pdf)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+        temp_pdf.write(pdf_data)
+        temp_pdf_path = temp_pdf.name
+
+    transcript_txt_path = temp_pdf_path.replace(".pdf", ".txt")
+
+    with pdfplumber.open(temp_pdf_path) as pdf:
+        with open(transcript_txt_path, "w", encoding="utf-8") as f:
+            for page in pdf.pages:
+                table = page.extract_table()
+                if table:
+                    for row in table:
+                        f.write(" | ".join(str(cell) if cell else "" for cell in row) + "\n")
+                else:
+                    text = page.extract_text()
+                    if text:
+                        f.write(text + "\n\n")
+
+    courses = extract_courses_from_file(transcript_txt_path)
+    return {"courses": courses}

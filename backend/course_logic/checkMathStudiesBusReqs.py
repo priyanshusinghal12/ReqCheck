@@ -1,6 +1,6 @@
 from course_logic.helper import *
 
-def math_studies_business_reqs(student_courses,minorDoing):
+def math_studies_business_reqs(student_courses):
     """
     Checks if a student has completed the requirements for the General Math Major.
 
