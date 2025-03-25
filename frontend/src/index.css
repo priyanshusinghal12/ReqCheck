@@ -4,3 +4,11 @@ body {
 	font-family: "Inter", sans-serif;
 }
 
+body,
+html {
+	margin: 0;
+	padding: 0;
+	background: #1c1c1e; /* dark background */
+	color: white;
+	font-family: "Inter", sans-serif;
+}

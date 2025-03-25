@@ -1,12 +1,12 @@
 import React from "react";
 import AppRouter from "./routes/AppRouter";
 
-const App = () => {
+function App() {
 	return (
-		<div className="bg-black min-h-screen text-white">
+		<div className="min-h-screen bg-[#1c1c1e] text-white">
 			<AppRouter />
 		</div>
 	);
-};
+}
 
 export default App;
