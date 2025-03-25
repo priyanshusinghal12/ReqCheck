@@ -32,7 +32,7 @@ const AboutUs = () => {
 	return (
 		<>
 			<Navbar />
-			<div className="min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#1e1e1f] to-[#111] text-white">
+			<div className="min-h-screen bg-black-to-b from-[#1a1a1a] via-[#1e1e1f] to-[#111] text-white">
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
