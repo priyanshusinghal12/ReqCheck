@@ -1,5 +1,6 @@
 from course_logic.helper import *
 
+
 def math_studies_reqs(student_courses):
     """
     Checks if a student has completed the requirements for the General Math Major.
@@ -91,26 +92,32 @@ def math_studies_reqs(student_courses):
     # Requirement 14: Eight additional non-math courses
     non_math_courses = [course for course in student_courses if course.split(" ")[0] not in math_subject_codes]
     if len(non_math_courses) >= 8:
+        non_math_courses = non_math_courses[:8]
         math_studies_reqs["Eight additional non-math courses"][0] = True
         math_studies_reqs["Eight additional non-math courses"][1].extend(non_math_courses)
-        student_courses = [course for course in student_courses if course not in non_math_courses[:8]]
+        student_courses = [course for course in student_courses if course not in non_math_courses]
 
-    # Requirements 15: 2 additional math courses or 2 courses contributing to a minor.
-
-   
+    # Requirements 15: 2 additional math courses.
     check_n_courses("Two additional math courses or two courses that contribute to a minor outside of Mathematics",
                     eligible_levels=100,
                     subject_codes=math_subject_codes,
                     n=2,
                     student_courses=student_courses,
                     major_reqs=math_studies_reqs)
-
+    
+    # print("student courses:", student_courses)
 
     #Req 16 - 4 free choice electives.
     if len(student_courses) >= 4:
+        student_courses = student_courses[:4]
         math_studies_reqs["Four free-choice electives"][0] = True
         math_studies_reqs["Four free-choice electives"][1].extend(student_courses)
         student_courses = student_courses[4:]
+    else:
+        math_studies_reqs["Four free-choice electives"][0] = False
+        math_studies_reqs["Four free-choice electives"][1].extend(student_courses)
+        student_courses = []
+
 
     return math_studies_reqs
 

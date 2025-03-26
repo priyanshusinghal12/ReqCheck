@@ -123,9 +123,14 @@ def math_studies_business_reqs(student_courses):
 
     # Last Req: Four additional free-choice electives (placeholder)
     if len(student_courses) >= 4:
-        math_studies_business_specialization_reqs["Four free-choice electives"][0] = True
-        math_studies_business_specialization_reqs["Four free-choice electives"][1].extend(student_courses)
+        student_courses = student_courses[:4]
+        math_studies_reqs["Four free-choice electives"][0] = True
+        math_studies_reqs["Four free-choice electives"][1].extend(student_courses)
         student_courses = student_courses[4:]
+    else:
+        math_studies_reqs["Four free-choice electives"][0] = False
+        math_studies_reqs["Four free-choice electives"][1].extend(student_courses)
+        student_courses = []
 
 
 
