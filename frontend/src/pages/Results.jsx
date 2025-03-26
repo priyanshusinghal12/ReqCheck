@@ -60,7 +60,7 @@ const Results = () => {
 				animate={{ opacity: 1, x: 0 }}
 				transition={{ duration: 0.4, delay: i * 0.05 }}
 				className={`p-4 rounded-xl mb-4 border-l-4 ${
-					met ? "border-[#FED34C] bg-gray-900" : "border-red-500 bg-gray-800"
+					met ? "border-[#FED34C] bg-[#1A1A1A]" : "border-red-500 bg-[#2A1A1A]"
 				}`}>
 				<h2 className="font-semibold text-white text-lg mb-1">{requirement}</h2>
 				<p className="text-sm text-gray-300">
@@ -75,7 +75,7 @@ const Results = () => {
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
 				<h1 className="text-3xl font-bold mb-6 text-white">
 					Requirement Checklist:{" "}
-					<span className="text-[#FED34C]">{capitalizedMajor}</span>
+					<span className="text-white">{capitalizedMajor}</span>
 				</h1>
 
 				<div className="max-h-[60vh] overflow-y-auto pr-2">
@@ -87,8 +87,8 @@ const Results = () => {
 						What-If Analysis
 					</h2>
 					<textarea
-						placeholder="Type in course codes like ECON 301, STAT 333..."
-						className="w-full bg-gray-800 text-white rounded-lg p-4 border-2 border-[#FED34C] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FED34C]"
+						placeholder="Type in courses like ECON 301, STAT 333 and check what additional requirements get completed!!"
+						className="w-full bg-[#1A1A1A] text-white rounded-lg p-4 border-2 border-[#333] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2a2a]"
 						rows={5}
 						value={whatIfText}
 						onChange={(e) => setWhatIfText(e.target.value)}

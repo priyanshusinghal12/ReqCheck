@@ -32,13 +32,13 @@ const AboutUs = () => {
 	return (
 		<>
 			<Navbar />
-			<div className="min-h-screen bg-black-to-b from-[#1a1a1a] via-[#1e1e1f] to-[#111] text-white">
+			<div className="min-h-screen bg-black from-[#1a1a1a] via-[#1e1e1f] to-[#111] text-white pt-24">
 				{/* About Section */}
 				<motion.div
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="text-left max-w-4xl mx-auto mt-32 px-6">
+					className="text-left max-w-4xl mx-auto pt-12 px-6">
 					{" "}
 					{/* Added mt-32 for spacing above */}
 					<h1 className="text-4xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center">

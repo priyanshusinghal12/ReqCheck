@@ -119,7 +119,7 @@ export default function Hero() {
 				</motion.h1>
 
 				<motion.p
-					className="text-base sm:text-lg font-medium mb-2"
+					className="text-base text-gray-100 sm:text-lg font-medium mb-2"
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.5, duration: 0.8 }}>
@@ -150,7 +150,7 @@ export default function Hero() {
 					<Combobox value={selectedMajor} onChange={setSelectedMajor}>
 						<div className="relative w-full sm:w-56" ref={dropdownRef}>
 							<Combobox.Input
-								className="bg-gray-800 border border-gray-600 px-4 py-3 rounded-xl text-white w-full cursor-pointer"
+								className="bg-[#1A1A1A] border border-[#333] px-4 py-3 rounded-xl text-white w-full cursor-pointer"
 								placeholder="Select Major"
 								onClick={() => setDropdownOpen(true)}
 								onChange={(e) => {
@@ -190,7 +190,7 @@ export default function Hero() {
 					{/* Arrow Button (acts like Go) */}
 					<motion.button
 						onClick={handleGoClick}
-						className="bg-[#1E2633] hover:bg-white hover:text-black text-white px-4 py-3 rounded-xl shadow-md transition-all duration-300 mt-4 sm:mt-0"
+						className="bg-[#1A1A1A] border border-[#333] hover:bg-white hover:text-black text-white px-4 py-3 rounded-xl shadow-md transition-all duration-300 mt-4 sm:mt-0"
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.95 }}>
 						<FaArrowRight />
