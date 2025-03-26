@@ -1,4 +1,85 @@
 #Helper File
+def refine_courses(student_courses, dont_remove=[]):
+    # Replace "SPCOM" with "COMMST" in student_courses
+    for i in range(len(student_courses)):
+        if student_courses[i].startswith("SPCOM"):
+            student_courses[i] = student_courses[i].replace("SPCOM", "COMMST")
+
+    # Lists defined within the function
+    math_core_courses = [
+        "CS 115", "CS 135", "CS 145",
+        "CS 116", "CS 136", "CS 146", "CS 136L",
+        "MATH 106", "MATH 136", "MATH 146",
+        "MATH 127", "MATH 137", "MATH 147",
+        "MATH 128", "MATH 138", "MATH 148",
+        "MATH 135", "MATH 145",
+        "MATH 235", "MATH 245",
+        "MATH 237", "MATH 239", "MATH 247", "MATH 249",
+        "STAT 230", "STAT 240",
+        "STAT 231", "STAT 241"
+    ]
+
+    list_1 = [
+        "COMMST 100", 
+        "COMMST 223", 
+        "EMLS 101R", 
+        "EMLS 102R", 
+        "EMLS 129R", 
+        "ENGL 109", 
+        "ENGL 129R"
+    ]
+
+    list_1_and_2 = [
+        "COMMST 100", 
+        "COMMST 223", 
+        "EMLS 101R", 
+        "EMLS 102R", 
+        "EMLS 129R", 
+        "ENGL 109", 
+        "ENGL 129R",
+        "COMMST 225",
+        "COMMST 227",
+        "COMMST 228",
+        "EMLS 103R",
+        "EMLS 104R",
+        "EMLS 110R",
+        "ENGL 101B",
+        "ENGL 108B",
+        "ENGL 108D",
+        "ENGL 119",
+        "ENGL 208B",
+        "ENGL 209",
+        "ENGL 210E",
+        "ENGL 210F",
+        "ENGL 378",
+        "MTHEL 300"
+    ]
+    
+    # Remove all courses from math_core_courses (unless in dont_remove)
+    for course in math_core_courses:
+        if course in student_courses and course not in dont_remove:
+            student_courses.remove(course)
+
+    # Remove exactly one course from list_1 if present (unless in dont_remove)
+    for course in list_1:
+        if course in student_courses and course not in dont_remove:
+            student_courses.remove(course)
+            break  # remove only one course from list_1
+
+    # Remove exactly one course from list_1_and_2 if present (unless in dont_remove)
+    for course in list_1_and_2:
+        if course in student_courses and course not in dont_remove:
+            student_courses.remove(course)
+            break  # remove only one course from list_1_and_2
+
+    # Remove any courses with codes "COOP" or "PD"
+    student_courses[:] = [
+        course for course in student_courses 
+        if not (course.startswith("COOP") or course.startswith("PD"))
+    ]
+    
+    return student_courses
+
 
 def check_complete_all(current_requirement, core_courses, student_courses, major_reqs):
     """
