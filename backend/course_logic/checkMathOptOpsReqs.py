@@ -2,11 +2,13 @@ from course_logic.helper import *
 
 def check_math_opt_ops_specialization(student_courses):
 
+  refine_courses(student_courses, ["MATH 237", "MATH 247", "MATH 239", "MATH 249"])
+
   reqs = {
     "Complete all of: AFM 101, CO 370, ECON 101, MSE 211, STAT 340": [False, []],
     "Complete one of: AMATH 242, CS 370, CS 371": [False, []],
     "Complete one of: CO 250, CO 255": [False, []],
-    "Complete 3 of: CO 342, 351, 353, 367, 372, 450, 452, 454, 456, 463, 466, 471": [False, []],
+    "Complete 3 of: CO 342, CO 351, CO 353, CO 367, CO 372, CO 450, CO 452, CO 454, CO 456, CO 463, CO 466, CO 471": [False, []],
     "Complete one of: CS 330, CS 490": [False, []],
     "Complete one of: MATH 237, MATH 247": [False, []],
     "Complete one of: MATH 239, MATH 249": [False, []],
@@ -52,7 +54,7 @@ def check_math_opt_ops_specialization(student_courses):
                   student_courses = student_courses,
                   major_reqs = reqs)
 
-  check_n_from_list(current_requirement = "Complete 3 of: CO 342, 351, 353, 367, 372, 450, 452, 454, 456, 463, 466, 471",
+  check_n_from_list(current_requirement = "Complete 3 of: CO 342, CO 351, CO 353, CO 367, CO 372, CO 450, CO 452, CO 454, CO 456, CO 463, CO 466, CO 471",
                   required_courses = ["CO 342", "CO 351", "CO 353", "CO 367", "CO 372", "CO 450", "CO 452", "CO 454", "CO 456", "CO 463", "CO 466", "CO 471"],
                   n = 3,
                   student_courses = student_courses,

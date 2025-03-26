@@ -2,8 +2,10 @@ from course_logic.helper import *
 
 def check_math_physics_reqs(student_courses):
 
+    refine_courses(student_courses, ["MATH 237", "MATH 247"])
+
     math_physics_reqs = {
-        "Complete all the following: AMATH 231/271/351/353/361/373, PHYS 121/122/234/242": [False, []],
+        "Complete all the following: AMATH 231, AMATH 271, AMATH 351, AMATH 353, AMATH 361, AMATH 373, PHYS 121, PHYS 122, PHYS 234, PHYS 242": [False, []],
         "Complete one of the following: AMATH 242, CS 371": [False, []],
         "Complete one of the following: AMATH 250, AMATH 251": [False, []],
         "Complete one of the following: AMATH 331, PMATH 331, PMATH 333, PMATH 351": [False, []],
@@ -17,7 +19,7 @@ def check_math_physics_reqs(student_courses):
     }
 
     # Req 1: Core AMATH and PHYS courses
-    check_complete_all("Complete all the following: AMATH 231/271/351/353/361/373, PHYS 121/122/234/242",
+    check_complete_all("Complete all the following: AMATH 231, AMATH 271, AMATH 351, AMATH 353, AMATH 361, AMATH 373, PHYS 121, PHYS 122, PHYS 234, PHYS 242",
                        ["AMATH 231", "AMATH 271", "AMATH 351", "AMATH 353", "AMATH 361", "AMATH 373",
                         "PHYS 121", "PHYS 122", "PHYS 234", "PHYS 242"],
                        student_courses, math_physics_reqs)
