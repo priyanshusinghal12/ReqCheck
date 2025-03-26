@@ -160,7 +160,7 @@ export default function Hero() {
 								onFocus={() => setDropdownOpen(true)}
 							/>
 							{isDropdownOpen && (
-								<Combobox.Options className="absolute mt-2 w-full bg-gray-900 border border-gray-700 rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
+								<Combobox.Options className="absolute mt-2 w-full bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
 									{filteredMajors.length === 0 ? (
 										<Combobox.Option
 											className="p-2 text-gray-400"
