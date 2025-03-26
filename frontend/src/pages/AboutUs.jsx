@@ -1,6 +1,6 @@
 import React from "react";
 import { FaLinkedin, FaGithub, FaEnvelope } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import ridhikaImage from "../assets/ridhika.jpeg";
 import priyanshuImage from "../assets/priyanshu.jpeg";
@@ -29,6 +29,8 @@ const teamMembers = [
 ];
 
 const AboutUs = () => {
+	const [selectedMember, setSelectedMember] = React.useState(null);
+
 	return (
 		<>
 			<Navbar />
@@ -39,12 +41,10 @@ const AboutUs = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
 					className="text-left max-w-4xl mx-auto pt-12 px-6">
-					{" "}
-					{/* Added mt-32 for spacing above */}
-					<h1 className="text-4xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center">
+					<h1 className="text-4xl font-bold mb-6 text-center">
 						About WatCourse
 					</h1>
-					<p className="text-gray-300 text-base sm:text-base leading-relaxed mb-8 text-justify">
+					<p className="text-gray-300 text-base leading-relaxed mb-8">
 						WatCourse is, first and foremost, a brainchild of intense
 						desperation born out of sheer frustration at the new undergrad
 						calendar, and a sincere desire to reduce students' suffering through
@@ -60,13 +60,11 @@ const AboutUs = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
 					className="text-left max-w-4xl mx-auto mt-16 px-6">
-					<h2 className="text-4xl sm:text-4xl font-bold mb-8 text-center">
-						The Team
-					</h2>
+					<h2 className="text-4xl font-bold mb-8 text-center">The Team</h2>
 				</motion.div>
 
 				{/* Team Members */}
-				<div className="mt-16 sm:mt-20 max-w-5xl mx-auto px-6 space-y-20 sm:space-y-24 pb-16">
+				<div className="mt-16 max-w-5xl mx-auto px-6 space-y-20 pb-16">
 					{teamMembers.map((member, index) => (
 						<motion.div
 							key={index}
@@ -74,9 +72,10 @@ const AboutUs = () => {
 							whileInView={{ opacity: 1, y: 0 }}
 							transition={{ duration: 0.8, ease: "easeOut" }}
 							viewport={{ once: true }}
-							className={`flex flex-col md:flex-row ${
+							onClick={() => setSelectedMember(member)}
+							className={`cursor-pointer flex flex-col md:flex-row ${
 								member.imagePosition === "left" ? "" : "md:flex-row-reverse"
-							} items-center gap-12 sm:gap-16`}>
+							} items-center gap-12`}>
 							{/* Profile Image */}
 							<div className="flex justify-center w-full md:w-1/2">
 								<img
@@ -88,7 +87,7 @@ const AboutUs = () => {
 
 							{/* Info Card */}
 							<div className="w-full bg-gradient-to-br from-[#1a1a1c] via-[#2a2a2d] to-[#1c1c1f] border border-gray-600 rounded-2xl shadow-xl p-8">
-								<h2 className="text-2xl sm:text-3xl font-bold mb-2 text-center md:text-left">
+								<h2 className="text-2xl font-bold mb-2 text-center md:text-left">
 									{member.name}
 								</h2>
 								<h3 className="text-gray-400 text-lg mb-4 text-center md:text-left">
@@ -120,6 +119,46 @@ const AboutUs = () => {
 						</motion.div>
 					))}
 				</div>
+
+				{/* Overlay Popup for Selected Member */}
+				<AnimatePresence>
+					{selectedMember && (
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							className="fixed inset-0 bg-black bg-opacity-80 backdrop-blur-sm flex items-center justify-center z-50"
+							onClick={() => setSelectedMember(null)}>
+							<motion.div
+								initial={{ scale: 0.9, opacity: 0 }}
+								animate={{ scale: 1, opacity: 1 }}
+								exit={{ scale: 0.9, opacity: 0 }}
+								transition={{ duration: 0.3 }}
+								className="relative bg-[#1a1a1a] border border-[#2a2a2a] text-white rounded-3xl p-8 max-w-xl w-full shadow-lg"
+								onClick={(e) => e.stopPropagation()}>
+								<button
+									className="absolute top-4 right-4 text-gray-400 hover:text-white text-3xl"
+									onClick={() => setSelectedMember(null)}>
+									&times;
+								</button>
+								<img
+									src={selectedMember.image}
+									alt={selectedMember.name}
+									className="w-32 h-32 mx-auto rounded-full object-cover mb-6"
+								/>
+								<h2 className="text-2xl font-bold text-center">
+									{selectedMember.name}
+								</h2>
+								<p className="text-center text-gray-400 mb-4">
+									{selectedMember.major}
+								</p>
+								<p className="text-center text-gray-300">
+									{selectedMember.bio}
+								</p>
+							</motion.div>
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</div>
 		</>
 	);

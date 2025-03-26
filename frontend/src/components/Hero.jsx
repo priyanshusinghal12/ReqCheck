@@ -150,7 +150,7 @@ export default function Hero() {
 					<Combobox value={selectedMajor} onChange={setSelectedMajor}>
 						<div className="relative w-full sm:w-56" ref={dropdownRef}>
 							<Combobox.Input
-								className="bg-[#1A1A1A] border border-[#333] px-4 py-3 rounded-xl text-white w-full cursor-pointer"
+								className="border border-[#333] bg-[#1A1A1A] px-4 py-3 rounded-xl text-white w-full cursor-pointer"
 								placeholder="Select Major"
 								onClick={() => setDropdownOpen(true)}
 								onChange={(e) => {

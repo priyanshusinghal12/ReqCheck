@@ -9,6 +9,7 @@ const Results = () => {
 	const { results } = location.state || {};
 	const [whatIfText, setWhatIfText] = useState("");
 	const [whatIfResults, setWhatIfResults] = useState(null);
+	const [showWhatIf, setShowWhatIf] = useState(false);
 
 	if (!results)
 		return <div className="text-center p-10 text-white">No results found.</div>;
@@ -43,6 +44,7 @@ const Results = () => {
 
 		const data = await response.json();
 		setWhatIfResults(data.requirements);
+		setShowWhatIf(true);
 	};
 
 	const handleKeyDown = (e) => {
@@ -79,7 +81,9 @@ const Results = () => {
 				</h1>
 
 				<div className="max-h-[60vh] overflow-y-auto pr-2">
-					{renderRequirements(results.requirements)}
+					{showWhatIf
+						? renderRequirements(whatIfResults)
+						: renderRequirements(results.requirements)}
 				</div>
 
 				<div className="mt-10">
@@ -94,26 +98,24 @@ const Results = () => {
 						onChange={(e) => setWhatIfText(e.target.value)}
 						onKeyDown={handleKeyDown}
 					/>
-					<button
-						onClick={handleWhatIf}
-						className="mt-3 px-6 py-2 bg-[#FED34C] text-black font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
-						Check What-If
-					</button>
+					<div className="flex items-center mt-3 gap-3">
+						<button
+							onClick={handleWhatIf}
+							className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
+							Check What-If
+						</button>
+						{showWhatIf && (
+							<button
+								onClick={() => setShowWhatIf(false)}
+								className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
+								Reset to Original
+							</button>
+						)}
+					</div>
 					<p className="text-sm text-gray-500 mt-2">
 						Simulate your future course plan to see its impact on your progress.
 					</p>
 				</div>
-
-				{whatIfResults && (
-					<div className="mt-10">
-						<h2 className="text-2xl font-bold text-white mb-3">
-							What-If Results
-						</h2>
-						<div className="max-h-[50vh] overflow-y-auto pr-2">
-							{renderRequirements(whatIfResults)}
-						</div>
-					</div>
-				)}
 			</div>
 		</>
 	);
