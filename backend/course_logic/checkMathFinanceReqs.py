@@ -3,8 +3,10 @@ from course_logic.helper import *
 
 def check_math_finance_reqs(student_courses):
 
+    refine_courses(student_courses, ["MATH 237", "MATH 247"])
+
     math_finance_reqs = {
-        "Complete all the following: ACTSC 231/372/445/446, PMATH 351/450/451, STAT 330/331/333/443": [False, []],
+        "Complete all the following: ACTSC 231, ACTSC 372, ACTSC 445, ACTSC 446, PMATH 351, PMATH 450, PMATH 451, STAT 330, STAT 331, STAT 333, STAT 443": [False, []],
         "Complete one of the following: AFM 101, BUS 127W": [False, []],
         "Complete one of the following: AFM 102, BUS 247W": [False, []],
         "Complete one of the following: AFM 131, ARBUS 101, BUS 111W": [False, []],
@@ -19,7 +21,7 @@ def check_math_finance_reqs(student_courses):
     }
 
     # Req 1: Core ACTSC, PMATH, STAT courses
-    check_complete_all("Complete all the following: ACTSC 231/372/445/446, PMATH 351/450/451, STAT 330/331/333/443",
+    check_complete_all("Complete all the following: ACTSC 231, ACTSC 372, ACTSC 445, ACTSC 446, PMATH 351, PMATH 450, PMATH 451, STAT 330, STAT 331, STAT 333, STAT 443",
                        ["ACTSC 231", "ACTSC 372", "ACTSC 445", "ACTSC 446", "PMATH 351", "PMATH 450", "PMATH 451", "STAT 330", "STAT 331", "STAT 333", "STAT 443"],
                        student_courses, math_finance_reqs)
 

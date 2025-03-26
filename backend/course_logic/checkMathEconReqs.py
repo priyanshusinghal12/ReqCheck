@@ -1,27 +1,29 @@
 from course_logic.helper import *
-# from helper import *
+
 
 def check_math_econ_reqs(student_courses):
 
+    refine_courses(student_courses, ["MATH 237", "MATH 247"])
+
     math_econ_reqs = {
-        "Complete all the following: ECON 101/102/290/306/391/393/472/491/496": [False, []],
-        "Complete one of the following: ECON 406/407/408/409": [False, []],
+        "Complete all the following: ECON 101, 102, 290, 306, 391, 393, 472, 491, 496": [False, []],
+        "Complete one of the following: ECON 406, 407, 408, 409": [False, []],
         "Complete 4 additional ECON courses at the 300/400 level": [False, []],
-        "Complete all the following: AMATH 350/STAT 331/STAT 443": [False, []],
-        "Complete one of the following: AMATH 331/PMATH 331/PMATH 333/PMATH 351": [False, []],
-        "Complete one of the following: CO 250/255": [False, []],
-        "Complete one of the following: MATH 237/247": [False, []],
+        "Complete all the following: AMATH 350, STAT 331, STAT 443": [False, []],
+        "Complete one of the following: AMATH 331, PMATH 331, PMATH 333, PMATH 351": [False, []],
+        "Complete one of the following: CO 250, CO 255": [False, []],
+        "Complete one of the following: MATH 237, MATH 247": [False, []],
         "Complete 7 additional courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [False, []],
         "Complete 2 additional courses": [False, []]
     }
 
     # Req 1: Core ECON courses
-    check_complete_all("Complete all the following: ECON 101/102/290/306/391/393/472/491/496",
+    check_complete_all("Complete all the following: ECON 101, 102, 290, 306, 391, 393, 472, 491, 496",
                        ["ECON 101", "ECON 102", "ECON 290", "ECON 306", "ECON 391", "ECON 393", "ECON 472", "ECON 491", "ECON 496"],
                        student_courses, math_econ_reqs)
 
     # Req 2: One advanced ECON course
-    check_n_from_list("Complete one of the following: ECON 406/407/408/409",
+    check_n_from_list("Complete one of the following: ECON 406, 407, 408, 409",
                       ["ECON 406", "ECON 407", "ECON 408", "ECON 409"],
                       n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
 
@@ -34,22 +36,22 @@ def check_math_econ_reqs(student_courses):
                     major_reqs=math_econ_reqs)
 
     # Req 4: Core math/stat courses
-    check_complete_all("Complete all the following: AMATH 350/STAT 331/STAT 443",
+    check_complete_all("Complete all the following: AMATH 350, STAT 331, STAT 443",
                        ["AMATH 350", "STAT 331", "STAT 443"],
                        student_courses, math_econ_reqs)
 
     # Req 5: One advanced math course
-    check_n_from_list("Complete one of the following: AMATH 331/PMATH 331/PMATH 333/PMATH 351",
+    check_n_from_list("Complete one of the following: AMATH 331, PMATH 331, PMATH 333, PMATH 351",
                       ["AMATH 331", "PMATH 331", "PMATH 333", "PMATH 351"],
                       n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
 
     # Req 6: One combinatorics/optimization course
-    check_n_from_list("Complete one of the following: CO 250/255",
+    check_n_from_list("Complete one of the following: CO 250, CO 255",
                       ["CO 250", "CO 255"],
                       n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
 
     # Req 7: One advanced calculus course
-    check_n_from_list("Complete one of the following: MATH 237/247",
+    check_n_from_list("Complete one of the following: MATH 237, MATH 247",
                       ["MATH 237", "MATH 247"],
                       n=1, student_courses=student_courses, major_reqs=math_econ_reqs)
 
@@ -67,8 +69,4 @@ def check_math_econ_reqs(student_courses):
         math_econ_reqs["Complete 2 additional courses"][1].extend(student_courses[:2])
 
     return math_econ_reqs
-
-
-# math_econ_tests = ["ECON101","ECON102","ECON290","ECON306","ECON391","ECON393","ECON472","ECON491","ECON496","ECON406","ECON310","ECON320","ECON330","ECON440","AMATH350","STAT331","STAT443","PMATH331","CO250","MATH237","AMATH101","AMATH450","CO487","CS371","MATBUS471","MATH340","PMATH450","BET100","CLAS104"]
-
-# print(check_math_econ_reqs(math_econ_tests))
+    
