@@ -69,16 +69,33 @@ export default function Hero() {
 	};
 
 	const handleGoClick = async () => {
-		if (!fileContent || !selectedMajor) {
+		let majorToUse = selectedMajor;
+
+		// Check if user typed a major manually but didn’t select from dropdown
+		if (!majorToUse && query) {
+			const matched = majors.find(
+				(m) => m.toLowerCase() === query.toLowerCase()
+			);
+			if (matched) {
+				setSelectedMajor(matched);
+				majorToUse = matched;
+			} else {
+				alert("Please select a valid major from the dropdown.");
+				return;
+			}
+		}
+
+		if (!fileContent || !majorToUse) {
 			alert("Please select a major and upload a transcript.");
 			return;
 		}
+
 		try {
 			const response = await fetch("/check-requirements/", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					major: selectedMajor.toLowerCase(),
+					major: majorToUse.toLowerCase(),
 					completed_courses: fileContent,
 				}),
 			});
@@ -155,6 +172,7 @@ export default function Hero() {
 								onClick={() => setDropdownOpen(true)}
 								onChange={(e) => {
 									setQuery(e.target.value);
+									setSelectedMajor(e.target.value); // Add this
 									setDropdownOpen(true);
 								}}
 								onFocus={() => setDropdownOpen(true)}
