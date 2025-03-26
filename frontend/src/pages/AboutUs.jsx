@@ -38,10 +38,19 @@ const AboutUs = () => {
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="text-left max-w-4xl mx-auto mt-32 px-6"> {/* Added mt-32 for spacing above */}
-					<h1 className="text-4xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center">About WatCourse</h1>
-					<p className="text-gray-300 text-base sm:text-base leading-relaxed mb-8">
-						WatCourse is, first and foremost, a brainchild of intense desperation born out of sheer frustration at the new undergrad calendar, and a sincere desire to reduce students' suffering through a quick, convenient way to verify course progression by checking transcripts against major requirements. It is also the product of a lot of free time.
+					className="text-left max-w-4xl mx-auto mt-32 px-6">
+					{" "}
+					{/* Added mt-32 for spacing above */}
+					<h1 className="text-4xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center">
+						About WatCourse
+					</h1>
+					<p className="text-gray-300 text-base sm:text-base leading-relaxed mb-8 text-justify">
+						WatCourse is, first and foremost, a brainchild of intense
+						desperation born out of sheer frustration at the new undergrad
+						calendar, and a sincere desire to reduce students' suffering through
+						a quick, convenient way to verify course progression by checking
+						transcripts against major requirements. It is also the product of a
+						lot of free time.
 					</p>
 				</motion.div>
 
@@ -51,7 +60,9 @@ const AboutUs = () => {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
 					className="text-left max-w-4xl mx-auto mt-16 px-6">
-					<h2 className="text-4xl sm:text-4xl font-bold mb-8 text-center">The Team</h2>
+					<h2 className="text-4xl sm:text-4xl font-bold mb-8 text-center">
+						The Team
+					</h2>
 				</motion.div>
 
 				{/* Team Members */}
