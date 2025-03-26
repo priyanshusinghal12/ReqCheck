@@ -2,7 +2,7 @@ from course_logic.helper import *
 
 def check_math_teaching_major(student_courses):
 
-  # Define reqs
+  refine_courses(student_courses, ["MATH 237", "MATH 247", "MATH 239", "MATH 249"])
 
   reqs = {
     "Complete all of: ACTSC 221, CS 234, MTHEL 206": [False, []],
