@@ -192,7 +192,7 @@ const Results = () => {
 												{updatedKeys.length}
 											</span>{" "}
 											requirement
-											{updatedKeys.length > 1 ? "s" : ""} updated below.
+											{updatedKeys.length > 1 ? "s" : ""} updated above.
 										</p>
 									)}
 								</>
