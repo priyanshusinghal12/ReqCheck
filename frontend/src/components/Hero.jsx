@@ -102,7 +102,7 @@ export default function Hero() {
 			  );
 
 	return (
-		<section className="relative h-screen flex items-center justify-center text-white text-center overflow-hidden bg-black px-4">
+		<section className="relative min-h-[95vh] flex items-center justify-center text-white text-center overflow-hidden bg-black px-4 pb-10">
 			<ParticlesBackground />
 			<motion.div
 				className="relative z-10 w-full max-w-2xl flex flex-col items-center"
@@ -203,7 +203,34 @@ export default function Hero() {
 						Selected: {selectedFile.name}
 					</motion.p>
 				)}
+
+				{/* <motion.div
+					className="mt-4 text-sm text-gray-400 animate-bounce"
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ delay: 1 }}>
+					↓ Scroll to learn more
+				</motion.div> */}
 			</motion.div>
+
+			{/* scroll arrow */}
+			<a
+				href="#faq"
+				className="absolute bottom-6 right-6 text-white text-xl sm:text-sm flex flex-col items-center animate-bounce hover:text-[#FED34C] transition-colors duration-300">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					strokeWidth={2}
+					stroke="currentColor"
+					className="w-8 h-8 mt-1">
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						d="M19 9l-7 7-7-7"
+					/>
+				</svg>
+			</a>
 		</section>
 	);
 }

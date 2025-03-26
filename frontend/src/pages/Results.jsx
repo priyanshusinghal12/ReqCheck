@@ -32,10 +32,19 @@ const Results = () => {
 	const handleWhatIf = async () => {
 		if (!whatIfText.trim()) return;
 
+		// Only keep valid course formats like "CS 136", "CLAS 104", "MATH 245L"
+		const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 		const futureCourses = whatIfText
 			.split(",")
 			.map((course) => course.trim().toUpperCase())
-			.filter(Boolean);
+			.filter((course) => validCourseRegex.test(course));
+
+		if (futureCourses.length === 0) {
+			alert(
+				"You stupid idiot. Type valid course codes like 'CS 136L', 'STAT 230' etc."
+			);
+			return;
+		}
 
 		const allCourses = [
 			...Object.values(results.requirements).flatMap(([_, courses]) => courses),
@@ -105,7 +114,7 @@ const Results = () => {
 					<h2 className="font-semibold text-white text-lg mb-1 flex items-center gap-2">
 						{requirement}
 						{isNew && (
-							<span className="bg-[##FED34C] text-black font-semibold px-2 py-0.5 rounded-full">
+							<span className="bg-[#FED34C] text-black text-xs font-semibold px-2 py-0.5 rounded-full">
 								Newly Fulfilled
 							</span>
 						)}
