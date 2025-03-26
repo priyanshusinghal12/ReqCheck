@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUpload, FaArrowRight } from "react-icons/fa";
+import { FaUpload, FaArrowRight, FaExchangeAlt } from "react-icons/fa";
 import { Combobox } from "@headlessui/react";
 import ParticlesBackground from "./ParticlesBackground";
 import { useNavigate } from "react-router-dom";
@@ -27,9 +27,15 @@ export default function Hero() {
 	const [fileContent, setFileContent] = useState(null);
 	const [selectedMajor, setSelectedMajor] = useState("");
 	const [query, setQuery] = useState("");
+	const [manualCourses, setManualCourses] = useState("");
+	const [isManual, setIsManual] = useState(false);
+	const [badCourses, setBadCourses] = useState([]);
 	const [isDropdownOpen, setDropdownOpen] = useState(false);
+
 	const dropdownRef = useRef();
 	const navigate = useNavigate();
+
+	const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 
 	useEffect(() => {
 		const handleClickOutside = (event) => {
@@ -55,7 +61,6 @@ export default function Hero() {
 						body: JSON.stringify({ base64_pdf: base64 }),
 					});
 					const data = await response.json();
-					console.log("Parsed courses:", data.courses);
 					setFileContent(data.courses);
 				} catch (error) {
 					alert("Failed to parse transcript.");
@@ -71,7 +76,6 @@ export default function Hero() {
 	const handleGoClick = async () => {
 		let majorToUse = selectedMajor;
 
-		// Check if user typed a major manually but didn’t select from dropdown
 		if (!majorToUse && query) {
 			const matched = majors.find(
 				(m) => m.toLowerCase() === query.toLowerCase()
@@ -85,9 +89,37 @@ export default function Hero() {
 			}
 		}
 
-		if (!fileContent || !majorToUse) {
-			alert("Please select a major and upload a transcript.");
+		if (!majorToUse) {
+			alert("Please select a major.");
 			return;
+		}
+
+		let allCourses = [];
+
+		if (isManual) {
+			const entries = manualCourses
+				.split(/[,;\n]/)
+				.map((c) => c.trim().toUpperCase())
+				.filter(Boolean);
+
+			const valid = entries.filter((c) => courseRegex.test(c));
+			const invalid = entries.filter((c) => !courseRegex.test(c));
+
+			if (valid.length === 0) {
+				alert(
+					"Please enter at least one valid course like CS 136L or ECON 201."
+				);
+				return;
+			}
+
+			setBadCourses(invalid);
+			allCourses = valid;
+		} else {
+			if (!fileContent || fileContent.length === 0) {
+				alert("Please upload a transcript first.");
+				return;
+			}
+			allCourses = fileContent;
 		}
 
 		try {
@@ -96,7 +128,7 @@ export default function Hero() {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					major: majorToUse.toLowerCase(),
-					completed_courses: fileContent,
+					completed_courses: allCourses,
 				}),
 			});
 			const data = await response.json();
@@ -127,32 +159,42 @@ export default function Hero() {
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
 				viewport={{ once: true }}>
-				<motion.h1
-					className="text-5xl sm:text-6xl font-medium mb-4"
-					initial={{ opacity: 0, scale: 0.85 }}
-					animate={{ opacity: 1, scale: 1 }}
-					transition={{ duration: 0.8 }}>
-					<span className="text-[#FED34C]">Wat</span>Course
+				<motion.h1 className="text-5xl sm:text-6xl font-medium mb-4">
+					<span className="text-[#FED34C]">Req</span>Check
 				</motion.h1>
 
-				<motion.p
-					className="text-base text-gray-100 sm:text-lg font-medium mb-2"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 0.5, duration: 0.8 }}>
-					The one-click tool to check your major progress
+				<motion.p className="text-base text-gray-100 sm:text-lg font-medium mb-2">
+					The one-click tool to check your missing and satisfied major
+					requirements.
 				</motion.p>
-				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base">
-					Check which major requirements you have met so far—simply upload your
-					unofficial transcript PDF downloaded from Quest.
+				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base whitespace-nowrap overflow-auto">
+					Select between: uploading your unofficial transcript or entering your
+					completed courses manually!
 				</motion.p>
 
-				<div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 items-center justify-center w-full">
-					{/* Upload Transcript */}
-					<motion.label
-						className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md shadow-[#FED34C]/40 w-full sm:w-56"
-						whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.95 }}>
+				<div className="flex items-center gap-3 mb-6 shadow-md">
+					<button
+						className={`px-4 py-2 rounded-lg font-semibold ${
+							isManual
+								? "bg-[#1A1A1A] text-white border border-[#333]"
+								: "bg-[#1A1A1A] text-white border border-[#FED34C]"
+						}`}
+						onClick={() => setIsManual(false)}>
+						Uploading your transcript
+					</button>
+					<button
+						className={`px-4 py-2 rounded-lg font-semibold ${
+							isManual
+								? "bg-[#1A1A1A] text-white border border-[#FED34C]"
+								: "bg-[#1A1A1A] text-white border border-[#333]"
+						}`}
+						onClick={() => setIsManual(true)}>
+						Enter Courses Manually
+					</button>
+				</div>
+
+				{!isManual ? (
+					<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-5 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md w-full sm:w-56">
 						<FaUpload />
 						Upload Transcript
 						<input
@@ -162,76 +204,82 @@ export default function Hero() {
 							onChange={handleFileChange}
 						/>
 					</motion.label>
-
-					{/* Major Dropdown */}
-					<Combobox value={selectedMajor} onChange={setSelectedMajor}>
-						<div className="relative w-full sm:w-56" ref={dropdownRef}>
-							<Combobox.Input
-								className="border border-[#333] bg-[#1A1A1A] px-4 py-3 rounded-xl text-white w-full cursor-pointer"
-								placeholder="Select Major"
-								onClick={() => setDropdownOpen(true)}
-								onChange={(e) => {
-									setQuery(e.target.value);
-									setSelectedMajor(e.target.value); // Add this
-									setDropdownOpen(true);
-								}}
-								onFocus={() => setDropdownOpen(true)}
-							/>
-							{isDropdownOpen && (
-								<Combobox.Options className="absolute mt-2 w-full bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
-									{filteredMajors.length === 0 ? (
-										<Combobox.Option
-											className="p-2 text-gray-400"
-											value=""
-											disabled>
-											No majors found
-										</Combobox.Option>
-									) : (
-										filteredMajors.map((major, index) => (
-											<Combobox.Option
-												key={index}
-												value={major}
-												className={({ active }) =>
-													`p-3 cursor-pointer ${
-														active ? "bg-[#FED34C] text-black" : "text-gray-300"
-													}`
-												}>
-												{major}
-											</Combobox.Option>
-										))
-									)}
-								</Combobox.Options>
-							)}
-						</div>
-					</Combobox>
-
-					{/* Arrow Button (acts like Go) */}
-					<motion.button
-						onClick={handleGoClick}
-						className="bg-[#1A1A1A] border border-[#333] hover:bg-white hover:text-black text-white px-4 py-3 rounded-xl shadow-md transition-all duration-300 mt-4 sm:mt-0"
-						whileHover={{ scale: 1.1 }}
-						whileTap={{ scale: 0.95 }}>
-						<FaArrowRight />
-					</motion.button>
-				</div>
-
-				{/* Optional: Show selected file name */}
-				{selectedFile && (
-					<motion.p className="mt-4 text-sm text-gray-400 text-center">
-						Selected: {selectedFile.name}
-					</motion.p>
+				) : (
+					<textarea
+						rows={4}
+						className="w-full bg-[#1A1A1A] border border-[#333] text-sm text-white rounded-lg px-4 py-3 mb-2 focus:outline-none focus:ring-2 focus:ring-[#FED34C]"
+						placeholder="Enter courses like MATH 135, ECON 201, CS 136L separated by commas, semicolons or new lines"
+						value={manualCourses}
+						onChange={(e) => {
+							setManualCourses(e.target.value);
+							setBadCourses([]); // clear on edit
+						}}
+					/>
 				)}
 
-				{/* <motion.div
-					className="mt-4 text-sm text-gray-400 animate-bounce"
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ delay: 1 }}>
-					↓ Scroll to learn more
-				</motion.div> */}
+				{badCourses.length > 0 && (
+					<p className="text-red-400 text-sm mt-1">
+						Ignored invalid entries: {badCourses.join(", ")}
+					</p>
+				)}
+
+				<Combobox value={selectedMajor} onChange={setSelectedMajor}>
+					<div className="relative w-full sm:w-56 mt-4" ref={dropdownRef}>
+						<Combobox.Input
+							className="border border-[#333] bg-[#1A1A1A] px-4 py-3 rounded-xl text-white w-full cursor-pointer"
+							placeholder="Select Major"
+							onClick={() => setDropdownOpen(true)}
+							onChange={(e) => {
+								setQuery(e.target.value);
+								setSelectedMajor(e.target.value);
+								setDropdownOpen(true);
+							}}
+							onFocus={() => setDropdownOpen(true)}
+						/>
+						{isDropdownOpen && (
+							<Combobox.Options className="absolute mt-2 w-full bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
+								{filteredMajors.length === 0 ? (
+									<Combobox.Option
+										className="p-2 text-gray-400"
+										value=""
+										disabled>
+										No majors found
+									</Combobox.Option>
+								) : (
+									filteredMajors.map((major, index) => (
+										<Combobox.Option
+											key={index}
+											value={major}
+											className={({ active }) =>
+												`p-3 cursor-pointer ${
+													active ? "bg-[#FED34C] text-black" : "text-gray-300"
+												}`
+											}>
+											{major}
+										</Combobox.Option>
+									))
+								)}
+							</Combobox.Options>
+						)}
+					</div>
+				</Combobox>
+
+				<motion.button
+					onClick={handleGoClick}
+					className="bg-[#1A1A1A] border border-[#333] hover:bg-white hover:text-black text-white px-4 py-3 rounded-xl shadow-md transition-all duration-300 mt-6"
+					whileHover={{ scale: 1.1 }}
+					whileTap={{ scale: 0.95 }}>
+					<FaArrowRight />
+				</motion.button>
+
+				{selectedFile && !isManual && (
+					<p className="mt-3 text-sm text-gray-400">
+						Selected: {selectedFile.name}
+					</p>
+				)}
 			</motion.div>
 
-			{/* scroll arrow */}
+			{/* Scroll Arrow */}
 			<a
 				href="#faq"
 				className="absolute bottom-6 right-6 text-white text-xl sm:text-sm flex flex-col items-center animate-bounce hover:text-[#FED34C] transition-colors duration-300">

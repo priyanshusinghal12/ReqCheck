@@ -42,15 +42,15 @@ const AboutUs = () => {
 					transition={{ duration: 0.8 }}
 					className="text-left max-w-4xl mx-auto pt-12 px-6">
 					<h1 className="text-4xl font-bold mb-6 text-center">
-						About WatCourse
+						About ReqCheck
 					</h1>
 					<p className="text-gray-300 text-base leading-relaxed mb-8">
-						WatCourse is, first and foremost, a brainchild of intense
-						desperation born out of sheer frustration at the new undergrad
-						calendar, and a sincere desire to reduce students' suffering through
-						a quick, convenient way to verify course progression by checking
-						transcripts against major requirements. It is also the product of a
-						lot of free time.
+						ReqCheck is, first and foremost, a brainchild of intense desperation
+						born out of sheer frustration at the new undergrad calendar, and a
+						sincere desire to reduce students' suffering through a quick,
+						convenient way to verify course progression by checking transcripts
+						against major requirements. It is also the product of a lot of free
+						time.
 					</p>
 				</motion.div>
 

@@ -6,7 +6,7 @@ const faqs = [
 	{
 		question: "How does it work?",
 		answer:
-			"You upload your unofficial transcript PDF and select your major. WatCourse reads your completed courses and matches them against your major's requirements.",
+			"You upload your unofficial transcript PDF and select your major. ReqCheck reads your completed courses and matches them against your major's requirements.",
 	},
 	{
 		question: "Is any personal info stored?",
@@ -19,9 +19,9 @@ const faqs = [
 			"We are currently using the 2024–2025 Undergraduate Calendar. We'll update accordingly each year.",
 	},
 	{
-		question: "What is WatCourse?",
+		question: "What is ReqCheck?",
 		answer:
-			"WatCourse is a tool built for Waterloo students to quickly check what major requirements they’ve completed based on their transcript.",
+			"ReqCheck is a tool built for Waterloo students to quickly check what major requirements they’ve completed based on their transcript.",
 	},
 ];
 

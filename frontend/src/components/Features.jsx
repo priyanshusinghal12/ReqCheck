@@ -38,7 +38,7 @@ export default function Features() {
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
 				viewport={{ once: true }}>
-				Why Use WatCourse?
+				Why Use ReqCheck?
 			</motion.h2>
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				{features.map((feature, idx) => (
