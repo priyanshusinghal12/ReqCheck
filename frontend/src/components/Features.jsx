@@ -1,19 +1,24 @@
-import { FaEye, FaListAlt, FaLock, FaUserGraduate } from "react-icons/fa";
+import {
+	FaEye,
+	FaLock,
+	FaUserGraduate,
+	FaProjectDiagram,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
 import ParticlesBackground from "./ParticlesBackground";
 
 const features = [
 	{
-		title: "No more manual comparisons!",
+		title: "No manual comparisons!",
 		icon: <FaEye size={24} />,
 		description:
 			"See the progress you've made so far on your major's requirements in one click. 👀 UG Calendar",
 	},
 	{
-		title: "Check your requirements!",
-		icon: <FaListAlt size={24} />,
+		title: "What If Analysis!",
+		icon: <FaProjectDiagram size={24} />,
 		description:
-			"See courses you’ve completed and what’s left to fulfill your major requirements.",
+			"Simulate what requirements you could complete/contribute to further by adding future courses!",
 	},
 	{
 		title: "Security guaranteed!",

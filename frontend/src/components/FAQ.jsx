@@ -6,22 +6,22 @@ const faqs = [
 	{
 		question: "How does it work?",
 		answer:
-			"You upload your unofficial transcript PDF and select your major. ReqCheck reads your completed courses and matches them against your major's requirements.",
+			"You upload your unofficial transcript PDF and select your major. ReqCheck reads your completed courses and compares them to your major’s requirements to show what you’ve completed and what’s still needed.",
 	},
 	{
 		question: "Is any personal info stored?",
 		answer:
-			"No. All processing happens on the client-side. No transcript data or personal info is stored or sent anywhere.",
+			"No. All processing is done locally in your browser. Transcript data is never uploaded, stored, or sent to any server—your data stays completely on your device.",
 	},
 	{
 		question: "Which undergrad calendar do we use?",
 		answer:
-			"We are currently using the 2024–2025 Undergraduate Calendar. We'll update accordingly each year.",
+			"We use the 2024–2025 University of Waterloo Undergraduate Calendar. The tool is updated yearly to reflect the latest program requirements.",
 	},
 	{
 		question: "What is ReqCheck?",
 		answer:
-			"ReqCheck is a tool built for Waterloo students to quickly check what major requirements they’ve completed based on their transcript.",
+			"ReqCheck is a tool for Waterloo students to track their major requirements using their unofficial transcript. It’s fast, private, and easy to use.",
 	},
 ];
 

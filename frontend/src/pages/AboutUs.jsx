@@ -9,7 +9,7 @@ const teamMembers = [
 	{
 		name: "Priyanshu Singhal",
 		major: "Math Studies '27",
-		bio: "Priyanshu is a fullstack developer who is passionate about creating an impact through his projects, and watching the tears of his opponents as he defeats them on chess.com.",
+		bio: "I'm a 3rd-year Math Studies student at the University of Waterloo, interested in full-stack development and building things that actually help people. I enjoy learning new tech, writing clean (ish) code, and working with others who are just as curious. Outside of school, you'll usually find me on a basketball court, playing a game of chess, or daydreaming about my next vacation.",
 		image: priyanshuImage,
 		imagePosition: "right",
 		linkedin: "https://www.linkedin.com/in/priysinghal/",
@@ -44,14 +44,18 @@ const AboutUs = () => {
 					<h1 className="text-4xl font-bold mb-6 text-center">
 						About ReqCheck
 					</h1>
-					<p className="text-gray-300 text-base leading-relaxed mb-8">
-						ReqCheck is, first and foremost, a brainchild of intense desperation
-						born out of sheer frustration at the new undergrad calendar, and a
-						sincere desire to reduce students' suffering through a quick,
-						convenient way to verify course progression by checking transcripts
-						against major requirements. It is also the product of a lot of free
-						time.
-					</p>
+					<div className="max-w-3xl mx-auto">
+						<p className="text-gray-300 text-base leading-relaxed mb-8 text-center">
+							ReqCheck was born out of a genuine need to simplify a frustrating
+							process — navigating the new undergraduate calendar and verifying
+							major requirements. What started as a personal challenge became a
+							passion project aimed at reducing stress and saving time for
+							students. With a focus on speed, clarity, and convenience,
+							ReqCheck helps you instantly check your completed courses against
+							your program’s requirements — so you can plan with confidence and
+							peace of mind.
+						</p>
+					</div>
 				</motion.div>
 
 				{/* The Team */}
