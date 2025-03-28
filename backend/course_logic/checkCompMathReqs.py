@@ -1,4 +1,4 @@
-from course_logic.helper import *
+from collections import defaultdict
 
 def check_comp_math_reqs(student_courses):
     computational_math_reqs = {
@@ -90,31 +90,39 @@ def check_comp_math_reqs(student_courses):
 
     eligible_courses = [course for course in student_courses if course in list2_and_3_courses]
 
-    # Initialize variables
-    courses_to_add = []
-    subject_codes_taken = set()  # Use a set to store unique subject codes
+    print("eligible_courses:", eligible_courses)
+
+    subject_code_map = defaultdict(list)
     num_400_level = 0
+    courses_to_add = []
 
-    # Iterate through eligible courses
+    # Categorize courses by subject and level
     for course in eligible_courses:
+        subject_code, number = course.split(" ")
+        number = int(number)
+        subject_code_map[subject_code].append((course, number))
+
+    # Flatten and sort to prioritize 400-level courses first
+    sorted_courses = sorted(eligible_courses, key=lambda c: -int(c.split()[1]) // 100)
+
+    for course in sorted_courses:
+        if course in courses_to_add:
+            continue
         subject_code = course.split(" ")[0]
-        course_level = int(course.split(" ")[1][0])  # Extract first digit for level
+        course_level = int(course.split(" ")[1]) // 100
 
-        # Add the course if it meets the subject code or 400-level criteria
-        if len(courses_to_add) < 4 and (len(subject_codes_taken) < 2 or subject_code not in subject_codes_taken or num_400_level < 2 and course_level >= 4):
+        # Add course if we don't have 4 yet
+        if len(courses_to_add) < 4:
             courses_to_add.append(course)
-            subject_codes_taken.add(subject_code)  # Add subject code to the set
-            if course_level >= 4:
-                num_400_level += 1
 
-    # Add the courses to the requirement's list, even if it's not fully fulfilled
+    # Recalculate final conditions
+    final_subject_codes = set(course.split(" ")[0] for course in courses_to_add)
+    final_400_level_count = sum(1 for course in courses_to_add if int(course.split(" ")[1]) >= 400)
+
+    # Update requirement
     computational_math_reqs["Complete 4 additional courses (2 different subject codes, 2 at 400-level)"][1].extend(courses_to_add)
 
-    # Remove courses from student_courses and mark requirement as completed if all conditions met
-    if len(courses_to_add) == 4 and len(subject_codes_taken) >= 2 and num_400_level >= 2:  # Change this line
+    if len(courses_to_add) == 4 and len(final_subject_codes) >= 2 and final_400_level_count >= 2:
         computational_math_reqs["Complete 4 additional courses (2 different subject codes, 2 at 400-level)"][0] = True
-        for course in courses_to_add:
-            if course in student_courses:
-                student_courses.remove(course)
 
     return computational_math_reqs
