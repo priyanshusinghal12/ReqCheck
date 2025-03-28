@@ -2,6 +2,8 @@ from course_logic.helper import *
 
 def check_biostats_major(student_courses):
 
+  refine_courses(student_courses, ["MATH 239", "MATH 249", "ENGL 378", "MTHEL 300", "MATH 237", "MATH 247"])
+
   reqs = {
     "Complete all of: STAT 330, STAT 331, STAT 332, STAT 333, STAT 337, STAT 431, STAT 437, STAT 438": [False, []],
     "Complete one of: AMATH 231, AMATH 242, AMATH 250, AMATH 251, AMATH 350, CS 371, MATH 239, MATH 249": [False, []],

@@ -2,6 +2,8 @@ from course_logic.helper import *
 
 def check_actsci_major(student_courses):
 
+  refine_courses(student_courses, ["ENGL 378", "MTHEL 300", "MATH 237", "MATH 247"])
+
   reqs = {
     "Complete all of: ACTSC 231, ACTSC 232, ACTSC 331, ACTSC 363, ACTSC 372, ACTSC 431, ACTSC 446, AFM 101, ECON 101, ECON 102, MTHEL 131, STAT 330, STAT 331, STAT 333": [False, []],
     "Complete one of: AMATH 250, AMATH 251, AMATH 350": [False, []],
@@ -72,3 +74,4 @@ def check_actsci_major(student_courses):
             student_courses.remove(course)
 
   return reqs
+  
