@@ -14,6 +14,9 @@ const Navbar = () => {
 				<a href="/about" className="hover:text-[#FED34C] transition">
 					About
 				</a>
+				<a href="/feedback" className="hover:text-[#FED34C] transition">
+					Feedback
+				</a>
 			</nav>
 		</header>
 	);
