@@ -5,32 +5,29 @@ import {
 	FaProjectDiagram,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
-import ParticlesBackground from "./ParticlesBackground";
 
 const features = [
 	{
-		title: "No manual comparisons!",
+		title: "No manual comparisons",
 		icon: <FaEye size={24} />,
-		description:
-			"See the progress you've made so far on your major's requirements in one click. 👀 UG Calendar",
+		description: "No more digging through the undergrad calendar 👀 ",
 	},
 	{
-		title: "What If Analysis!",
+		title: "What If Analysis",
 		icon: <FaProjectDiagram size={24} />,
 		description:
-			"Simulate what requirements you could complete/contribute to further by adding future courses!",
+			"Simulate what requirements you could complete by adding future courses",
 	},
 	{
-		title: "Security guaranteed!",
+		title: "Security guaranteed",
 		icon: <FaLock size={24} />,
 		description:
-			"We don’t store your transcript. All processing is done locally in your browser.",
+			"We don’t store your transcript- all processing is done locally in your browser",
 	},
 	{
-		title: "Made by UW Students!",
+		title: "Made by UW Students",
 		icon: <FaUserGraduate size={24} />,
-		description:
-			"Built with love by UWaterloo students, for UWaterloo students.",
+		description: "By UW students, for UW students",
 	},
 ];
 

@@ -4,6 +4,11 @@ import { motion } from "framer-motion";
 
 const faqs = [
 	{
+		question: "What is ReqCheck?",
+		answer:
+			"ReqCheck is a tool for Waterloo students to track their major requirements using their unofficial transcript. It’s fast, private, and easy to use.",
+	},
+	{
 		question: "How does it work?",
 		answer:
 			"You upload your unofficial transcript PDF and select your major. ReqCheck reads your completed courses and compares them to your major’s requirements to show what you’ve completed and what’s still needed.",
@@ -17,11 +22,6 @@ const faqs = [
 		question: "Which undergrad calendar do we use?",
 		answer:
 			"We use the 2024–2025 University of Waterloo Undergraduate Calendar. The tool is updated yearly to reflect the latest program requirements.",
-	},
-	{
-		question: "What is ReqCheck?",
-		answer:
-			"ReqCheck is a tool for Waterloo students to track their major requirements using their unofficial transcript. It’s fast, private, and easy to use.",
 	},
 ];
 

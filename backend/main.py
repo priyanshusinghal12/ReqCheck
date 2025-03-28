@@ -14,6 +14,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "course_
 
 # Imports
 from parseTranscript import extract_courses_from_file
+
+
 from course_logic.checkStatisticsReqs import check_stats_major  
 from course_logic.checkActSciReqs import check_actsci_major
 from course_logic.checkAMathReqs import check_amath_major
@@ -31,6 +33,8 @@ from course_logic.checkMathStudiesBusReqs import math_studies_business_reqs
 from course_logic.checkMathStudiesReqs import math_studies_reqs
 from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major
+from course_logic.checkCOReqs import check_co_major
+
 
 app = FastAPI()
 
@@ -74,7 +78,7 @@ def check_requirements(request: TranscriptRequest):
             result = check_comp_math_reqs(completed_courses)
         case "computer science":
             result = check_computer_science_major(completed_courses)
-        case "data science":
+        case "bmath data science":
             result = check_data_science_major(completed_courses)
         case "mathematical studies":
             result = math_studies_reqs(completed_courses)
@@ -94,6 +98,8 @@ def check_requirements(request: TranscriptRequest):
             result = check_math_opt_ops_specialization(completed_courses)
         case "mathematics teaching":
             result = check_math_teaching_major(completed_courses)
+        case "combinatorics and optimization":
+            result = check_co_major(completed_courses)
         case _:
             return {"error": "Major not supported"}
     

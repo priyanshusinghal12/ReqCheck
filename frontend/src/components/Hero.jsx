@@ -12,7 +12,6 @@ const majors = [
 	"Biostatistics",
 	"Combinatorics and Optimization",
 	"Computational Mathematics",
-	"Data Science",
 	"Mathematical Economics",
 	"Mathematical Finance",
 	"Mathematical Optimization",
@@ -21,6 +20,7 @@ const majors = [
 	"Pure Mathematics",
 	"Statistics",
 	"Mathematics/Teaching",
+	"BMath Data Science",
 ];
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
