@@ -1,15 +1,8 @@
 from course_logic.helper import *
 
 def check_computer_science_major(student_courses):
-    """
-    Checks if a student has completed the requirements for the Computer Science Major.
-
-    Args:
-        student_courses: A list of student's completed courses.
-
-    Returns:
-        A dictionary of major requirements and their completion status.
-    """
+    
+    refine_courses(student_courses, ["CS 136L", "MATH 237", "MATH 247", "MATH 239", "MATH 249"])
 
     cs_major_reqs = {
         "Complete all of: CS 136L, CS 341, CS 350": [False, []],

@@ -1,19 +1,9 @@
 from course_logic.helper import *
 
 def check_data_science_major(student_courses):
-    """
-    Checks if a student has completed the requirements for the BMath Data Science major.
 
-    Args:
-        student_courses: A list of student's completed courses.
-
-    Returns:
-        A dictionary of the program requirements and their completion status.
-    """
-
-    #Core Courses Check required
-    
-    #modify student courses to remove core courses 
+    refine_courses(student_courses, ["CS 136L", "CS 136", "CS 146", "ENGL 378", "MTHEL 300",
+     "MATH 237", "MATH 247", "MATH 239", "MATH 249"])
 
     data_science_reqs = {
         "Complete all of the following: CS136L, CS341, CS348, CS431, STAT330, STAT331, STAT332, STAT333, STAT341": [False, []],

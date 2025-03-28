@@ -1,6 +1,9 @@
 from collections import defaultdict
 
 def check_comp_math_reqs(student_courses):
+
+    refine_courses(student_courses, ["MATH 237", "MATH 247", "MATH 239", "MATH 249"])
+
     computational_math_reqs = {
         "Complete all of: CS 230, CS 234": [False, []],
         "Complete one of: AMATH 242, CS 371": [False, []],
@@ -8,9 +11,9 @@ def check_comp_math_reqs(student_courses):
         "Complete one of: MATH 239, MATH 249": [False, []],
         "Complete 3 non-math courses from the same subject code (AE, BIOL, BME, CHE, " +
         "CHEM, CIVE, EARTH, ECE, ECON, ENVE, GEOE, ME, MNS, MSE, MTE, NE, PHYS, SYDE)": [False, []],
-        "List 1 Requirements": [False, []],
-        "List 2: Complete 2 courses from: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341": [False, []],
-        "Complete 4 additional courses (2 different subject codes, 2 at 400-level)": [
+        "List 1 Requirement - complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E": [False, []],
+        "List 2 requirement - complete 2 courses from these options: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341": [False, []],
+        "Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level": [
             False, []]
     }
 
@@ -51,15 +54,15 @@ def check_comp_math_reqs(student_courses):
     num_true_reqs = sum(req[0] for req in list1_reqs.values())
 
     if num_true_reqs >= 2:
-        computational_math_reqs["List 1 Requirements"][0] = True  # Set overall requirement to True
+        computational_math_reqs["List 1 Requirement - complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E"][0] = True  # Set overall requirement to True
         # Add courses from fulfilled sub-requirements
-        computational_math_reqs["List 1 Requirements"][1].extend(
+        computational_math_reqs["List 1 Requirement - complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E"][1].extend(
             [course for req in list1_reqs.values() if req[0] for course in req[1]]
         )
     elif num_true_reqs == 1:
-        computational_math_reqs["List 1 Requirements"][0] = False  # Specifically set to False
+        computational_math_reqs["List 1 Requirement - complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E"][0] = False  # Specifically set to False
         # Add courses from the single fulfilled sub-requirement
-        computational_math_reqs["List 1 Requirements"][1].extend(
+        computational_math_reqs["List 1 Requirement - complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E"][1].extend(
             [course for req in list1_reqs.values() if req[0] for course in req[1]]
         )
 
@@ -71,7 +74,7 @@ def check_comp_math_reqs(student_courses):
     if "CO 353" in student_courses and "CO 367" in student_courses:
         student_courses.remove("CO 367")
 
-    check_n_from_list("List 2: Complete 2 courses from: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341",
+    check_n_from_list("List 2 requirement - complete 2 courses from these options: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341",
                       ["AMATH 342", "PMATH 370", "CO 367", "CO 353", "STAT 340", "STAT 341", "CS 475"],
                       n=2, student_courses=student_courses, major_reqs=computational_math_reqs)
 
@@ -120,9 +123,9 @@ def check_comp_math_reqs(student_courses):
     final_400_level_count = sum(1 for course in courses_to_add if int(course.split(" ")[1]) >= 400)
 
     # Update requirement
-    computational_math_reqs["Complete 4 additional courses (2 different subject codes, 2 at 400-level)"][1].extend(courses_to_add)
+    computational_math_reqs["Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level"][1].extend(courses_to_add)
 
     if len(courses_to_add) == 4 and len(final_subject_codes) >= 2 and final_400_level_count >= 2:
-        computational_math_reqs["Complete 4 additional courses (2 different subject codes, 2 at 400-level)"][0] = True
+        computational_math_reqs["Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level"][0] = True
 
     return computational_math_reqs

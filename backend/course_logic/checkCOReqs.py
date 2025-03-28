@@ -1,23 +1,17 @@
 from course_logic.helper import *
 
 def check_co_major(student_courses):
-    """
-    Checks if a student has completed the requirements for the Combinatorics and Optimization Major.
+    
+    refine_courses(student_courses, ["MATH 239", "MATH 249", "MATH 237", "MATH 247"])
 
-    Args:
-        student_courses: A list of student's completed courses.
-
-    Returns:
-        A dictionary of the program requirements and their completion status.
-    """
     co_reqs = {
         "Complete one of: MATH 239, MATH 249": [False, []],
         "Complete one of: CO 250, CO 255": [False, []],
         "Complete one of: CO 330, CO 342": [False, []],
-        "Complete one of: CO 351, CO 353, CO 367, or CO 255+ list": [False, []],  # Initial list
+        "Complete one of: CO 351, CO 353, CO 367, or if CO 255 is taken, one of CO 450-471": [False, []],  # Initial list
         "Complete one of: PMATH 336, PMATH 347": [False, []],
-        "Complete 3 additional CO courses (see list below)": [False, []], 
-        "3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340": [False, []],
+        "Complete 3 of: CO 330, CO 331, CO 342, CO 351, CO 353, CO 367, CO 430, CO 431, CO 432, CO 434, CO 439, CO 440, CO 442, CO 444, CO 446, CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471, CO 481, CO 485, CO 486, CO 487, CS 467, PHYS 467": [False, []], 
+        "Complete 3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340": [False, []],
         "Two additional 300- or 400-level math courses": [False, []],
         "One additional 300- or 400-level math course": [False, []],
         "Three additional math courses": [False, []]
@@ -43,8 +37,8 @@ def check_co_major(student_courses):
         eligible_courses = ["CO 351", "CO 353", "CO 367"]
 
     # Find completed eligible courses and update requirements
-    check_n_from_list("Complete one of: CO 351, CO 353, CO 367, or CO 255+ list",
-                      eligible_courses, n=1, student_courses=student_courses, major_reqs=co_reqs)
+    check_n_from_list("Complete one of: CO 351, CO 353, CO 367, or if CO 255 is taken, one of CO 450-471",
+     eligible_courses, n=1, student_courses=student_courses, major_reqs=co_reqs)
     
 
     # print("student_courses:", student_courses)
@@ -59,7 +53,7 @@ def check_co_major(student_courses):
                    "CO 454", "CO 456", "CO 459", "CO 463", "CO 466", "CO 471", "CO 481",
                    "CS 467", "PHYS 467", "CO 485", "CO 486", "CO 487"]
 
-    check_n_from_list("Complete 3 additional CO courses (see list below)",
+    check_n_from_list("Complete 3 of: CO 330, CO 331, CO 342, CO 351, CO 353, CO 367, CO 430, CO 431, CO 432, CO 434, CO 439, CO 440, CO 442, CO 444, CO 446, CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471, CO 481, CO 485, CO 486, CO 487, CS 467, PHYS 467",
                       co_courses, n=3, student_courses=student_courses, major_reqs=co_reqs)
     
 
@@ -92,8 +86,8 @@ def check_co_major(student_courses):
     # print("completed_courses_req1:", completed_courses_req1)
 
     if len(completed_courses_req1) >= 3:
-        co_reqs["3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340"][0] = True
-        co_reqs["3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340"][1].extend(completed_courses_req1[:3])  # Add up to 3 courses
+        co_reqs["Complete 3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340"][0] = True
+        co_reqs["Complete 3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340"][1].extend(completed_courses_req1[:3])  # Add up to 3 courses
 
         # Remove the courses used for Req 1 from student_courses
         for course in completed_courses_req1[:3]:
