@@ -9,7 +9,7 @@ const teamMembers = [
 	{
 		name: "Priyanshu Singhal",
 		major: "Math Studies '27",
-		bio: "I'm a 3rd-year Math Studies student at the University of Waterloo, interested in full-stack development and building things that create an impact. I enjoy learning new tech, writing clean (ish) code, and working with others who are just as curious. Outside of school, you'll usually find me on a basketball court, playing a game of chess, or daydreaming about my next vacation.",
+		bio: "As a developer, I like creating applications that create a tangible impact in other peoples’ lives. You can often catch me playing a game of chess, going on long drives, at the Warrior Basketball Courts or planning another trip to Goa.",
 		image: priyanshuImage,
 		imagePosition: "right",
 		linkedin: "https://www.linkedin.com/in/priysinghal/",
