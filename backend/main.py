@@ -38,10 +38,18 @@ from course_logic.checkCOReqs import check_co_major
 
 app = FastAPI()
 
+
+@app.get("/")
+def read_root():
+    return {"message": "Backend is running!"}
+
 # CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://req-check.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
