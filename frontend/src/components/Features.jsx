@@ -10,16 +10,16 @@ const features = [
 	{
 		title: "No manual comparisons",
 		icon: <FaEye size={24} />,
-		description: "No more digging through the undergrad calendar 👀 ",
+		description: "No more digging through the undergrad calendar",
 	},
 	{
-		title: "What If Analysis",
+		title: "What-if Analysis",
 		icon: <FaProjectDiagram size={24} />,
 		description:
 			"Simulate what requirements you could complete by adding future courses",
 	},
 	{
-		title: "Security guaranteed",
+		title: "Secure",
 		icon: <FaLock size={24} />,
 		description:
 			"We don’t store your transcript- all processing is done locally in your browser",

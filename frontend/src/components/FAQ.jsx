@@ -6,12 +6,17 @@ const faqs = [
 	{
 		question: "What is ReqCheck?",
 		answer:
-			"ReqCheck is a tool for Waterloo students to track their major requirements using their unofficial transcript. It’s fast, private, and easy to use.",
+			"ReqCheck is a tool for Waterloo students to check their missing major requirements quickly, using their unofficial transcript or entering courses taken so far. It’s fast, private, and easy to use.",
 	},
 	{
 		question: "How does it work?",
 		answer:
-			"You upload your unofficial transcript PDF and select your major. ReqCheck reads your completed courses and compares them to your major’s requirements to show what you’ve completed and what’s still needed.",
+			"You upload your unofficial transcript PDF or enter your completed courses, then select your major. ReqCheck compares your completed courses to your major’s requirements to show what you’ve completed and what’s still needed.",
+	},
+	{
+		question: "How does What-If Analysis work?",
+		answer:
+			"What-If Analysis lets you test how future courses might impact your degree progress. Just add planned courses and instantly see which new requirements they could fulfill.",
 	},
 	{
 		question: "Is any personal info stored?",
@@ -21,7 +26,12 @@ const faqs = [
 	{
 		question: "Which undergrad calendar do we use?",
 		answer:
-			"We use the 2024–2025 University of Waterloo Undergraduate Calendar. The tool is updated yearly to reflect the latest program requirements.",
+			"We use the 2024–2025 University of Waterloo Undergraduate Academic Calendar. The tool will be updated yearly to reflect the latest requirements.",
+	},
+	{
+		question: "Which majors can I check?",
+		answer:
+			"Currently, you can check majors under the Honours Mathematics program; we're working to integrate more options.",
 	},
 ];
 

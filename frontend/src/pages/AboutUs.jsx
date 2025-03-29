@@ -19,11 +19,11 @@ const teamMembers = [
 	{
 		name: "Ridhika Madan",
 		major: "Statistics '27",
-		bio: "Ridhika is... not very interesting to write a bio for.",
+		bio: "I enjoy thinking about new ideas and creative ways to solve problems to have a meaningful impact, especially through technology. In my spare time, I am an avid reader and also write a lot (badly).",
 		image: ridhikaImage,
 		imagePosition: "left",
 		linkedin: "https://www.linkedin.com/in/ridhikamadan/",
-		github: "https://github.com/yourgithub",
+		github: "https://github.com/RidhikaMadan",
 		email: "mailto:ridhikamadan22@gmail.com",
 	},
 ];
