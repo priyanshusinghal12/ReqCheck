@@ -158,11 +158,11 @@ export default function Hero() {
 				</motion.h1>
 				<motion.p className="text-base text-gray-100 sm:text-lg font-medium mb-2">
 					The one-click tool to check your missing and satisfied major
-					requirements.
+					requirements
 				</motion.p>
 				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base whitespace-nowrap overflow-auto">
-					Select between: uploading your unofficial transcript or entering your
-					completed courses manually!
+					Upload your unofficial transcript or enter your completed courses
+					manually
 				</motion.p>
 
 				{/* Toggle buttons */}
@@ -294,7 +294,7 @@ export default function Hero() {
 						<textarea
 							rows={4}
 							className="w-full bg-[#1A1A1A] border border-[#333] text-sm text-white rounded-lg px-4 py-3 mb-2"
-							placeholder="Enter courses like MATH 135, ECON 201, CS 136L..."
+							placeholder="Enter courses like MATH 135, ECON 201, CS 136L seperated by commas."
 							value={manualCourses}
 							onChange={(e) => {
 								setManualCourses(e.target.value);

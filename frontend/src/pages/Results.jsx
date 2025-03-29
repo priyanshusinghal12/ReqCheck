@@ -41,7 +41,7 @@ const Results = () => {
 
 		if (futureCourses.length === 0) {
 			alert(
-				"You stupid idiot. Type valid course codes like 'CS 136L', 'STAT 230' etc."
+				"Please type valid course codes like 'CS 136L', 'STAT 230' etc."
 			);
 			return;
 		}
