@@ -40,9 +40,7 @@ const Results = () => {
 			.filter((course) => validCourseRegex.test(course));
 
 		if (futureCourses.length === 0) {
-			alert(
-				"Please type valid course codes like 'CS 136L', 'STAT 230' etc."
-			);
+			alert("Please type valid course codes like 'CS 136L', 'STAT 230' etc.");
 			return;
 		}
 
@@ -51,14 +49,17 @@ const Results = () => {
 			...futureCourses,
 		];
 
-		const response = await fetch("http://127.0.0.1:8000/check-requirements/", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				major: results.major,
-				completed_courses: allCourses,
-			}),
-		});
+		const response = await fetch(
+			`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+			{
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					major: results.major,
+					completed_courses: allCourses,
+				}),
+			}
+		);
 
 		const data = await response.json();
 

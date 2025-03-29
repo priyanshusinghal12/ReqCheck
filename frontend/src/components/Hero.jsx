@@ -56,11 +56,14 @@ export default function Hero() {
 			reader.onload = async () => {
 				try {
 					const base64 = reader.result.split(",")[1];
-					const response = await fetch("/parse-transcript/", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ base64_pdf: base64 }),
-					});
+					const response = await fetch(
+						`${import.meta.env.VITE_BACKEND_URL}/parse-transcript/`,
+						{
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ base64_pdf: base64 }),
+						}
+					);
 					const data = await response.json();
 					setFileContent(data.courses);
 				} catch (error) {
@@ -100,14 +103,17 @@ export default function Hero() {
 		}
 
 		try {
-			const response = await fetch("/check-requirements/", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					major: majorToUse.toLowerCase(),
-					completed_courses: courses,
-				}),
-			});
+			const response = await fetch(
+				`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						major: majorToUse.toLowerCase(),
+						completed_courses: courses,
+					}),
+				}
+			);
 			const data = await response.json();
 			if (data.error) {
 				alert("Invalid major or backend error.");
