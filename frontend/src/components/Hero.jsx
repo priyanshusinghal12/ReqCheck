@@ -22,6 +22,7 @@ const majors = [
 	"Mathematics/Teaching",
 	"BMath Data Science",
 	"BCS Computer Science",
+	"Math Degree Requirements",
 ];
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;

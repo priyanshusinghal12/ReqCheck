@@ -1,4 +1,5 @@
 from collections import defaultdict
+from course_logic.helper import *
 
 def check_comp_math_reqs(student_courses):
 

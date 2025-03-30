@@ -73,7 +73,7 @@ def check_requirements(request: TranscriptRequest):
     completed_courses = request.completed_courses
 
     match major:
-        case "degree requirements for all math students (math studies exempt)":
+        case "math degree requirements":
             result = check_math_degree_reqs(completed_courses)
         case "statistics":
             result = check_stats_major(completed_courses)
