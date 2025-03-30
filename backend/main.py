@@ -109,7 +109,7 @@ def check_requirements(request: TranscriptRequest):
             result = check_math_teaching_major(completed_courses)
         case "combinatorics and optimization":
             result = check_co_major(completed_courses)
-        case "bcs computer science"
+        case "bcs computer science":
             result = check_computer_science_major(completed_courses)
         case _:
             return {"error": "Major not supported"}
