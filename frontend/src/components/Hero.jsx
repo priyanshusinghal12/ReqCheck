@@ -35,6 +35,7 @@ export default function Hero() {
 	const [badCourses, setBadCourses] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isDropdownOpen, setDropdownOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const dropdownRef = useRef();
 	const navigate = useNavigate();
@@ -78,8 +79,9 @@ export default function Hero() {
 	};
 
 	const handleGoClick = async (courses) => {
-		let majorToUse = selectedMajor;
+		setIsLoading(true);
 
+		let majorToUse = selectedMajor;
 		if (!majorToUse && query) {
 			const matched = majors.find(
 				(m) => m.toLowerCase() === query.toLowerCase()
@@ -89,17 +91,14 @@ export default function Hero() {
 				majorToUse = matched;
 			} else {
 				alert("Please select a valid major from the dropdown.");
+				setIsLoading(false);
 				return;
 			}
 		}
 
-		if (!majorToUse) {
-			alert("Please select a major.");
-			return;
-		}
-
-		if (!courses || courses.length === 0) {
-			alert("Please provide courses.");
+		if (!majorToUse || !courses || courses.length === 0) {
+			alert("Please select a major and provide courses.");
+			setIsLoading(false);
 			return;
 		}
 
@@ -118,13 +117,14 @@ export default function Hero() {
 			const data = await response.json();
 			if (data.error) {
 				alert("Invalid major or backend error.");
-				return;
+			} else {
+				navigate("/results", { state: { results: data } });
 			}
-			navigate("/results", { state: { results: data } });
 		} catch (error) {
 			alert("Failed to fetch requirements.");
 			console.error(error);
 		}
+		setIsLoading(false);
 	};
 
 	const filteredMajors =
@@ -172,7 +172,6 @@ export default function Hero() {
 					manually
 				</motion.p>
 
-				{/* Toggle buttons */}
 				<div className="flex items-center gap-3 mb-6">
 					<button
 						className={`px-4 py-2 rounded-lg font-semibold ${
@@ -192,7 +191,6 @@ export default function Hero() {
 
 				{!showModal && (
 					<div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2">
-						{/* Upload Button */}
 						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-4 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md sm:w-auto w-full">
 							<FaUpload />
 							Upload Transcript
@@ -204,7 +202,6 @@ export default function Hero() {
 							/>
 						</motion.label>
 
-						{/* Major Select Dropdown */}
 						<Combobox value={selectedMajor} onChange={setSelectedMajor}>
 							<div className="relative sm:w-60 w-full" ref={dropdownRef}>
 								<Combobox.Input
@@ -248,15 +245,25 @@ export default function Hero() {
 							</div>
 						</Combobox>
 
-						{/* Submit Arrow Button */}
 						<motion.button
 							onClick={() => handleGoClick(fileContent)}
-							className="bg-[#1A1A1A] border border-[#333] hover:bg-white hover:text-black text-white px-4 py-3 rounded-xl shadow-md transition-all duration-300"
-							whileHover={{ scale: 1.1 }}
-							whileTap={{ scale: 0.95 }}>
+							disabled={isLoading}
+							className={`bg-[#1A1A1A] border border-[#333] px-4 py-3 rounded-xl shadow-md transition-all duration-300 ${
+								isLoading
+									? "opacity-50 cursor-not-allowed"
+									: "hover:bg-white hover:text-black text-white"
+							}`}
+							whileHover={!isLoading ? { scale: 1.1 } : {}}
+							whileTap={!isLoading ? { scale: 0.95 } : {}}>
 							<FaArrowRight />
 						</motion.button>
 					</div>
+				)}
+
+				{isLoading && (
+					<p className="text-sm text-gray-400 mt-3 animate-pulse">
+						Checking requirements...
+					</p>
 				)}
 
 				{selectedFile && !showModal && (
@@ -266,7 +273,6 @@ export default function Hero() {
 				)}
 			</motion.div>
 
-			{/* Scroll Arrow */}
 			<a
 				href="#faq"
 				className="absolute bottom-6 right-6 text-white text-xl sm:text-sm flex flex-col items-center animate-bounce hover:text-[#FED34C] transition-colors duration-300">
@@ -285,7 +291,6 @@ export default function Hero() {
 				</svg>
 			</a>
 
-			{/* Modal */}
 			{showModal && (
 				<div className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50">
 					<div className="bg-[#121212] rounded-lg p-6 w-[90%] max-w-lg shadow-2xl relative">
@@ -301,7 +306,7 @@ export default function Hero() {
 						<textarea
 							rows={4}
 							className="w-full bg-[#1A1A1A] border border-[#333] text-sm text-white rounded-lg px-4 py-3 mb-2"
-							placeholder="Enter courses like MATH 135, ECON 201, CS 136L seperated by commas."
+							placeholder="Enter courses like MATH 135, ECON 201, CS 136L separated by commas."
 							value={manualCourses}
 							onChange={(e) => {
 								setManualCourses(e.target.value);
@@ -360,9 +365,14 @@ export default function Hero() {
 
 						<motion.button
 							onClick={handleManualSubmit}
-							className="bg-[#FED34C] text-black font-semibold w-full py-3 mt-4 rounded-lg hover:bg-yellow-400 transition"
-							whileTap={{ scale: 0.96 }}>
-							Continue
+							disabled={isLoading}
+							className={`bg-[#FED34C] font-semibold w-full py-3 mt-4 rounded-lg transition ${
+								isLoading
+									? "opacity-60 cursor-not-allowed"
+									: "hover:bg-yellow-400 text-black"
+							}`}
+							whileTap={!isLoading ? { scale: 0.96 } : {}}>
+							{isLoading ? "Checking..." : "Continue"}
 						</motion.button>
 					</div>
 				</div>
