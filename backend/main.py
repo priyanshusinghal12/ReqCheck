@@ -34,6 +34,7 @@ from course_logic.checkMathStudiesReqs import math_studies_reqs
 from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major
 from course_logic.checkCOReqs import check_co_major
+from course_logic.checkCSReqs import check_computer_science_major
 
 
 app = FastAPI()
@@ -108,6 +109,8 @@ def check_requirements(request: TranscriptRequest):
             result = check_math_teaching_major(completed_courses)
         case "combinatorics and optimization":
             result = check_co_major(completed_courses)
+        case "bcs computer science"
+            result = check_computer_science_major(completed_courses)
         case _:
             return {"error": "Major not supported"}
     
