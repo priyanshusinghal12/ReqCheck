@@ -167,7 +167,7 @@ export default function Hero() {
 					The one-click tool to check your missing and satisfied major
 					requirements
 				</motion.p>
-				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base whitespace-nowrap overflow-auto">
+				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base whitespace-normal break-words text-center">
 					Upload your unofficial transcript or enter your completed courses
 					manually
 				</motion.p>
