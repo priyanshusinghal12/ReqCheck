@@ -1,28 +1,9 @@
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import MajorDropdown from "../components/MajorDropdown";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-
-const majors = [
-	"Actuarial Science",
-	"Applied Mathematics",
-	"Biostatistics",
-	"Combinatorics and Optimization",
-	"Computational Mathematics",
-	"Mathematical Economics",
-	"Mathematical Finance",
-	"Mathematical Optimization",
-	"Mathematical Physics",
-	"Mathematical Studies",
-	"Mathematical Studies (Business)",
-	"Pure Mathematics",
-	"Statistics",
-	"Mathematics/Teaching",
-	"BMath Data Science",
-	"BCS Computer Science",
-	"Math Degree Requirements",
-];
 
 const Results = () => {
 	const location = useLocation();
@@ -86,8 +67,11 @@ const Results = () => {
 			if (data.error) {
 				alert("Error updating major requirements.");
 			} else {
-				setResults(data); // ✅ this re-renders the UI with updated state
+				setResults(data);
 				setShowWhatIf(false);
+				setNewlyFulfilledKeys([]);
+				setUpdatedKeys([]);
+				setWhatIfResults(null);
 			}
 		} catch (error) {
 			console.error("Major change failed", error);
@@ -201,7 +185,7 @@ const Results = () => {
 		<>
 			<Navbar />
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
-				{/* Header + Dropdown */}
+				{/* Header + Major Dropdown */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
 					<h1 className="text-3xl font-bold">
 						Requirement Checklist:{" "}
@@ -209,17 +193,10 @@ const Results = () => {
 					</h1>
 
 					<div className="flex gap-2 items-center">
-						<select
-							className="bg-[#1A1A1A] border border-[#333] text-white px-3 py-2 rounded-md"
-							value={newMajor}
-							onChange={(e) => setNewMajor(e.target.value)}>
-							<option value="">Change Major</option>
-							{majors.map((major, index) => (
-								<option key={index} value={major}>
-									{major}
-								</option>
-							))}
-						</select>
+						<MajorDropdown
+							selectedMajor={newMajor}
+							setSelectedMajor={setNewMajor}
+						/>
 						<button
 							onClick={handleMajorChange}
 							className="bg-white text-black px-3 py-2 rounded-md hover:bg-gray-200 transition">
