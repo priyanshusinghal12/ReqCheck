@@ -70,7 +70,11 @@ const Results = () => {
 			if (data.error) {
 				alert("Error updating major requirements.");
 			} else {
-				setResults(data);
+				setResults({
+					...data,
+					completed_courses: results.completed_courses,
+					major: trimmedMajor,
+				});
 				setShowWhatIf(false);
 			}
 		} catch (error) {
