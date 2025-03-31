@@ -1,19 +1,40 @@
-// src/pages/Results.jsx
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+
+const majors = [
+	"Actuarial Science",
+	"Applied Mathematics",
+	"Biostatistics",
+	"Combinatorics and Optimization",
+	"Computational Mathematics",
+	"Mathematical Economics",
+	"Mathematical Finance",
+	"Mathematical Optimization",
+	"Mathematical Physics",
+	"Mathematical Studies",
+	"Mathematical Studies (Business)",
+	"Pure Mathematics",
+	"Statistics",
+	"Mathematics/Teaching",
+	"BMath Data Science",
+	"BCS Computer Science",
+	"Math Degree Requirements",
+];
 
 const Results = () => {
 	const location = useLocation();
-	const { results } = location.state || {};
+	const { results: initialResults } = location.state || {};
+	const [results, setResults] = useState(initialResults);
+
 	const [whatIfText, setWhatIfText] = useState("");
 	const [whatIfResults, setWhatIfResults] = useState(null);
 	const [showWhatIf, setShowWhatIf] = useState(false);
 	const [newlyFulfilledKeys, setNewlyFulfilledKeys] = useState([]);
 	const [updatedKeys, setUpdatedKeys] = useState([]);
-	const [showMajorChange, setShowMajorChange] = useState(false);
-	const [newMajor, setNewMajor] = useState("");
+	const [newMajor, setNewMajor] = useState(initialResults?.major || "");
 
 	const whatIfRef = useRef(null);
 
@@ -31,15 +52,48 @@ const Results = () => {
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(" ");
 
-	// Function to check if all requirements are fulfilled
-	const areAllRequirementsFulfilled = (requirements) => {
-		return Object.values(requirements).every(([met]) => met);
-	};
+	const areAllRequirementsFulfilled = (requirements) =>
+		Object.values(requirements).every(([met]) => met);
 
-	// Check if all requirements are fulfilled
 	const allRequirementsFulfilled = areAllRequirementsFulfilled(
 		results.requirements
 	);
+
+	const handleMajorChange = async () => {
+		if (!newMajor || !results?.completed_courses) {
+			alert("Please select a valid major.");
+			return;
+		}
+		try {
+			console.log("Changing to major:", newMajor);
+			console.log("Completed courses:", results.completed_courses);
+			const response = await fetch(
+				`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						major: newMajor.trim().toLowerCase(),
+						completed_courses: results.completed_courses,
+					}),
+				}
+			);
+
+			const text = await response.text();
+			console.log("Raw response:", text);
+			const data = JSON.parse(text);
+
+			if (data.error) {
+				alert("Error updating major requirements.");
+			} else {
+				setResults(data); // ✅ this re-renders the UI with updated state
+				setShowWhatIf(false);
+			}
+		} catch (error) {
+			console.error("Major change failed", error);
+			alert("Something went wrong.");
+		}
+	};
 
 	const handleWhatIf = async () => {
 		if (!whatIfText.trim()) return;
@@ -72,17 +126,7 @@ const Results = () => {
 			}
 		);
 
-		const text = await response.text();
-		console.log("Raw response:", text);
-
-		let data;
-		try {
-			data = JSON.parse(text);
-		} catch (err) {
-			console.error("Failed to parse JSON:", err);
-			alert("Something went wrong.");
-			return;
-		}
+		const data = await response.json();
 
 		const original = results.requirements;
 		const updated = data.requirements;
@@ -157,108 +201,38 @@ const Results = () => {
 		<>
 			<Navbar />
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
-				<h1 className="text-3xl font-bold mb-6">
-					Requirement Checklist:{" "}
-					<span className="text-white">{capitalizedMajor}</span>
-				</h1>
+				{/* Header + Dropdown */}
+				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+					<h1 className="text-3xl font-bold">
+						Requirement Checklist:{" "}
+						<span className="text-white">{capitalizedMajor}</span>
+					</h1>
+
+					<div className="flex gap-2 items-center">
+						<select
+							className="bg-[#1A1A1A] border border-[#333] text-white px-3 py-2 rounded-md"
+							value={newMajor}
+							onChange={(e) => setNewMajor(e.target.value)}>
+							<option value="">Change Major</option>
+							{majors.map((major, index) => (
+								<option key={index} value={major}>
+									{major}
+								</option>
+							))}
+						</select>
+						<button
+							onClick={handleMajorChange}
+							className="bg-white text-black px-3 py-2 rounded-md hover:bg-gray-200 transition">
+							<FaArrowRight />
+						</button>
+					</div>
+				</div>
 
 				{allRequirementsFulfilled && (
 					<div className="mb-6 text-[#FED34C] text-lg font-semibold">
 						All Requirements Fulfilled!
 					</div>
 				)}
-				{/* Change Major Feature */}
-				<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
-					<button
-						className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-md hover:bg-yellow-300 transition"
-						onClick={() => setShowMajorChange((prev) => !prev)}>
-						Change Major
-					</button>
-
-					{showMajorChange && (
-						<div className="w-full sm:w-64">
-							<select
-								className="mt-2 sm:mt-0 w-full bg-[#1A1A1A] text-white border border-[#333] rounded-md px-4 py-2"
-								value={newMajor}
-								onChange={(e) => setNewMajor(e.target.value)}>
-								<option value="">Select a new major</option>
-								{[
-									"Actuarial Science",
-									"Applied Mathematics",
-									"Biostatistics",
-									"Combinatorics and Optimization",
-									"Computational Mathematics",
-									"Mathematical Economics",
-									"Mathematical Finance",
-									"Mathematical Optimization",
-									"Mathematical Physics",
-									"Mathematical Studies",
-									"Pure Mathematics",
-									"Statistics",
-									"Mathematics/Teaching",
-									"BMath Data Science",
-									"BCS Computer Science",
-									"Math Degree Requirements",
-								].map((major, index) => (
-									<option key={index} value={major}>
-										{major}
-									</option>
-								))}
-							</select>
-
-							<button
-								onClick={async () => {
-									if (!newMajor || !results?.completed_courses) {
-										alert("Please select a valid major.");
-										return;
-									}
-									try {
-										console.log("Changing to major:", newMajor);
-										console.log(
-											"Completed courses:",
-											results.completed_courses
-										);
-
-										const response = await fetch(
-											`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
-											{
-												method: "POST",
-												headers: { "Content-Type": "application/json" },
-												body: JSON.stringify({
-													major: newMajor.toLowerCase(),
-													completed_courses: results.completed_courses,
-												}),
-											}
-										);
-										const text = await response.text();
-										console.log("Raw response:", text);
-
-										let data;
-										try {
-											data = JSON.parse(text);
-										} catch (err) {
-											console.error("Failed to parse JSON:", err);
-											alert("Something went wrong.");
-											return;
-										}
-
-										if (data.error) {
-											alert("Error updating major requirements.");
-										} else {
-											window.location.reload(); // simplest way to rerun logic with new state
-											// OR you can set new state here if you have a setResults() handler
-										}
-									} catch (error) {
-										console.error("Major change failed", error);
-										alert("Something went wrong.");
-									}
-								}}
-								className="mt-2 w-full bg-white text-black py-2 rounded-md font-semibold hover:bg-gray-200 transition">
-								Update Requirements
-							</button>
-						</div>
-					)}
-				</div>
 
 				<div className="max-h-[60vh] overflow-y-auto pr-2">
 					{showWhatIf
@@ -266,10 +240,11 @@ const Results = () => {
 						: renderRequirements(results.requirements)}
 				</div>
 
+				{/* What-If */}
 				<div className="mt-10">
 					<h2 className="text-2xl font-bold mb-3">What-If Analysis</h2>
 					<textarea
-						placeholder="Type in courses like ECON 301, STAT 333 and check what additional requirements get completed!!"
+						placeholder="Type in courses like ECON 301, STAT 333..."
 						className="w-full bg-[#1A1A1A] text-white rounded-lg p-4 border-2 border-[#333] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2a2a]"
 						rows={5}
 						value={whatIfText}

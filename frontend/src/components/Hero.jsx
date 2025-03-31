@@ -16,6 +16,7 @@ const majors = [
 	"Mathematical Optimization",
 	"Mathematical Physics",
 	"Mathematical Studies",
+	"Mathematical Studies (Business)",
 	"Pure Mathematics",
 	"Statistics",
 	"Mathematics/Teaching",
