@@ -41,20 +41,23 @@ const Results = () => {
 	);
 
 	const handleMajorChange = async () => {
-		if (!newMajor || !results?.completed_courses) {
+		const trimmedMajor = newMajor.trim().toLowerCase();
+		if (!trimmedMajor || !results?.completed_courses) {
 			alert("Please select a valid major.");
 			return;
 		}
+
 		try {
-			console.log("Changing to major:", newMajor);
+			console.log("Changing to major:", trimmedMajor);
 			console.log("Completed courses:", results.completed_courses);
+
 			const response = await fetch(
 				`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
-						major: newMajor.trim().toLowerCase(),
+						major: trimmedMajor,
 						completed_courses: results.completed_courses,
 					}),
 				}
@@ -69,9 +72,6 @@ const Results = () => {
 			} else {
 				setResults(data);
 				setShowWhatIf(false);
-				setNewlyFulfilledKeys([]);
-				setUpdatedKeys([]);
-				setWhatIfResults(null);
 			}
 		} catch (error) {
 			console.error("Major change failed", error);
@@ -185,21 +185,23 @@ const Results = () => {
 		<>
 			<Navbar />
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
-				{/* Header + Major Dropdown */}
+				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
 					<h1 className="text-3xl font-bold">
 						Requirement Checklist:{" "}
 						<span className="text-white">{capitalizedMajor}</span>
 					</h1>
 
-					<div className="flex gap-2 items-center">
+					{/* Custom Styled Dropdown + Button */}
+					<div className="flex flex-row gap-2 items-center w-full sm:w-auto">
 						<MajorDropdown
 							selectedMajor={newMajor}
 							setSelectedMajor={setNewMajor}
+							fullWidth={false}
 						/>
 						<button
 							onClick={handleMajorChange}
-							className="bg-white text-black px-3 py-2 rounded-md hover:bg-gray-200 transition">
+							className="bg-white text-black p-3 rounded-xl hover:bg-gray-200 transition flex items-center justify-center">
 							<FaArrowRight />
 						</button>
 					</div>
@@ -249,7 +251,7 @@ const Results = () => {
 					</div>
 				</div>
 
-				{/* What-If Feedback Message */}
+				{/* Feedback Message */}
 				<div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
 					{showWhatIf && (
 						<>
