@@ -33,7 +33,7 @@ const Home = () => {
 			<Navbar />
 			<Hero />
 			<Features />
-			<FAQ /> {/* Make sure this section has id="faq" */}
+			<FAQ />
 		</>
 	);
 };

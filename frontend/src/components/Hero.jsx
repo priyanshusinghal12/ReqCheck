@@ -1,10 +1,9 @@
-// Hero.jsx
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
-import { Combobox } from "@headlessui/react";
 import ParticlesBackground from "./ParticlesBackground";
 import { useNavigate } from "react-router-dom";
+import MajorDropdown from "./MajorDropdown"; // <- Imported custom dropdown component
 
 const majors = [
 	"Actuarial Science",
@@ -31,25 +30,12 @@ export default function Hero() {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [fileContent, setFileContent] = useState(null);
 	const [selectedMajor, setSelectedMajor] = useState("");
-	const [query, setQuery] = useState("");
 	const [manualCourses, setManualCourses] = useState("");
 	const [badCourses, setBadCourses] = useState([]);
 	const [showModal, setShowModal] = useState(false);
-	const [isDropdownOpen, setDropdownOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const dropdownRef = useRef();
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		const handleClickOutside = (event) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-				setDropdownOpen(false);
-			}
-		};
-		document.addEventListener("mousedown", handleClickOutside);
-		return () => document.removeEventListener("mousedown", handleClickOutside);
-	}, []);
 
 	const handleFileChange = async (event) => {
 		const file = event.target.files[0];
@@ -82,22 +68,7 @@ export default function Hero() {
 	const handleGoClick = async (courses) => {
 		setIsLoading(true);
 
-		let majorToUse = selectedMajor;
-		if (!majorToUse && query) {
-			const matched = majors.find(
-				(m) => m.toLowerCase() === query.toLowerCase()
-			);
-			if (matched) {
-				setSelectedMajor(matched);
-				majorToUse = matched;
-			} else {
-				alert("Please select a valid major from the dropdown.");
-				setIsLoading(false);
-				return;
-			}
-		}
-
-		if (!majorToUse || !courses || courses.length === 0) {
+		if (!selectedMajor || !courses || courses.length === 0) {
 			alert("Please select a major and provide courses.");
 			setIsLoading(false);
 			return;
@@ -110,7 +81,7 @@ export default function Hero() {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
-						major: majorToUse.toLowerCase(),
+						major: selectedMajor.toLowerCase(),
 						completed_courses: courses,
 					}),
 				}
@@ -119,7 +90,15 @@ export default function Hero() {
 			if (data.error) {
 				alert("Invalid major or backend error.");
 			} else {
-				navigate("/results", { state: { results: data } });
+				navigate("/results", {
+					state: {
+						results: {
+							...data,
+							major: selectedMajor.trim().toLowerCase(),
+							completed_courses: courses,
+						},
+					},
+				});
 			}
 		} catch (error) {
 			alert("Failed to fetch requirements.");
@@ -127,13 +106,6 @@ export default function Hero() {
 		}
 		setIsLoading(false);
 	};
-
-	const filteredMajors =
-		query === ""
-			? majors
-			: majors.filter((major) =>
-					major.toLowerCase().includes(query.toLowerCase())
-			  );
 
 	const handleManualSubmit = () => {
 		const entries = manualCourses
@@ -157,9 +129,8 @@ export default function Hero() {
 	};
 
 	return (
-		<section className="relative min-h-[95vh] flex items-center justify-center text-white text-center overflow-hidden bg-black px-4 pb-10">
+		<section className="relative min-h-[95vh] flex items-center justify-center text-white text-center overflow-visible bg-black px-4 pb-10">
 			<ParticlesBackground />
-
 			<motion.div className="relative z-10 w-full max-w-2xl flex flex-col items-center">
 				<motion.h1 className="text-5xl sm:text-6xl font-medium mb-4">
 					<span className="text-[#FED34C]">Req</span>Check
@@ -168,7 +139,7 @@ export default function Hero() {
 					The one-click tool to check your missing and satisfied major
 					requirements
 				</motion.p>
-				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base whitespace-normal break-words text-center">
+				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base">
 					Upload your unofficial transcript or enter your completed courses
 					manually
 				</motion.p>
@@ -203,48 +174,11 @@ export default function Hero() {
 							/>
 						</motion.label>
 
-						<Combobox value={selectedMajor} onChange={setSelectedMajor}>
-							<div className="relative sm:w-60 w-full" ref={dropdownRef}>
-								<Combobox.Input
-									className="border border-[#333] bg-[#1A1A1A] px-4 py-3 rounded-xl text-white w-full cursor-pointer"
-									placeholder="Select Major"
-									onClick={() => setDropdownOpen(true)}
-									onChange={(e) => {
-										setQuery(e.target.value);
-										setSelectedMajor(e.target.value);
-										setDropdownOpen(true);
-									}}
-									onFocus={() => setDropdownOpen(true)}
-								/>
-								{isDropdownOpen && (
-									<Combobox.Options className="absolute mt-2 w-full bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
-										{filteredMajors.length === 0 ? (
-											<Combobox.Option
-												className="p-2 text-gray-400"
-												value=""
-												disabled>
-												No majors found
-											</Combobox.Option>
-										) : (
-											filteredMajors.map((major, index) => (
-												<Combobox.Option
-													key={index}
-													value={major}
-													className={({ active }) =>
-														`p-3 cursor-pointer ${
-															active
-																? "bg-[#FED34C] text-black"
-																: "text-gray-300"
-														}`
-													}>
-													{major}
-												</Combobox.Option>
-											))
-										)}
-									</Combobox.Options>
-								)}
-							</div>
-						</Combobox>
+						{/* 💡 MajorDropdown used here */}
+						<MajorDropdown
+							selectedMajor={selectedMajor}
+							setSelectedMajor={setSelectedMajor}
+						/>
 
 						<motion.button
 							onClick={() => handleGoClick(fileContent)}
@@ -274,6 +208,7 @@ export default function Hero() {
 				)}
 			</motion.div>
 
+			{/* FAQ Button */}
 			<a
 				href="#faq"
 				className="absolute bottom-6 right-6 text-white text-xl sm:text-sm flex flex-col items-center animate-bounce hover:text-[#FED34C] transition-colors duration-300">
@@ -292,6 +227,7 @@ export default function Hero() {
 				</svg>
 			</a>
 
+			{/* Modal */}
 			{showModal && (
 				<div className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50">
 					<div className="bg-[#121212] rounded-lg p-6 w-[90%] max-w-lg shadow-2xl relative">
@@ -300,10 +236,10 @@ export default function Hero() {
 							className="absolute top-3 right-3 text-gray-400 hover:text-white">
 							<FaTimes size={18} />
 						</button>
-
 						<h2 className="text-white text-xl font-semibold mb-3">
 							Enter Courses Manually
 						</h2>
+
 						<textarea
 							rows={4}
 							className="w-full bg-[#1A1A1A] border border-[#333] text-sm text-white rounded-lg px-4 py-3 mb-2"
@@ -315,48 +251,13 @@ export default function Hero() {
 							}}
 						/>
 
-						<Combobox value={selectedMajor} onChange={setSelectedMajor}>
-							<div className="relative w-full mt-2" ref={dropdownRef}>
-								<Combobox.Input
-									className="border border-[#333] bg-[#1A1A1A] px-4 py-3 rounded-xl text-white w-full"
-									placeholder="Select Major"
-									onClick={() => setDropdownOpen(true)}
-									onChange={(e) => {
-										setQuery(e.target.value);
-										setSelectedMajor(e.target.value);
-										setDropdownOpen(true);
-									}}
-									onFocus={() => setDropdownOpen(true)}
-								/>
-								{isDropdownOpen && (
-									<Combobox.Options className="absolute mt-2 w-full bg-[#1A1A1A] border border-[#333] rounded-lg shadow-lg max-h-48 overflow-y-auto z-50">
-										{filteredMajors.length === 0 ? (
-											<Combobox.Option
-												className="p-2 text-gray-400"
-												value=""
-												disabled>
-												No majors found
-											</Combobox.Option>
-										) : (
-											filteredMajors.map((major, index) => (
-												<Combobox.Option
-													key={index}
-													value={major}
-													className={({ active }) =>
-														`p-3 cursor-pointer ${
-															active
-																? "bg-[#FED34C] text-black"
-																: "text-gray-300"
-														}`
-													}>
-													{major}
-												</Combobox.Option>
-											))
-										)}
-									</Combobox.Options>
-								)}
-							</div>
-						</Combobox>
+						<div className="w-full mt-2">
+							<MajorDropdown
+								fullWidth
+								selectedMajor={selectedMajor}
+								setSelectedMajor={setSelectedMajor}
+							/>
+						</div>
 
 						{badCourses.length > 0 && (
 							<p className="text-red-400 text-sm mt-2">

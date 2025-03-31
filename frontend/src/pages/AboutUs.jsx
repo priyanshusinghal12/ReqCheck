@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
 import ridhikaImage from "../assets/ridhika.jpeg";
 import priyanshuImage from "../assets/priyanshu.jpeg";
+import ParticlesBackground from "../components/ParticlesBackground";
 
 const teamMembers = [
 	{
@@ -34,6 +35,7 @@ const AboutUs = () => {
 	return (
 		<>
 			<Navbar />
+			<ParticlesBackground />
 			<div className="min-h-screen bg-black from-[#1a1a1a] via-[#1e1e1f] to-[#111] text-white pt-24">
 				{/* About Section */}
 				<motion.div

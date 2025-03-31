@@ -12,6 +12,8 @@ const Results = () => {
 	const [showWhatIf, setShowWhatIf] = useState(false);
 	const [newlyFulfilledKeys, setNewlyFulfilledKeys] = useState([]);
 	const [updatedKeys, setUpdatedKeys] = useState([]);
+	const [showMajorChange, setShowMajorChange] = useState(false);
+	const [newMajor, setNewMajor] = useState("");
 
 	const whatIfRef = useRef(null);
 
@@ -29,10 +31,19 @@ const Results = () => {
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(" ");
 
+	// Function to check if all requirements are fulfilled
+	const areAllRequirementsFulfilled = (requirements) => {
+		return Object.values(requirements).every(([met]) => met);
+	};
+
+	// Check if all requirements are fulfilled
+	const allRequirementsFulfilled = areAllRequirementsFulfilled(
+		results.requirements
+	);
+
 	const handleWhatIf = async () => {
 		if (!whatIfText.trim()) return;
 
-		// Only keep valid course formats like "CS 136", "CLAS 104", "MATH 245L"
 		const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 		const futureCourses = whatIfText
 			.split(",")
@@ -61,7 +72,17 @@ const Results = () => {
 			}
 		);
 
-		const data = await response.json();
+		const text = await response.text();
+		console.log("Raw response:", text);
+
+		let data;
+		try {
+			data = JSON.parse(text);
+		} catch (err) {
+			console.error("Failed to parse JSON:", err);
+			alert("Something went wrong.");
+			return;
+		}
 
 		const original = results.requirements;
 		const updated = data.requirements;
@@ -140,6 +161,104 @@ const Results = () => {
 					Requirement Checklist:{" "}
 					<span className="text-white">{capitalizedMajor}</span>
 				</h1>
+
+				{allRequirementsFulfilled && (
+					<div className="mb-6 text-[#FED34C] text-lg font-semibold">
+						All Requirements Fulfilled!
+					</div>
+				)}
+				{/* Change Major Feature */}
+				<div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-6">
+					<button
+						className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-md hover:bg-yellow-300 transition"
+						onClick={() => setShowMajorChange((prev) => !prev)}>
+						Change Major
+					</button>
+
+					{showMajorChange && (
+						<div className="w-full sm:w-64">
+							<select
+								className="mt-2 sm:mt-0 w-full bg-[#1A1A1A] text-white border border-[#333] rounded-md px-4 py-2"
+								value={newMajor}
+								onChange={(e) => setNewMajor(e.target.value)}>
+								<option value="">Select a new major</option>
+								{[
+									"Actuarial Science",
+									"Applied Mathematics",
+									"Biostatistics",
+									"Combinatorics and Optimization",
+									"Computational Mathematics",
+									"Mathematical Economics",
+									"Mathematical Finance",
+									"Mathematical Optimization",
+									"Mathematical Physics",
+									"Mathematical Studies",
+									"Pure Mathematics",
+									"Statistics",
+									"Mathematics/Teaching",
+									"BMath Data Science",
+									"BCS Computer Science",
+									"Math Degree Requirements",
+								].map((major, index) => (
+									<option key={index} value={major}>
+										{major}
+									</option>
+								))}
+							</select>
+
+							<button
+								onClick={async () => {
+									if (!newMajor || !results?.completed_courses) {
+										alert("Please select a valid major.");
+										return;
+									}
+									try {
+										console.log("Changing to major:", newMajor);
+										console.log(
+											"Completed courses:",
+											results.completed_courses
+										);
+
+										const response = await fetch(
+											`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+											{
+												method: "POST",
+												headers: { "Content-Type": "application/json" },
+												body: JSON.stringify({
+													major: newMajor.toLowerCase(),
+													completed_courses: results.completed_courses,
+												}),
+											}
+										);
+										const text = await response.text();
+										console.log("Raw response:", text);
+
+										let data;
+										try {
+											data = JSON.parse(text);
+										} catch (err) {
+											console.error("Failed to parse JSON:", err);
+											alert("Something went wrong.");
+											return;
+										}
+
+										if (data.error) {
+											alert("Error updating major requirements.");
+										} else {
+											window.location.reload(); // simplest way to rerun logic with new state
+											// OR you can set new state here if you have a setResults() handler
+										}
+									} catch (error) {
+										console.error("Major change failed", error);
+										alert("Something went wrong.");
+									}
+								}}
+								className="mt-2 w-full bg-white text-black py-2 rounded-md font-semibold hover:bg-gray-200 transition">
+								Update Requirements
+							</button>
+						</div>
+					)}
+				</div>
 
 				<div className="max-h-[60vh] overflow-y-auto pr-2">
 					{showWhatIf
