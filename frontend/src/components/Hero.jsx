@@ -4,6 +4,7 @@ import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
 import ParticlesBackground from "./ParticlesBackground";
 import { useNavigate } from "react-router-dom";
 import MajorDropdown from "./MajorDropdown"; // <- Imported custom dropdown component
+import { toast } from "react-hot-toast";
 
 const majors = [
 	"Actuarial Science",
@@ -57,12 +58,12 @@ export default function Hero() {
 					const data = await response.json();
 					setFileContent(data.courses);
 				} catch (error) {
-					alert("Failed to parse transcript.");
+					toast.error("Failed to parse transcript.");
 				}
 			};
 			reader.readAsDataURL(file);
 		} else {
-			alert("Please upload a valid PDF file.");
+			toast.error("Please upload a valid PDF file.");
 		}
 	};
 
@@ -70,7 +71,7 @@ export default function Hero() {
 		setIsLoading(true);
 
 		if (!selectedMajor || !courses || courses.length === 0) {
-			alert("Please select a major and provide courses.");
+			toast.error("Please select a major and provide courses.");
 			setIsLoading(false);
 			return;
 		}
@@ -89,7 +90,7 @@ export default function Hero() {
 			);
 			const data = await response.json();
 			if (data.error) {
-				alert("Invalid major or backend error.");
+				toast.error("Invalid major or backend error.");
 			} else {
 				navigate("/results", {
 					state: {
@@ -102,7 +103,7 @@ export default function Hero() {
 				});
 			}
 		} catch (error) {
-			alert("Failed to fetch requirements.");
+			toast.error("Failed to fetch requirements.");
 			console.error(error);
 		}
 		setIsLoading(false);
@@ -120,7 +121,7 @@ export default function Hero() {
 		setBadCourses(invalid);
 
 		if (valid.length === 0) {
-			alert(
+			toast.error(
 				"Please enter at least one valid course (e.g. CS 136L or ECON 201)"
 			);
 			return;

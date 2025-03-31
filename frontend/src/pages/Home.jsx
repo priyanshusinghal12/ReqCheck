@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import FAQ from "../components/FAQ";
 import Features from "../components/Features";
 
+
 const scrollToHash = () => {
 	const hash = window.location.hash;
 	if (hash) {

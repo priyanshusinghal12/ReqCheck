@@ -4,6 +4,7 @@ import emailjs from "emailjs-com";
 import { Filter } from "bad-words";
 import Navbar from "../components/Navbar";
 import ParticlesBackground from "../components/ParticlesBackground";
+import { toast } from "react-hot-toast";
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
@@ -14,7 +15,6 @@ const FeedbackForm = () => {
 	const [hover, setHover] = useState(null);
 	const [message, setMessage] = useState("");
 	const [submitted, setSubmitted] = useState(false);
-	const [error, setError] = useState("");
 
 	const handleRating = (value) => {
 		if (value === rating) {
@@ -29,7 +29,7 @@ const FeedbackForm = () => {
 		const filter = new Filter();
 
 		if (filter.isProfane(message)) {
-			setError("Your text contains foul language! Please rephrase!");
+			toast.error("Your text contains foul language! Please rephrase.");
 			return;
 		}
 
@@ -45,11 +45,11 @@ const FeedbackForm = () => {
 				setSubmitted(true);
 				setMessage("");
 				setRating(0);
-				setError("");
+				toast.success("Thanks for your feedback! 💛");
 			})
 			.catch((error) => {
 				console.error("EmailJS Error:", error);
-				setError("Oops! Something went wrong. Try again later.");
+				toast.error("Oops! Something went wrong. Try again later.");
 			});
 	};
 
@@ -102,8 +102,6 @@ const FeedbackForm = () => {
 							onChange={(e) => setMessage(e.target.value)}
 							required
 						/>
-
-						{error && <p className="text-red-500 mt-4 font-medium">{error}</p>}
 
 						<button
 							type="submit"

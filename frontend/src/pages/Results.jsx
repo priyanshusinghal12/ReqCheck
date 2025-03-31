@@ -4,18 +4,20 @@ import MajorDropdown from "../components/MajorDropdown";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
+import { toast } from "react-hot-toast";
 
 const Results = () => {
 	const location = useLocation();
 	const { results: initialResults } = location.state || {};
 	const [results, setResults] = useState(initialResults);
-
+	const [isLoading, setIsLoading] = useState(false);
 	const [whatIfText, setWhatIfText] = useState("");
 	const [whatIfResults, setWhatIfResults] = useState(null);
 	const [showWhatIf, setShowWhatIf] = useState(false);
 	const [newlyFulfilledKeys, setNewlyFulfilledKeys] = useState([]);
 	const [updatedKeys, setUpdatedKeys] = useState([]);
 	const [newMajor, setNewMajor] = useState(initialResults?.major || "");
+	const [errorMessage, setErrorMessage] = useState("");
 
 	const whatIfRef = useRef(null);
 
@@ -43,14 +45,13 @@ const Results = () => {
 	const handleMajorChange = async () => {
 		const trimmedMajor = newMajor.trim().toLowerCase();
 		if (!trimmedMajor || !results?.completed_courses) {
-			alert("Please select a valid major.");
+			toast.error("Please select a valid major.");
 			return;
 		}
 
-		try {
-			console.log("Changing to major:", trimmedMajor);
-			console.log("Completed courses:", results.completed_courses);
+		setIsLoading(true);
 
+		try {
 			const response = await fetch(
 				`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
 				{
@@ -64,11 +65,10 @@ const Results = () => {
 			);
 
 			const text = await response.text();
-			console.log("Raw response:", text);
 			const data = JSON.parse(text);
 
 			if (data.error) {
-				alert("Error updating major requirements.");
+				toast.error("Error updating major requirements.");
 			} else {
 				setResults({
 					...data,
@@ -76,11 +76,14 @@ const Results = () => {
 					major: trimmedMajor,
 				});
 				setShowWhatIf(false);
+				toast.success(`Switched to ${capitalizedMajor}!`);
 			}
 		} catch (error) {
 			console.error("Major change failed", error);
-			alert("Something went wrong.");
+			toast.error("Something went wrong. Please try again.");
 		}
+
+		setIsLoading(false);
 	};
 
 	const handleWhatIf = async () => {
@@ -93,7 +96,9 @@ const Results = () => {
 			.filter((course) => validCourseRegex.test(course));
 
 		if (futureCourses.length === 0) {
-			alert("Please type valid course codes like 'CS 136L', 'STAT 230' etc.");
+			toast.error(
+				"Please type valid course codes like 'CS 136L', 'STAT 230' etc."
+			);
 			return;
 		}
 
@@ -206,7 +211,15 @@ const Results = () => {
 						<button
 							onClick={handleMajorChange}
 							className="bg-white text-black p-3 rounded-xl hover:bg-gray-200 transition flex items-center justify-center">
-							<FaArrowRight />
+							{isLoading ? (
+								<div className="animate-spin rounded-full h-10 w-10 border-t-2 border-white"></div>
+							) : (
+								<button
+									onClick={handleMajorChange}
+									className="bg-white text-black p-3 rounded-xl hover:bg-gray-200 transition flex items-center justify-center">
+									<FaArrowRight />
+								</button>
+							)}
 						</button>
 					</div>
 				</div>
