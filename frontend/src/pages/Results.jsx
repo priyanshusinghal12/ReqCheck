@@ -275,37 +275,41 @@ const Results = () => {
 
 				{/* Feedback Message */}
 				<div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
-					{showWhatIf && (
-						<div
-							ref={whatIfRef}
-							className="mt-6 text-sm text-white font-medium">
-							{newlyFulfilledKeys.length === 0 && updatedKeys.length === 0 ? (
-								<p>No additional requirement completed.</p>
-							) : (
-								<>
-									{newlyFulfilledKeys.length > 0 && (
-										<p>
-											You would fulfill{" "}
-											<span className="text-[#FED34C] font-semibold">
-												{newlyFulfilledKeys.length}
-											</span>{" "}
-											new requirement
-											{newlyFulfilledKeys.length > 1 ? "s" : ""}!
-										</p>
-									)}
-									{updatedKeys.length > 0 && (
-										<p>
-											<span className="text-[#FED34C] font-semibold">
-												{updatedKeys.length}
-											</span>{" "}
-											requirement
-											{updatedKeys.length > 1 ? "s" : ""} updated above.
-										</p>
-									)}
-								</>
-							)}
-						</div>
-					)}
+					<div
+						ref={whatIfRef}
+						className={`mt-6 text-sm text-white font-medium transition-all duration-300 ${
+							showWhatIf ? "min-h-[48px] opacity-100" : "min-h-[48px] opacity-0"
+						}`}>
+						{showWhatIf && (
+							<>
+								{newlyFulfilledKeys.length === 0 && updatedKeys.length === 0 ? (
+									<p>No additional requirement completed.</p>
+								) : (
+									<>
+										{newlyFulfilledKeys.length > 0 && (
+											<p>
+												You would fulfill{" "}
+												<span className="text-[#FED34C] font-semibold">
+													{newlyFulfilledKeys.length}
+												</span>{" "}
+												new requirement
+												{newlyFulfilledKeys.length > 1 ? "s" : ""}!
+											</p>
+										)}
+										{updatedKeys.length > 0 && (
+											<p>
+												<span className="text-[#FED34C] font-semibold">
+													{updatedKeys.length}
+												</span>{" "}
+												requirement{updatedKeys.length > 1 ? "s" : ""} updated
+												above.
+											</p>
+										)}
+									</>
+								)}
+							</>
+						)}
+					</div>
 				</div>
 			</div>
 		</>
