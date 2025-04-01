@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import MajorDropdown from "../components/MajorDropdown";
+import MajorChangeDropDown from "../components/MajorChangeDropDown";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
@@ -209,7 +209,7 @@ const Results = () => {
 
 					{/* Custom Styled Dropdown + Button */}
 					<div className="flex flex-row gap-2 items-center w-full sm:w-auto">
-						<MajorDropdown
+						<MajorChangeDropDown
 							selectedMajor={newMajor}
 							setSelectedMajor={setNewMajor}
 							fullWidth={false}
