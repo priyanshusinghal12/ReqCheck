@@ -76,7 +76,13 @@ const Results = () => {
 					major: trimmedMajor,
 				});
 				setShowWhatIf(false);
-				toast.success(`Switched to ${capitalizedMajor}!`);
+				const formattedMajor = newMajor
+					.trim()
+					.split(" ")
+					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+					.join(" ");
+
+				toast.success(`Switched to ${formattedMajor}!`);
 			}
 		} catch (error) {
 			console.error("Major change failed", error);
@@ -210,15 +216,14 @@ const Results = () => {
 						/>
 						<button
 							onClick={handleMajorChange}
-							className="bg-white text-black p-3 rounded-xl hover:bg-gray-200 transition flex items-center justify-center">
+							disabled={isLoading}
+							className={`bg-white text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200 ${
+								isLoading ? "opacity-60 cursor-not-allowed" : ""
+							}`}>
 							{isLoading ? (
-								<div className="animate-spin rounded-full h-10 w-10 border-t-2 border-white"></div>
+								<div className="animate-spin rounded-full h-5 w-5 border-2 border-t-black border-white" />
 							) : (
-								<button
-									onClick={handleMajorChange}
-									className="bg-white text-black p-3 rounded-xl hover:bg-gray-200 transition flex items-center justify-center">
-									<FaArrowRight />
-								</button>
+								<FaArrowRight size={16} />
 							)}
 						</button>
 					</div>
