@@ -71,7 +71,9 @@ export default function Hero() {
 		setIsLoading(true);
 
 		if (!selectedMajor || !courses || courses.length === 0) {
-			toast.error("Please select a major and provide courses.");
+			toast.error(
+				"Please select a major and/or provide courses/upload transcript."
+			);
 			setIsLoading(false);
 			return;
 		}

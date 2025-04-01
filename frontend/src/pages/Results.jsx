@@ -276,7 +276,9 @@ const Results = () => {
 				{/* Feedback Message */}
 				<div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
 					{showWhatIf && (
-						<>
+						<div
+							ref={whatIfRef}
+							className="mt-6 text-sm text-white font-medium">
 							{newlyFulfilledKeys.length === 0 && updatedKeys.length === 0 ? (
 								<p>No additional requirement completed.</p>
 							) : (
@@ -302,7 +304,7 @@ const Results = () => {
 									)}
 								</>
 							)}
-						</>
+						</div>
 					)}
 				</div>
 			</div>
