@@ -44,14 +44,8 @@ def check_actsci_major(student_courses):
                   subject_codes = ["ACTSC"],
                   n = 2,
                   student_courses = student_courses, major_reqs = reqs)
-
-  check_n_courses("Complete 1 additional course at the 300- or 400-level from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT",
-                  300,
-                  ["ACTSC", "AMATH", "CO", "CS", "MATBUS", "MATH", "PMATH", "STAT"],
-                  1,
-                  student_courses, reqs)
-
-  # Check for the "Two additional courses" requirement:
+  
+    # Check for the "Two additional courses" requirement:
   eligible_courses = ["AFM 424", "STAT 431", "STAT 433", "STAT 441", "STAT 443"]
 
   # Add 300/400 level ACTSC courses to eligible courses
@@ -72,6 +66,12 @@ def check_actsci_major(student_courses):
     for course in completed_courses[:2]:
         if course in student_courses:
             student_courses.remove(course)
+
+  check_n_courses("Complete 1 additional course at the 300- or 400-level from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT",
+                  300,
+                  ["ACTSC", "AMATH", "CO", "CS", "MATBUS", "MATH", "PMATH", "STAT"],
+                  1,
+                  student_courses, reqs)
 
   return reqs
   
