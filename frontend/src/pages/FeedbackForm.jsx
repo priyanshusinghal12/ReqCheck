@@ -93,7 +93,7 @@ const FeedbackForm = () => {
 						</div>
 
 						<label className="block text-lg font-medium mb-2">
-							Your feedback
+							Your feedback (Completely Anonymous)
 						</label>
 						<textarea
 							className="w-full p-4 rounded-lg bg-black border border-gray-700 text-gray-100 placeholder-gray-400 resize-none min-h-[160px]"
