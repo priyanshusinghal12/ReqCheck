@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import { auth } from "../firebase";
 
 const Results = () => {
 	const location = useLocation();
@@ -41,6 +42,43 @@ const Results = () => {
 	const allRequirementsFulfilled = areAllRequirementsFulfilled(
 		results.requirements
 	);
+
+	const handleSaveResults = async () => {
+		try {
+			const user = auth.currentUser;
+			if (!user) {
+				toast.error("Please log in to save results.");
+				return;
+			}
+			const idToken = await user.getIdToken();
+
+			const response = await fetch(
+				`${import.meta.env.VITE_BACKEND_URL}/save-results/`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						id_token: idToken,
+						major: results.major,
+						completed_courses: results.completed_courses,
+						requirements: results.requirements,
+					}),
+				}
+			);
+
+			const data = await response.json();
+
+			if (data.status === "success") {
+				toast.success("Results saved to your account!");
+			} else {
+				toast.error("Failed to save results.");
+				console.error(data.message);
+			}
+		} catch (error) {
+			toast.error("Something went wrong while saving.");
+			console.error(error);
+		}
+	};
 
 	const handleMajorChange = async () => {
 		const trimmedMajor = newMajor.trim().toLowerCase();
@@ -239,6 +277,14 @@ const Results = () => {
 					{showWhatIf
 						? renderRequirements(whatIfResults, newlyFulfilledKeys, updatedKeys)
 						: renderRequirements(results.requirements)}
+				</div>
+
+				<div className="mt-6 flex items-center justify-end">
+					<button
+						onClick={handleSaveResults}
+						className="bg-[#FED34C] text-black font-semibold px-5 py-2 rounded-lg hover:bg-yellow-400 transition">
+						Save My Results
+					</button>
 				</div>
 
 				{/* What-If */}
