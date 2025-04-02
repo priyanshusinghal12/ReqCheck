@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 try:
     firebase_admin.get_app()
 except ValueError:
-    cred = credentials.Certificate("path/to/your/serviceAccountKey.json")
+    cred = credentials.Certificate("backend/reqcheck-2d1b3-firebase-adminsdk-fbsvc-5e73788aec.json")
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
