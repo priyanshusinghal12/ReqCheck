@@ -1,4 +1,5 @@
 from course_logic.helper import *
+# from helper import *
 
 def math_studies_business_reqs(student_courses):
     """
@@ -99,7 +100,7 @@ def math_studies_business_reqs(student_courses):
                     subject_codes=math_subject_codes,
                     n=7,
                     student_courses=student_courses,
-                    major_reqs=math_studies_reqs)
+                    major_reqs=math_studies_business_reqs)
 
     # Requirements: Specific course requirements
     check_complete_all("Complete all of: CS 330, AFM 101, AFM 102, BUS 121W, ECON 101, ECON 102",
@@ -119,7 +120,7 @@ def math_studies_business_reqs(student_courses):
                       current_requirement="Complete one course from AFM, BUS, COMM, ECON, HRM, MSE, STV",
                       subject_codes=["AFM", "BUS", "COMM", "ECON", "HRM", "MSE", "STV"],
                       student_courses=student_courses,
-                      major_reqs=math_studies_reqs)
+                      major_reqs=math_studies_business_specialization_reqs)
 
     # Last Req: Four additional free-choice electives (placeholder)
     if len(student_courses) >= 4:
@@ -135,3 +136,9 @@ def math_studies_business_reqs(student_courses):
 
 
     return math_studies_business_specialization_reqs
+
+
+# moor_test1 = ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340", "CS 371", "CO 255", "CO 342", "CO 372", "CO 471", "CS 490", "MATH 247", "MATH 249", "CS 234", "STAT 331", "STAT 333", "ECON 102", "MSE 311", "STAT 435", "CO 450", "MATBUS 112W", "ACTSC 231"]
+
+
+# print(math_studies_business_specialization_reqs(moor_test1))

@@ -1,4 +1,5 @@
 from course_logic.helper import *
+# from helper import *
 
 def check_math_opt_ops_specialization(student_courses):
 
@@ -96,3 +97,9 @@ def check_math_opt_ops_specialization(student_courses):
                   n = 2,
                   student_courses = student_courses, major_reqs = reqs)
   return reqs
+
+
+# moor_test1 = ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340", "CS 371", "CO 255", "CO 342", "CO 372", "CO 471", "CS 490", "MATH 247", "MATH 249", "CS 234", "STAT 331", "STAT 333", "ECON 102", "MSE 311", "STAT 435", "CO 450", "MATBUS 112W", "ACTSC 231"]
+
+
+# print(check_math_opt_ops_specialization(moor_test1))

@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+import traceback
 
 # Add backend and logic directories to path
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
@@ -52,12 +53,14 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://req-check.vercel.app"
+        "https://req-check.vercel.app",
+        "https://www.req-check.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 # Data models
@@ -72,53 +75,62 @@ class TranscriptUpload(BaseModel):
 # === MAIN ENDPOINT ===
 @app.post("/check-requirements/")
 def check_requirements(request: TranscriptRequest):
-    major = request.major.strip().lower() 
-    completed_courses = request.completed_courses
-    print(f"Received major: '{major}'")
+    try:
+        major = request.major.strip().lower()
+        completed_courses = request.completed_courses
 
-    match major:
-        case "math degree requirements":
-            result = check_math_degree_reqs(completed_courses)
-        case "statistics":
-            result = check_stats_major(completed_courses)
-        case "actuarial science":
-            result = check_actsci_major(completed_courses)
-        case "applied mathematics":
-            result = check_amath_major(completed_courses)
-        case "biostatistics":
-            result = check_biostats_major(completed_courses)
-        case "computational mathematics":
-            result = check_comp_math_reqs(completed_courses)
-        case "computer science":
-            result = check_computer_science_major(completed_courses)
-        case "bmath data science":
-            result = check_data_science_major(completed_courses)
-        case "mathematical studies":
-            result = math_studies_reqs(completed_courses)
-        case "mathematical studies (business)":
-            result = math_studies_business_reqs(completed_courses)
-        case "mathematical economics":
-            result = check_math_econ_reqs(completed_courses)
-        case "mathematical finance":
-            result = check_math_finance_reqs(completed_courses)
-        case "mathematical physics":
-            result = check_math_physics_reqs(completed_courses)
-        case "pure mathematics":
-            result = check_pmath_major(completed_courses)
-        case "mathematical optimization (business specialization)":
-            result = check_math_opt_bus_specialization(completed_courses)
-        case "mathematical optimization (operations research specialization)":
-            result = check_math_opt_ops_specialization(completed_courses)
-        case "mathematics teaching":
-            result = check_math_teaching_major(completed_courses)
-        case "combinatorics and optimization":
-            result = check_co_major(completed_courses)
-        case "bcs computer science":
-            result = check_computer_science_major(completed_courses)
-        case _:
-            return {"error": "Major not supported"}
-    
-    return {"major": major, "requirements": result}
+        match major:
+            case "math degree requirements":
+                result = check_math_degree_reqs(completed_courses)
+            case "statistics":
+                result = check_stats_major(completed_courses)
+            case "actuarial science":
+                result = check_actsci_major(completed_courses)
+            case "applied mathematics":
+                result = check_amath_major(completed_courses)
+            case "biostatistics":
+                result = check_biostats_major(completed_courses)
+            case "computational mathematics":
+                result = check_comp_math_reqs(completed_courses)
+            case "computer science":
+                result = check_computer_science_major(completed_courses)
+            case "bmath data science":
+                result = check_data_science_major(completed_courses)
+            case "mathematical studies":
+                result = math_studies_reqs(completed_courses)
+            case "mathematical studies (business)":
+                result = math_studies_business_reqs(completed_courses)
+            case "mathematical economics":
+                result = check_math_econ_reqs(completed_courses)
+            case "mathematical finance":
+                result = check_math_finance_reqs(completed_courses)
+            case "mathematical physics":
+                result = check_math_physics_reqs(completed_courses)
+            case "pure mathematics":
+                result = check_pmath_major(completed_courses)
+            case "mathematical optimization (business specialization)":
+                result = check_math_opt_bus_specialization(completed_courses)
+            case "mathematical optimization (operations research specialization)":
+                result = check_math_opt_ops_specialization(completed_courses)
+            case "mathematics teaching":
+                result = check_math_teaching_major(completed_courses)
+            case "combinatorics and optimization":
+                result = check_co_major(completed_courses)
+            case "bcs computer science":
+                result = check_computer_science_major(completed_courses)
+            case _:
+                return {"error": f"Major '{major}' not supported"}
+
+        # Validate result
+        if not isinstance(result, dict):
+            return {"error": f"Invalid format returned for major: {major}"}
+
+        return {"major": major, "requirements": result}
+
+    except Exception as e:
+        print(f"Error processing major: {request.major}")
+        print(traceback.format_exc())
+        return {"error": "Internal Server Error"}, 500
 
 
 
