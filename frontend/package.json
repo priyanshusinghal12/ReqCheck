@@ -15,6 +15,7 @@
     "bad-words": "^4.0.0",
     "emailjs-com": "^3.2.0",
     "firebase": "^11.6.0",
+    "lucide-react": "^0.487.0",
     "motion": "^12.5.0",
     "particles.js": "^2.0.0",
     "react": "^19.0.0",

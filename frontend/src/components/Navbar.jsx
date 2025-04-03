@@ -1,15 +1,16 @@
-// src/components/Navbar.jsx
 import { HashLink } from "react-router-hash-link";
-import { auth, provider } from "../firebase";
+import { auth } from "../firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect, useRef } from "react";
 import LoginModal from "./LoginModal";
 import defaultUserIcon from "../assets/Sample_User_Icon.png";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
 	const [user, setUser] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false);
 	const dropdownRef = useRef(null);
 
 	useEffect(() => {
@@ -32,6 +33,7 @@ const Navbar = () => {
 	const handleLogout = () => {
 		signOut(auth);
 		setShowDropdown(false);
+		setMenuOpen(false);
 	};
 
 	return (
@@ -42,7 +44,15 @@ const Navbar = () => {
 				<span style={{ color: "#FED34C" }}>Req</span>Check
 			</a>
 
-			<nav className="flex items-center gap-6 text-sm sm:text-base font-medium text-white">
+			{/* Hamburger Icon (Mobile only) */}
+			<div className="md:hidden">
+				<button onClick={() => setMenuOpen(true)} className="text-white">
+					<Menu size={28} />
+				</button>
+			</div>
+
+			{/* Desktop Nav */}
+			<nav className="hidden md:flex items-center gap-6 text-sm sm:text-base font-medium text-white">
 				<HashLink smooth to="/#faq" className="hover:text-[#FED34C] transition">
 					FAQ
 				</HashLink>
@@ -52,7 +62,6 @@ const Navbar = () => {
 				<a href="/feedback" className="hover:text-[#FED34C] transition">
 					Feedback
 				</a>
-
 				{user ? (
 					<div className="relative" ref={dropdownRef}>
 						<img
@@ -83,6 +92,63 @@ const Navbar = () => {
 					</button>
 				)}
 			</nav>
+
+			{/* Slide-in Mobile Menu */}
+			<div
+				className={`fixed top-0 right-0 h-full w-64 bg-black text-white z-50 transform transition-transform duration-300 ease-in-out ${
+					menuOpen ? "translate-x-0" : "translate-x-full"
+				}`}>
+				<div className="flex justify-between items-center p-4 border-b border-gray-700">
+					<span className="text-lg font-semibold">Menu</span>
+					<button onClick={() => setMenuOpen(false)}>
+						<X size={24} />
+					</button>
+				</div>
+				<div className="flex flex-col space-y-4 p-6 text-base">
+					<HashLink
+						smooth
+						to="/#faq"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						FAQ
+					</HashLink>
+					<a
+						href="/about"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						About
+					</a>
+					<a
+						href="/feedback"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						Feedback
+					</a>
+					{user ? (
+						<button
+							onClick={handleLogout}
+							className="text-left hover:text-[#FED34C]">
+							Logout
+						</button>
+					) : (
+						<button
+							onClick={() => {
+								setIsModalOpen(true);
+								setMenuOpen(false);
+							}}
+							className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
+							Login
+						</button>
+					)}
+				</div>
+			</div>
+
+			{/* Optional: Backdrop */}
+			{menuOpen && (
+				<div
+					className="fixed inset-0 bg-black bg-opacity-40 z-40"
+					onClick={() => setMenuOpen(false)}></div>
+			)}
 
 			<LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 		</header>
