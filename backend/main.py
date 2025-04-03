@@ -98,7 +98,7 @@ def check_requirements(request: TranscriptRequest):
                 result = check_data_science_major(completed_courses)
             case "mathematical studies":
                 result = math_studies_reqs(completed_courses)
-            case "mathematical studies (business)":
+            case "mathematical studies business specialization":
                 result = math_studies_business_reqs(completed_courses)
             case "mathematical economics":
                 result = check_math_econ_reqs(completed_courses)
@@ -108,9 +108,9 @@ def check_requirements(request: TranscriptRequest):
                 result = check_math_physics_reqs(completed_courses)
             case "pure mathematics":
                 result = check_pmath_major(completed_courses)
-            case "mathematical optimization (business specialization)":
+            case "mathematical optimization business specialization":
                 result = check_math_opt_bus_specialization(completed_courses)
-            case "mathematical optimization (operations research specialization)":
+            case "mathematical optimization operations research specialization":
                 result = check_math_opt_ops_specialization(completed_courses)
             case "mathematics teaching":
                 result = check_math_teaching_major(completed_courses)

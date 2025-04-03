@@ -14,6 +14,10 @@ const Navbar = () => {
 	const dropdownRef = useRef(null);
 
 	useEffect(() => {
+		document.body.style.overflow = menuOpen ? "hidden" : "auto";
+	}, [menuOpen]);
+
+	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
 			setUser(firebaseUser);
 		});
@@ -93,18 +97,19 @@ const Navbar = () => {
 				)}
 			</nav>
 
-			{/* Slide-in Mobile Menu */}
+			{/* Slide-in Mobile Menu (Covers full screen) */}
 			<div
-				className={`fixed top-0 right-0 h-full w-64 bg-black text-white z-50 transform transition-transform duration-300 ease-in-out ${
+				className={`fixed inset-0 bg-black text-white z-50 transition-transform duration-300 ease-in-out transform ${
 					menuOpen ? "translate-x-0" : "translate-x-full"
 				}`}>
-				<div className="flex justify-between items-center p-4 border-b border-gray-700">
-					<span className="text-lg font-semibold">Menu</span>
+				<div className="flex justify-between items-center p-5 border-b border-gray-700">
+					<span className="text-xl font-semibold">Menu</span>
 					<button onClick={() => setMenuOpen(false)}>
-						<X size={24} />
+						<X size={28} />
 					</button>
 				</div>
-				<div className="flex flex-col space-y-4 p-6 text-base">
+
+				<div className="flex flex-col items-center justify-center h-[80vh] space-y-6 text-lg font-medium">
 					<HashLink
 						smooth
 						to="/#faq"
@@ -125,9 +130,7 @@ const Navbar = () => {
 						Feedback
 					</a>
 					{user ? (
-						<button
-							onClick={handleLogout}
-							className="text-left hover:text-[#FED34C]">
+						<button onClick={handleLogout} className="hover:text-[#FED34C]">
 							Logout
 						</button>
 					) : (
@@ -142,15 +145,6 @@ const Navbar = () => {
 					)}
 				</div>
 			</div>
-
-			{/* Optional: Backdrop */}
-			{menuOpen && (
-				<div
-					className="fixed inset-0 bg-black bg-opacity-40 z-40"
-					onClick={() => setMenuOpen(false)}></div>
-			)}
-
-			<LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 		</header>
 	);
 };
