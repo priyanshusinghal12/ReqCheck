@@ -14,10 +14,6 @@ const Navbar = () => {
 	const dropdownRef = useRef(null);
 
 	useEffect(() => {
-		document.body.style.overflow = menuOpen ? "hidden" : "auto";
-	}, [menuOpen]);
-
-	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
 			setUser(firebaseUser);
 		});
@@ -97,52 +93,54 @@ const Navbar = () => {
 				)}
 			</nav>
 
-			{menuOpen && (
-				<div className="fixed inset-0 bg-black z-[9999] text-white flex flex-col">
-					<div className="flex justify-between items-center p-5 border-b border-gray-700">
-						<span className="text-xl font-semibold">Menu</span>
-						<button onClick={() => setMenuOpen(false)}>
-							<X size={28} />
-						</button>
-					</div>
-
-					<div className="flex flex-col items-center justify-center flex-1 space-y-6 text-lg font-medium">
-						<HashLink
-							smooth
-							to="/#faq"
-							onClick={() => setMenuOpen(false)}
-							className="hover:text-[#FED34C]">
-							FAQ
-						</HashLink>
-						<a
-							href="/about"
-							onClick={() => setMenuOpen(false)}
-							className="hover:text-[#FED34C]">
-							About
-						</a>
-						<a
-							href="/feedback"
-							onClick={() => setMenuOpen(false)}
-							className="hover:text-[#FED34C]">
-							Feedback
-						</a>
-						{user ? (
-							<button onClick={handleLogout} className="hover:text-[#FED34C]">
-								Logout
-							</button>
-						) : (
-							<button
-								onClick={() => {
-									setIsModalOpen(true);
-									setMenuOpen(false);
-								}}
-								className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
-								Login
-							</button>
-						)}
-					</div>
+			{/* Mobile Slide-in Menu */}
+			<div
+				className={`fixed top-0 right-0 h-full w-3/4 sm:w-1/2 bg-black text-white z-[9999] transform transition-transform duration-300 ${
+					menuOpen ? "translate-x-0" : "translate-x-full"
+				}`}>
+				<div className="flex justify-between items-center p-5 border-b border-gray-700">
+					<span className="text-xl font-semibold">Menu</span>
+					<button onClick={() => setMenuOpen(false)}>
+						<X size={28} />
+					</button>
 				</div>
-			)}
+
+				<div className="flex flex-col items-start px-6 py-10 space-y-6 text-lg font-medium">
+					<HashLink
+						smooth
+						to="/#faq"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						FAQ
+					</HashLink>
+					<a
+						href="/about"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						About
+					</a>
+					<a
+						href="/feedback"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						Feedback
+					</a>
+					{user ? (
+						<button onClick={handleLogout} className="hover:text-[#FED34C]">
+							Logout
+						</button>
+					) : (
+						<button
+							onClick={() => {
+								setIsModalOpen(true);
+								setMenuOpen(false);
+							}}
+							className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
+							Login
+						</button>
+					)}
+				</div>
+			</div>
 
 			<LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 		</header>
