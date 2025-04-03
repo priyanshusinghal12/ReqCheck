@@ -106,7 +106,7 @@ def check_requirements(request: TranscriptRequest):
             result = check_pmath_major(completed_courses)
         case "mathematical optimization (business specialization)":
             result = check_math_opt_bus_specialization(completed_courses)
-        case "mathematical optimization (operations specialization)":
+        case "mathematical optimization (operations research specialization)":
             result = check_math_opt_ops_specialization(completed_courses)
         case "mathematics teaching":
             result = check_math_teaching_major(completed_courses)
