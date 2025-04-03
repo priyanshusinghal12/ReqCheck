@@ -97,55 +97,53 @@ const Navbar = () => {
 				)}
 			</nav>
 
-			{/* Slide-in Mobile Menu (Full black screen) */}
-			<div
-				className={`fixed inset-0 z-50 bg-black text-white transition-transform duration-300 ease-in-out transform ${
-					menuOpen ? "translate-x-0" : "translate-x-full"
-				}`}
-			>
-				<div className="flex justify-between items-center p-5 border-b border-gray-700">
-					<span className="text-xl font-semibold">Menu</span>
-					<button onClick={() => setMenuOpen(false)}>
-						<X size={28} />
-					</button>
-				</div>
+			{/* Full-screen Mobile Menu Overlay */}
+			{menuOpen && (
+				<div className="fixed inset-0 z-50 bg-black text-white flex flex-col">
+					<div className="flex justify-between items-center p-5 border-b border-gray-700">
+						<span className="text-xl font-semibold">Menu</span>
+						<button onClick={() => setMenuOpen(false)}>
+							<X size={28} />
+						</button>
+					</div>
 
-				<div className="flex flex-col items-center justify-center h-[80vh] space-y-6 text-lg font-medium">
-					<HashLink
-						smooth
-						to="/#faq"
-						onClick={() => setMenuOpen(false)}
-						className="hover:text-[#FED34C]">
-						FAQ
-					</HashLink>
-					<a
-						href="/about"
-						onClick={() => setMenuOpen(false)}
-						className="hover:text-[#FED34C]">
-						About
-					</a>
-					<a
-						href="/feedback"
-						onClick={() => setMenuOpen(false)}
-						className="hover:text-[#FED34C]">
-						Feedback
-					</a>
-					{user ? (
-						<button onClick={handleLogout} className="hover:text-[#FED34C]">
-							Logout
-						</button>
-					) : (
-						<button
-							onClick={() => {
-								setIsModalOpen(true);
-								setMenuOpen(false);
-							}}
-							className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
-							Login
-						</button>
-					)}
+					<div className="flex flex-col items-center justify-center flex-1 space-y-6 text-lg font-medium">
+						<HashLink
+							smooth
+							to="/#faq"
+							onClick={() => setMenuOpen(false)}
+							className="hover:text-[#FED34C]">
+							FAQ
+						</HashLink>
+						<a
+							href="/about"
+							onClick={() => setMenuOpen(false)}
+							className="hover:text-[#FED34C]">
+							About
+						</a>
+						<a
+							href="/feedback"
+							onClick={() => setMenuOpen(false)}
+							className="hover:text-[#FED34C]">
+							Feedback
+						</a>
+						{user ? (
+							<button onClick={handleLogout} className="hover:text-[#FED34C]">
+								Logout
+							</button>
+						) : (
+							<button
+								onClick={() => {
+									setIsModalOpen(true);
+									setMenuOpen(false);
+								}}
+								className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
+								Login
+							</button>
+						)}
+					</div>
 				</div>
-			</div>
+			)}
 
 			<LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 		</header>
