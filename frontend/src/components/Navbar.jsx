@@ -97,7 +97,6 @@ const Navbar = () => {
 				)}
 			</nav>
 
-			{/* Fullscreen Mobile Menu */}
 			{menuOpen && (
 				<div className="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center text-white px-6 transition-opacity duration-300">
 					{/* Close button */}
