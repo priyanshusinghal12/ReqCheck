@@ -99,7 +99,7 @@ const Navbar = () => {
 
 			{/* Slide-in Mobile Menu (Covers full screen) */}
 			<div
-				className={`fixed inset-0 bg-black text-white z-50 transition-transform duration-300 ease-in-out transform ${
+				className={`fixed inset-0 z-50 bg-black text-white transition-transform duration-300 ease-in-out transform ${
 					menuOpen ? "translate-x-0" : "translate-x-full"
 				}`}>
 				<div className="flex justify-between items-center p-5 border-b border-gray-700">
