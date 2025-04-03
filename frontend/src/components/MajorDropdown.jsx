@@ -11,14 +11,14 @@ const majors = [
 	"Mathematical Finance",
 	"Mathematical Physics",
 	"Mathematical Studies",
-	"Mathematical Studies (Business)",
+	"Mathematical Studies (business)",
 	"Actuarial Science",
 	"Applied Mathematics",
 	"Combinatorics and Optimization",
-	"Mathematical Optimization (Business Specialization)",
-	"Mathematical Optimization (Operations Research Specialization)",
+	"Mathematical Optimization (business specialization)",
+	"Mathematical Optimization (operations research specialization)",
 	"Pure Mathematics",
-	"Mathematics/Teaching",
+	"Mathematics Teaching",
 ];
 
 export default function MajorDropdown({
