@@ -1,4 +1,5 @@
 from course_logic.helper import *
+# from helper import *
 
 def check_math_opt_bus_specialization(student_courses):
 
@@ -64,8 +65,7 @@ def check_math_opt_bus_specialization(student_courses):
                      student_courses, reqs)
 
   check_n_from_list("Complete 2 of: AMATH 350, BUS 435W, BUS 445W, BUS 455W, BUS 485W, CS 230, CS 234, MSE 311, MSE 436, STAT 440, STAT 442, STAT 444",
-                    ["ACTSC 231", "AFM 102", "BUS 111W", "BUS 121W", "BUS 252W", "BUS 381W", "CS 338", "ECON 102", "MSE 432", "STAT 371", "STAT 372"],
-                    ,n = 2, student_courses, reqs)
+                    ["ACTSC 231", "AFM 102", "BUS 111W", "BUS 121W", "BUS 252W", "BUS 381W", "CS 338", "ECON 102", "MSE 432", "STAT 371", "STAT 372"], 2, student_courses, reqs)
 
   return reqs
 
