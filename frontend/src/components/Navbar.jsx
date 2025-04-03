@@ -97,9 +97,8 @@ const Navbar = () => {
 				)}
 			</nav>
 
-			{/* Full-screen Mobile Menu Overlay */}
 			{menuOpen && (
-				<div className="fixed inset-0 z-50 bg-black text-white flex flex-col">
+				<div className="fixed inset-0 bg-black z-[9999] text-white flex flex-col">
 					<div className="flex justify-between items-center p-5 border-b border-gray-700">
 						<span className="text-xl font-semibold">Menu</span>
 						<button onClick={() => setMenuOpen(false)}>
