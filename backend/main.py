@@ -72,8 +72,9 @@ class TranscriptUpload(BaseModel):
 # === MAIN ENDPOINT ===
 @app.post("/check-requirements/")
 def check_requirements(request: TranscriptRequest):
-    major = request.major.lower()
+    major = request.major.strip().lower() 
     completed_courses = request.completed_courses
+    print(f"Received major: '{major}'")
 
     match major:
         case "math degree requirements":
@@ -118,6 +119,7 @@ def check_requirements(request: TranscriptRequest):
             return {"error": "Major not supported"}
     
     return {"major": major, "requirements": result}
+
 
 
 # === TRANSCRIPT PARSING ENDPOINT ===

@@ -252,6 +252,7 @@ const Results = () => {
 							setSelectedMajor={setNewMajor}
 							fullWidth={false}
 						/>
+						{console.log(newMajor, setNewMajor)}
 						<button
 							onClick={handleMajorChange}
 							disabled={isLoading}
