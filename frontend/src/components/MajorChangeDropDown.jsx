@@ -1,22 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 
 const majors = [
-	"Actuarial Science",
-	"Applied Mathematics",
-	"Biostatistics",
-	"Combinatorics and Optimization",
-	"Computational Mathematics",
-	"Mathematical Economics",
-	"Mathematical Finance",
-	"Mathematical Optimization",
-	"Mathematical Physics",
-	"Mathematical Studies",
-	"Pure Mathematics",
-	"Statistics",
-	"Mathematics/Teaching",
+	"Math Degree Requirements",
 	"BMath Data Science",
 	"BCS Computer Science",
-	"Math Degree Requirements",
+	"Computational Mathematics",
+	"Statistics",
+	"Biostatistics",
+	"Mathematical Economics",
+	"Mathematical Finance",
+	"Mathematical Physics",
+	"Mathematical Studies",
+	"Mathematical Studies (Business)",
+	"Actuarial Science",
+	"Applied Mathematics",
+	"Combinatorics and Optimization",
+	"Mathematical Optimization (Business Specialization)",
+	"Mathematical Optimization (Operations Research Specialization)",
+	"Pure Mathematics",
+	"Mathematics/Teaching",
 ];
 
 export default function MajorDropdown({
