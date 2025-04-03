@@ -37,11 +37,10 @@ from course_logic.checkCOReqs import check_co_major
 from course_logic.checkCSReqs import check_computer_science_major
 from saveResults import router as save_router
 
-app.include_router(save_router)
-
-
 
 app = FastAPI()
+
+app.include_router(save_router)
 
 
 @app.get("/")
