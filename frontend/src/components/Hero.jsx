@@ -6,27 +6,6 @@ import { useNavigate } from "react-router-dom";
 import MajorDropdown from "./MajorDropdown"; // <- Imported custom dropdown component
 import { toast } from "react-hot-toast";
 
-const majors = [
-	"Actuarial Science",
-	"Applied Mathematics",
-	"Biostatistics",
-	"Combinatorics and Optimization",
-	"Computational Mathematics",
-	"Mathematical Economics",
-	"Mathematical Finance",
-	"Mathematical Optimization (Business Specialization)",
-	"Mathematical Optimization (Operations Research Specialization)",
-	"Mathematical Physics",
-	"Mathematical Studies",
-	"Mathematical Studies (Business)",
-	"Pure Mathematics",
-	"Statistics",
-	"Mathematics/Teaching",
-	"BMath Data Science",
-	"BCS Computer Science",
-	"Math Degree Requirements",
-];
-
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 
 export default function Hero() {

@@ -97,11 +97,12 @@ const Navbar = () => {
 				)}
 			</nav>
 
-			{/* Slide-in Mobile Menu (Covers full screen) */}
+			{/* Slide-in Mobile Menu (Full black screen) */}
 			<div
 				className={`fixed inset-0 z-50 bg-black text-white transition-transform duration-300 ease-in-out transform ${
 					menuOpen ? "translate-x-0" : "translate-x-full"
-				}`}>
+				}`}
+			>
 				<div className="flex justify-between items-center p-5 border-b border-gray-700">
 					<span className="text-xl font-semibold">Menu</span>
 					<button onClick={() => setMenuOpen(false)}>
@@ -145,6 +146,8 @@ const Navbar = () => {
 					)}
 				</div>
 			</div>
+
+			<LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 		</header>
 	);
 };
