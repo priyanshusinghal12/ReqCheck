@@ -113,7 +113,7 @@ export default function Hero() {
 	};
 
 	return (
-		<section className="relative min-h-[95vh] pt-24 flex items-center justify-center text-white text-center overflow-visible bg-black px-4 pb-10">
+		<section className="relative z-0 min-h-[95vh] pt-24 flex items-center justify-center text-white text-center overflow-visible bg-black px-4 pb-10">
 			<ParticlesBackground />
 			<motion.div className="relative z-10 w-full max-w-2xl flex flex-col items-center">
 				<motion.h1 className="text-5xl sm:text-6xl font-medium mb-4">
