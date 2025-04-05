@@ -263,7 +263,7 @@ const Results = () => {
 			{/* Custom Save Modal */}
 			{showNameModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
-					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg border border-[#FED34C] max-w-sm w-full">
+					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-sm w-full">
 						<h2 className="text-lg font-semibold mb-3 text-white">
 							Save Your Results
 						</h2>
@@ -381,7 +381,7 @@ const Results = () => {
 						<button
 							onClick={handleMajorChange}
 							disabled={isLoading}
-							className={`bg-white text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200 ${
+							className={`bg-[#FED34C] text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200 ${
 								isLoading ? "opacity-60 cursor-not-allowed" : ""
 							}`}>
 							{isLoading ? (
@@ -405,15 +405,15 @@ const Results = () => {
 						: renderRequirements(results.requirements)}
 				</div>
 
-				<div className="mt-6 flex items-center justify-end">
+				<div className="mt-6 flex items-center justify-end gap-x-4">
 					<button
 						onClick={() => setShowNameModal(true)}
-						className="bg-[#FED34C] text-black font-semibold px-5 py-2 rounded-lg hover:bg-yellow-400 transition">
+						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
 						Save My Results
 					</button>
 					<button
-						onClick={() => setShowCourseEditModal(true)}
-						className="border border-white text-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-black transition mr-4">
+						onClick={() => setShowEditCoursesModal(true)}
+						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
 						Edit My Courses
 					</button>
 				</div>
