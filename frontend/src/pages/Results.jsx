@@ -280,13 +280,13 @@ const Results = () => {
 						: renderRequirements(results.requirements)}
 				</div>
 
-				<div className="mt-6 flex items-center justify-end">
+				{/* <div className="mt-6 flex items-center justify-end">
 					<button
 						onClick={handleSaveResults}
 						className="bg-[#FED34C] text-black font-semibold px-5 py-2 rounded-lg hover:bg-yellow-400 transition">
 						Save My Results
 					</button>
-				</div>
+				</div> */}
 
 				{/* What-If */}
 				<div className="mt-10">
