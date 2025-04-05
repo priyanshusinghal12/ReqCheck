@@ -31,17 +31,17 @@ const faqs = [
 	{
 		question: "How does saving my results work?",
 		answer:
-			"Once you log in with your custom email or google account, you can save your current or even other requirement results—including What-If simulations. To keep your original transcript results, click 'Reset to Original' before saving again. Everything is securely stored and tied to your account for future access.",
+			"Once you log in with your custom account you can create or your google account, you can save your current or even other requirement results—including What-If simulations. To keep your original transcript results, click 'Reset to Original' before saving again. Your results are securely stored and tied to your account for future access.",
 	},
 	{
 		question: "Can I change my major or edit my courses later?",
 		answer:
-			"Yes! you can use the change major and edit courses buttons on the results page or you can just come back and change your major!",
+			"Yes! You can use the change major and edit courses buttons on the results page or you can just come back and change your major!",
 	},
 	{
 		question: "Which majors can I check?",
 		answer:
-			"Currently, you can check majors under the Honours Mathematics program; we're working to integrate more options.",
+			"Currently, you can check majors under the Math Faculty; we're working to integrate more options.",
 	},
 ];
 

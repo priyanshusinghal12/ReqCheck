@@ -274,7 +274,7 @@ const Results = () => {
 						</h2>
 						<input
 							type="text"
-							placeholder="e.g. Fall 2024 Audit"
+							placeholder="e.g. Fall 2024 Transcript Results"
 							className="w-full p-2 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
 							value={tempSaveName}
 							onChange={(e) => setTempSaveName(e.target.value)}

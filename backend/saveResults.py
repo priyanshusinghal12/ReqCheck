@@ -93,6 +93,7 @@ async def get_saved_results(Authorization: str = Header(...)):
         return JSONResponse(status_code=401, content={"status": "error", "message": str(e)})
     
     
+    
 @router.patch("/edit-result-name/")
 async def edit_result_name(req: EditNameRequest):
     try:
@@ -136,3 +137,14 @@ async def delete_result(req: DeleteResultRequest):
 
     except Exception as e:
         return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})
+
+
+@router.delete("/delete-account/")
+def delete_account(request: Request, id_token: str = Body(...)):
+    try:
+        decoded_token = auth.verify_id_token(id_token)
+        user_id = decoded_token["uid"]
+        db.collection("users").document(user_id).delete()
+        return {"status": "success"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}

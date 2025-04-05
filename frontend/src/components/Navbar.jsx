@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import LoginModal from "./LoginModal";
 import defaultUserIcon from "../assets/Sample_User_Icon.png";
 import { Menu, X } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
 	const [user, setUser] = useState(null);
@@ -34,11 +35,39 @@ const Navbar = () => {
 		signOut(auth);
 		setShowDropdown(false);
 		setMenuOpen(false);
+		toast.success("Logged out.");
+	};
+
+	const handleDeleteAccount = async () => {
+		try {
+			const user = auth.currentUser;
+			if (!user) return toast.error("Not logged in.");
+			const idToken = await user.getIdToken();
+
+			const res = await fetch(
+				`${import.meta.env.VITE_BACKEND_URL}/delete-account/`,
+				{
+					method: "DELETE",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ id_token: idToken }),
+				}
+			);
+
+			const data = await res.json();
+			if (data.status === "success") {
+				await user.delete();
+				toast.success("Account deleted.");
+				setUser(null);
+			} else {
+				toast.error(data.message || "Failed to delete account.");
+			}
+		} catch (err) {
+			toast.error("Error deleting account.");
+		}
 	};
 
 	return (
 		<>
-			{/* Main Transparent Navbar */}
 			<header className="fixed top-0 w-full z-50 px-6 py-5 flex justify-between items-center backdrop-blur-sm bg-transparent">
 				<a
 					href="/"
@@ -46,7 +75,7 @@ const Navbar = () => {
 					<span style={{ color: "#FED34C" }}>Req</span>Check
 				</a>
 
-				{/* Hamburger Icon (Mobile only) */}
+				{/* Hamburger Icon */}
 				<div className="md:hidden">
 					<button onClick={() => setMenuOpen(true)} className="text-white">
 						<Menu size={28} />
@@ -61,10 +90,10 @@ const Navbar = () => {
 						className="hover:text-[#FED34C] transition">
 						FAQ
 					</HashLink>
-					<a href="/about" className="hover:text-[#FED34C] transition">
+					<a href="/about" className="hover:text-[#FED34C]">
 						About
 					</a>
-					<a href="/feedback" className="hover:text-[#FED34C] transition">
+					<a href="/feedback" className="hover:text-[#FED34C]">
 						Feedback
 					</a>
 					{user ? (
@@ -76,7 +105,7 @@ const Navbar = () => {
 								onClick={() => setShowDropdown((prev) => !prev)}
 							/>
 							{showDropdown && (
-								<div className="absolute right-0 mt-2 w-32 bg-[#1A1A1A] border border-gray-700 rounded-md shadow-lg py-2 z-50">
+								<div className="absolute right-0 mt-2 w-40 bg-[#1A1A1A] border border-gray-700 rounded-md shadow-lg py-2 z-50">
 									<p className="text-sm text-center px-3 py-1 text-white truncate">
 										{user.displayName || user.email}
 									</p>
@@ -89,8 +118,13 @@ const Navbar = () => {
 									<hr className="border-gray-600 my-1" />
 									<button
 										onClick={handleLogout}
-										className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#333] transition">
+										className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#333]">
 										Logout
+									</button>
+									<button
+										onClick={handleDeleteAccount}
+										className="block w-full text-left px-4 py-2 text-sm text-red-500 hover:text-red-600">
+										Delete Account
 									</button>
 								</div>
 							)}
@@ -105,7 +139,7 @@ const Navbar = () => {
 				</nav>
 			</header>
 
-			{/* Mobile Menu Overlay (Solid Black) */}
+			{/* Mobile Menu Overlay */}
 			<div
 				className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
 					menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -113,7 +147,7 @@ const Navbar = () => {
 				onClick={() => setMenuOpen(false)}
 			/>
 
-			{/* Mobile Menu Panel (Solid Black) */}
+			{/* Mobile Menu Panel */}
 			<div
 				className={`fixed top-0 right-0 h-full w-64 bg-black text-white z-50 transform transition-transform duration-300 ease-in-out ${
 					menuOpen ? "translate-x-0" : "translate-x-full"
@@ -144,24 +178,27 @@ const Navbar = () => {
 						className="hover:text-[#FED34C]">
 						Feedback
 					</a>
-
-					{/* Show this if user is signed in */}
 					{user && (
-						<a
-							href="/saved"
-							onClick={() => setMenuOpen(false)}
-							className="hover:text-[#FED34C]">
-							See Your Results
-						</a>
+						<>
+							<a
+								href="/saved"
+								onClick={() => setMenuOpen(false)}
+								className="hover:text-[#FED34C]">
+								See Your Results
+							</a>
+							<button
+								onClick={handleLogout}
+								className="text-left hover:text-[#FED34C]">
+								Logout
+							</button>
+							<button
+								onClick={handleDeleteAccount}
+								className="text-left text-red-500 hover:text-red-600">
+								Delete Account
+							</button>
+						</>
 					)}
-
-					{user ? (
-						<button
-							onClick={handleLogout}
-							className="text-left hover:text-[#FED34C]">
-							Logout
-						</button>
-					) : (
+					{!user && (
 						<button
 							onClick={() => {
 								setIsModalOpen(true);

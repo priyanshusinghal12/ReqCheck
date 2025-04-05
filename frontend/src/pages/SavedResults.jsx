@@ -13,13 +13,13 @@ const SavedResults = () => {
 	const [expandedIndexes, setExpandedIndexes] = useState([]);
 	const [editIndex, setEditIndex] = useState(null);
 	const [tempEditName, setTempEditName] = useState("");
+	const [showDeleteModal, setShowDeleteModal] = useState(null);
 
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged(async (user) => {
 			if (!user) {
-				console.warn("⚠️ No user logged in");
 				setLoading(false);
 				return;
 			}
@@ -40,7 +40,7 @@ const SavedResults = () => {
 				);
 				setSavedList(sorted);
 			} else {
-				console.error("Failed to load saved results");
+				toast.error("Failed to load saved results.");
 			}
 
 			setLoading(false);
@@ -61,79 +61,77 @@ const SavedResults = () => {
 	};
 
 	const submitEditName = async () => {
-		const user = auth.currentUser;
-		if (!user) return toast.error("You must be logged in.");
-		const token = await user.getIdToken();
+		try {
+			const user = auth.currentUser;
+			if (!user) return toast.error("You must be logged in.");
+			const token = await user.getIdToken();
 
-		const res = await fetch(
-			`${import.meta.env.VITE_BACKEND_URL}/edit-result-name/`,
-			{
-				method: "PATCH",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					id_token: token,
-					index: editIndex,
-					new_name: tempEditName,
-				}),
+			const res = await fetch(
+				`${import.meta.env.VITE_BACKEND_URL}/edit-result-name/`,
+				{
+					method: "PATCH",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						id_token: token,
+						index: editIndex,
+						new_name: tempEditName,
+					}),
+				}
+			);
+
+			const data = await res.json();
+			if (data.status === "success") {
+				toast.success("Name updated.");
+				setSavedList((prev) => {
+					const updated = [...prev];
+					updated[editIndex].name = tempEditName;
+					return updated;
+				});
+				setEditIndex(null);
+			} else {
+				toast.error("Update failed.");
 			}
-		);
-
-		const data = await res.json();
-		if (data.status === "success") {
-			toast.success("Name updated.");
-			setSavedList((prev) => {
-				const updated = [...prev];
-				updated[editIndex].name = tempEditName;
-				return updated;
-			});
-			setEditIndex(null);
-		} else {
-			toast.error("Update failed.");
-			console.error(data.message);
+		} catch (e) {
+			toast.error("Something went wrong.");
 		}
 	};
 
 	const handleDelete = async (index) => {
-		const confirmDelete = window.confirm(
-			"Are you sure you want to delete this result?"
-		);
-		if (!confirmDelete) return;
+		setShowDeleteModal(null);
+		try {
+			const user = auth.currentUser;
+			if (!user) return toast.error("You must be logged in.");
+			const token = await user.getIdToken();
 
-		const user = auth.currentUser;
-		if (!user) return toast.error("You must be logged in.");
-		const token = await user.getIdToken();
+			const res = await fetch(
+				`${import.meta.env.VITE_BACKEND_URL}/delete-result/`,
+				{
+					method: "DELETE",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ id_token: token, index }),
+				}
+			);
 
-		const res = await fetch(
-			`${import.meta.env.VITE_BACKEND_URL}/delete-result/`,
-			{
-				method: "DELETE",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ id_token: token, index }),
+			const data = await res.json();
+			if (data.status === "success") {
+				toast.success("Result deleted.");
+				setSavedList((prev) => prev.filter((_, i) => i !== index));
+			} else {
+				toast.error("Failed to delete.");
 			}
-		);
-
-		const data = await res.json();
-		if (data.status === "success") {
-			toast.success("Result deleted.");
-			setSavedList((prev) => prev.filter((_, i) => i !== index));
-		} else {
-			toast.error("Failed to delete.");
-			console.error(data.message);
+		} catch (e) {
+			toast.error("Error deleting result.");
 		}
 	};
 
 	const handleLoadToResults = (result) => {
 		window.scrollTo({ top: 0, behavior: "smooth" });
-
 		const reconstructedRequirements = {};
-		if (Array.isArray(result.requirements)) {
-			result.requirements.forEach((req) => {
-				if (req?.name) {
-					reconstructedRequirements[req.name] = [req.met, req.courses || []];
-				}
-			});
-		}
-
+		result.requirements?.forEach((req) => {
+			if (req?.name) {
+				reconstructedRequirements[req.name] = [req.met, req.courses || []];
+			}
+		});
 		navigate("/results", {
 			state: {
 				results: {
@@ -148,13 +146,14 @@ const SavedResults = () => {
 	const capitalizeWords = (str) =>
 		str
 			.split(" ")
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
 			.join(" ");
 
 	return (
 		<>
 			<Navbar />
 			<ParticlesBackground />
+
 			{editIndex !== null && (
 				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
 					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg border border-gray-600 max-w-sm w-full">
@@ -182,9 +181,33 @@ const SavedResults = () => {
 				</div>
 			)}
 
+			{showDeleteModal !== null && (
+				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg border border-gray-600 max-w-sm w-full">
+						<h2 className="text-lg font-semibold mb-3 text-white">
+							Delete Result
+						</h2>
+						<p className="text-sm text-gray-300 mb-4">
+							Are you sure you want to permanently delete this saved result?
+						</p>
+						<div className="mt-4 flex justify-end gap-3">
+							<button
+								onClick={() => setShowDeleteModal(null)}
+								className="text-gray-300 hover:text-white">
+								Cancel
+							</button>
+							<button
+								onClick={() => handleDelete(showDeleteModal)}
+								className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700">
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
 				<h1 className="text-3xl font-bold mb-6">Your Saved Results</h1>
-
 				{loading ? (
 					<p className="text-white">Loading...</p>
 				) : savedList.length === 0 ? (
@@ -229,7 +252,7 @@ const SavedResults = () => {
 												<FaPen />
 											</button>
 											<button
-												onClick={() => handleDelete(index)}
+												onClick={() => setShowDeleteModal(index)}
 												className="bg-gray-800 border border-gray-600 px-3 py-1 rounded text-white hover:bg-gray-700">
 												<FaTrash />
 											</button>

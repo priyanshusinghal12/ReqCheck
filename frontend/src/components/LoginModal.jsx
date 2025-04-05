@@ -4,8 +4,10 @@ import {
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
 	signInWithPopup,
+	sendPasswordResetEmail,
 } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 
 const LoginModal = ({ isOpen, onClose }) => {
 	const [email, setEmail] = useState("");
@@ -17,25 +19,41 @@ const LoginModal = ({ isOpen, onClose }) => {
 		try {
 			if (isSignup) {
 				await createUserWithEmailAndPassword(auth, email, password);
+				toast.success("Account created successfully!");
 			} else {
 				await signInWithEmailAndPassword(auth, email, password);
+				toast.success("Logged in successfully!");
 			}
 			onClose();
 		} catch (err) {
 			setError(err.message);
+			toast.error("Authentication failed. Please check your credentials.");
 		}
 	};
 
 	const handleGoogleSignIn = async () => {
 		try {
 			await signInWithPopup(auth, provider);
+			toast.success("Logged in with Google!");
 			onClose();
 		} catch (err) {
-			console.error("Google login error:", err);
+			toast.error("Google login failed.");
 		}
 	};
 
-	// Add the return statement here
+	const handleForgotPassword = async () => {
+		if (!email) {
+			toast.error("Enter your email to reset your password.");
+			return;
+		}
+		try {
+			await sendPasswordResetEmail(auth, email);
+			toast.success("Password reset email sent.");
+		} catch (err) {
+			toast.error("Failed to send reset email.");
+		}
+	};
+
 	return (
 		<AnimatePresence initial={false}>
 			{isOpen && (
@@ -60,7 +78,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 
 							<input
 								type="email"
-								placeholder="Email"
+								placeholder="abc@example.com"
 								className="w-full text-lg p-4 mb-4 bg-[#111] border border-gray-700 rounded text-white"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
@@ -89,6 +107,13 @@ const LoginModal = ({ isOpen, onClose }) => {
 									className="text-[#FED34C] cursor-pointer underline"
 									onClick={() => setIsSignup(!isSignup)}>
 									{isSignup ? "Log in here" : "Sign up here"}
+								</span>
+							</p>
+							<p className="text-sm text-gray-400 mt-2 text-center">
+								<span
+									className="text-yellow-400 hover:underline cursor-pointer"
+									onClick={handleForgotPassword}>
+									Forgot your password?
 								</span>
 							</p>
 
