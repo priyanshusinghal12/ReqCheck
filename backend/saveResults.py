@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 from pydantic import BaseModel
-from typing import List, Dict, Any
+from typing import List
 from fastapi.responses import JSONResponse
 import os, json, firebase_admin
 from firebase_admin import credentials, auth, firestore
@@ -21,12 +21,19 @@ except ValueError:
 db = firestore.client()
 router = APIRouter()
 
+# === Pydantic Models ===
+class Requirement(BaseModel):
+    name: str
+    met: bool
+    courses: List[str]
+
 class SaveResultRequest(BaseModel):
     id_token: str
     major: str
     completed_courses: List[str]
-    requirements: Dict[str, Any]
+    requirements: List[Requirement]
 
+# === POST: Save Results ===
 @router.post("/save-results/")
 async def save_results(req: SaveResultRequest):
     try:
@@ -38,7 +45,7 @@ async def save_results(req: SaveResultRequest):
             "timestamp": timestamp,
             "major": req.major,
             "completed_courses": req.completed_courses,
-            "requirements": json.loads(json.dumps(req.requirements))
+            "requirements": [r.dict() for r in req.requirements]
         }
 
         user_ref = db.collection("users").document(uid)
@@ -52,6 +59,7 @@ async def save_results(req: SaveResultRequest):
     except Exception as e:
         return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})
 
+# === GET: Get Saved Results ===
 @router.get("/get-saved-results/")
 async def get_saved_results(Authorization: str = Header(...)):
     try:

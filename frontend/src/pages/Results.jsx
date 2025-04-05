@@ -61,7 +61,13 @@ const Results = () => {
 						id_token: idToken,
 						major: results.major,
 						completed_courses: results.completed_courses,
-						requirements: results.requirements,
+						requirements: Object.entries(results.requirements).map(
+							([name, [met, courses]]) => ({
+								name,
+								met,
+								courses,
+							})
+						),
 					}),
 				}
 			);
