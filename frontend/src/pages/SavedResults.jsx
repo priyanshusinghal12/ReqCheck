@@ -8,26 +8,41 @@ const SavedResults = () => {
 
 	useEffect(() => {
 		const fetchSaved = async () => {
+			console.log("⏳ fetchSaved started");
+
 			const user = auth.currentUser;
-			if (!user) return;
+			if (!user) {
+				console.log("⚠️ No user logged in");
+				setLoading(false);
+				return;
+			}
 
 			const token = await user.getIdToken();
+			console.log("🔐 Got token:", token?.slice(0, 10) + "...");
 
-			const response = await fetch(
-				`${import.meta.env.VITE_BACKEND_URL}/get-saved-results/`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-
-			const data = await response.json();
-			if (data?.status === "success" && Array.isArray(data.results)) {
-				const sorted = [...data.results].sort(
-					(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+			try {
+				const response = await fetch(
+					`${import.meta.env.VITE_BACKEND_URL}/get-saved-results/`,
+					{
+						headers: { Authorization: `Bearer ${token}` },
+					}
 				);
-				setSavedList(sorted);
-			} else {
-				console.error("Failed to load saved results");
+
+				console.log("📡 Response status:", response.status);
+				const data = await response.json();
+				console.log("📦 Fetched data:", data);
+
+				if (data?.status === "success" && Array.isArray(data.results)) {
+					const sorted = [...data.results].sort(
+						(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+					);
+					setSavedList(sorted);
+					console.log("✅ Saved list set:", sorted);
+				} else {
+					console.warn("⚠️ Failed to load saved results:", data);
+				}
+			} catch (err) {
+				console.error("❌ Error fetching saved results:", err);
 			}
 
 			setLoading(false);
