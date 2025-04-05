@@ -4,13 +4,19 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { FaTrash, FaPen } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
+
+// Helper function to capitalize majors
+const capitalize = (str) =>
+	str
+		.split(" ")
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(" ");
 
 const SavedResults = () => {
 	const [savedList, setSavedList] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [expandedIndexes, setExpandedIndexes] = useState([]);
-	const [showNameModal, setShowNameModal] = useState(false);
-	const [tempSaveName, setTempSaveName] = useState("");
 
 	const navigate = useNavigate();
 
@@ -58,7 +64,7 @@ const SavedResults = () => {
 		if (!user) return toast.error("You must be logged in.");
 
 		const newName = prompt("Enter a new name:");
-		if (!newName) return;
+		if (!newName || newName.trim() === "") return;
 
 		const token = await user.getIdToken();
 		const res = await fetch(
@@ -114,8 +120,6 @@ const SavedResults = () => {
 	};
 
 	const handleLoadToResults = (result) => {
-		window.scrollTo({ top: 0, behavior: "smooth" });
-
 		const reconstructedRequirements = {};
 		if (Array.isArray(result.requirements)) {
 			result.requirements.forEach((req) => {
