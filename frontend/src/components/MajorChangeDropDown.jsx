@@ -16,7 +16,7 @@ const majors = [
 	"Applied Mathematics",
 	"Combinatorics and Optimization",
 	"Mathematical Optimization Business Specialization",
-	"Mathematical Optimization Operations Research Specialization)",
+	"Mathematical Optimization Operations Research Specialization",
 	"Pure Mathematics",
 	"Mathematics Teaching",
 ];
