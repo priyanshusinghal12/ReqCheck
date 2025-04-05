@@ -19,6 +19,27 @@ export default function Hero() {
 
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		if (showModal) {
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		}
+	}, [showModal]);
+
+	useEffect(() => {
+		const savedMajor = sessionStorage.getItem("selectedMajor");
+		const savedCourses = sessionStorage.getItem("manualCourses");
+		if (savedMajor) setSelectedMajor(savedMajor);
+		if (savedCourses) setManualCourses(savedCourses);
+	}, []);
+
+	useEffect(() => {
+		sessionStorage.setItem("selectedMajor", selectedMajor);
+	}, [selectedMajor]);
+
+	useEffect(() => {
+		sessionStorage.setItem("manualCourses", manualCourses);
+	}, [manualCourses]);
+
 	const handleFileChange = async (event) => {
 		const file = event.target.files[0];
 		if (file && file.type === "application/pdf") {
