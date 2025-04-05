@@ -1,26 +1,27 @@
 import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
 import Navbar from "../components/Navbar";
+
+
 
 const SavedResults = () => {
 	const [savedList, setSavedList] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const fetchSaved = async () => {
-			console.log("⏳ fetchSaved started");
+		console.log("fetchSaved started");
 
-			const user = auth.currentUser;
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
 			if (!user) {
-				console.log("⚠️ No user logged in");
+				console.warn("No user logged in");
 				setLoading(false);
 				return;
 			}
 
-			const token = await user.getIdToken();
-			console.log("🔐 Got token:", token?.slice(0, 10) + "...");
-
 			try {
+				const token = await user.getIdToken();
+
 				const response = await fetch(
 					`${import.meta.env.VITE_BACKEND_URL}/get-saved-results/`,
 					{
@@ -28,27 +29,24 @@ const SavedResults = () => {
 					}
 				);
 
-				console.log("📡 Response status:", response.status);
 				const data = await response.json();
-				console.log("📦 Fetched data:", data);
 
 				if (data?.status === "success" && Array.isArray(data.results)) {
 					const sorted = [...data.results].sort(
 						(a, b) => new Date(b.timestamp) - new Date(a.timestamp)
 					);
 					setSavedList(sorted);
-					console.log("✅ Saved list set:", sorted);
 				} else {
-					console.warn("⚠️ Failed to load saved results:", data);
+					console.error("Failed to load saved results");
 				}
 			} catch (err) {
-				console.error("❌ Error fetching saved results:", err);
+				console.error("Error fetching saved results", err);
+			} finally {
+				setLoading(false);
 			}
+		});
 
-			setLoading(false);
-		};
-
-		fetchSaved();
+		return () => unsubscribe();
 	}, []);
 
 	if (loading)
