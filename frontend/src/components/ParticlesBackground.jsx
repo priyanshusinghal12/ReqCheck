@@ -38,7 +38,7 @@ const ParticlesBackground = () => {
 	return (
 		<div
 			id="particles-js"
-			className="absolute inset-0 w-full h-full pointer-events-none z-[-10]"
+			className="absolute inset-0 w-full h-full pointer-events-none z-0"
 		/>
 	);
 };
