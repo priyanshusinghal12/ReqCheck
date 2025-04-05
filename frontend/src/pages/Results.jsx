@@ -386,7 +386,7 @@ const Results = () => {
 						<button
 							onClick={handleMajorChange}
 							disabled={isLoading}
-							className={`bg-[#FED34C] text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200 ${
+							className={`bg-white text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200 ${
 								isLoading ? "opacity-60 cursor-not-allowed" : ""
 							}`}>
 							{isLoading ? (

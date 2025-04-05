@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+// Hero.jsx
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
 import ParticlesBackground from "./ParticlesBackground";
 import { useNavigate } from "react-router-dom";
-import MajorDropdown from "./MajorDropdown"; // <- Imported custom dropdown component
+import MajorDropdown from "./MajorDropdown";
 import { toast } from "react-hot-toast";
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
@@ -19,19 +20,25 @@ export default function Hero() {
 
 	const navigate = useNavigate();
 
+	// Scroll to top on modal open
 	useEffect(() => {
-		if (showModal) {
-			window.scrollTo({ top: 0, behavior: "smooth" });
-		}
+		if (showModal) window.scrollTo({ top: 0, behavior: "smooth" });
 	}, [showModal]);
 
+	// Load saved session state
 	useEffect(() => {
 		const savedMajor = sessionStorage.getItem("selectedMajor");
 		const savedCourses = sessionStorage.getItem("manualCourses");
+		const savedParsedCourses = sessionStorage.getItem("parsedCourses");
+		const savedFilename = sessionStorage.getItem("transcriptFilename");
+
 		if (savedMajor) setSelectedMajor(savedMajor);
 		if (savedCourses) setManualCourses(savedCourses);
+		if (savedParsedCourses) setFileContent(JSON.parse(savedParsedCourses));
+		if (savedFilename) setSelectedFile({ name: savedFilename });
 	}, []);
 
+	// Save state on change
 	useEffect(() => {
 		sessionStorage.setItem("selectedMajor", selectedMajor);
 	}, [selectedMajor]);
@@ -42,8 +49,10 @@ export default function Hero() {
 
 	const handleFileChange = async (event) => {
 		const file = event.target.files[0];
-		if (file && file.type === "application/pdf") {
+		if (file?.type === "application/pdf") {
 			setSelectedFile(file);
+			sessionStorage.setItem("transcriptFilename", file.name);
+
 			const reader = new FileReader();
 			reader.onload = async () => {
 				try {
@@ -58,7 +67,8 @@ export default function Hero() {
 					);
 					const data = await response.json();
 					setFileContent(data.courses);
-				} catch (error) {
+					sessionStorage.setItem("parsedCourses", JSON.stringify(data.courses));
+				} catch {
 					toast.error("Failed to parse transcript.");
 				}
 			};
@@ -68,13 +78,17 @@ export default function Hero() {
 		}
 	};
 
+	const handleClearTranscript = () => {
+		setSelectedFile(null);
+		setFileContent(null);
+		sessionStorage.removeItem("parsedCourses");
+		sessionStorage.removeItem("transcriptFilename");
+	};
+
 	const handleGoClick = async (courses) => {
 		setIsLoading(true);
-
-		if (!selectedMajor || !courses || courses.length === 0) {
-			toast.error(
-				"Please select a major and/or provide courses/upload transcript."
-			);
+		if (!selectedMajor || !courses?.length) {
+			toast.error("Please select a major and/or provide courses.");
 			setIsLoading(false);
 			return;
 		}
@@ -105,9 +119,9 @@ export default function Hero() {
 					},
 				});
 			}
-		} catch (error) {
+		} catch (err) {
+			console.error(err);
 			toast.error("Failed to fetch requirements.");
-			console.error(error);
 		}
 		setIsLoading(false);
 	};
@@ -123,10 +137,8 @@ export default function Hero() {
 
 		setBadCourses(invalid);
 
-		if (valid.length === 0) {
-			toast.error(
-				"Please enter at least one valid course (e.g. CS 136L or ECON 201)"
-			);
+		if (!valid.length) {
+			toast.error("Please enter at least one valid course (e.g. CS 136L)");
 			return;
 		}
 
@@ -161,7 +173,10 @@ export default function Hero() {
 						className={`px-4 py-2 rounded-lg font-semibold ${
 							showModal ? "border border-[#FED34C]" : "border border-[#333]"
 						} bg-[#1A1A1A] text-white`}
-						onClick={() => setShowModal(true)}>
+						onClick={() => {
+							setShowModal(true);
+							sessionStorage.setItem("selectedMajor", selectedMajor);
+						}}>
 						Enter Courses Manually
 					</button>
 				</div>
@@ -179,7 +194,6 @@ export default function Hero() {
 							/>
 						</motion.label>
 
-						{/* 💡 MajorDropdown used here */}
 						<MajorDropdown
 							selectedMajor={selectedMajor}
 							setSelectedMajor={setSelectedMajor}
@@ -207,13 +221,19 @@ export default function Hero() {
 				)}
 
 				{selectedFile && !showModal && (
-					<p className="mt-3 text-sm text-gray-400">
-						Selected: {selectedFile.name}
-					</p>
+					<div className="mt-3 text-sm text-gray-400 flex items-center gap-2">
+						<p>Selected: {selectedFile.name}</p>
+						<button
+							onClick={handleClearTranscript}
+							className="text-red-400 hover:text-red-600 focus:outline-none"
+							title="Remove file">
+							<FaTimes />
+						</button>
+					</div>
 				)}
 			</motion.div>
 
-			{/* FAQ Button */}
+			{/* FAQ Bounce Button */}
 			<a
 				href="#faq"
 				className="absolute bottom-6 right-6 text-white text-xl sm:text-sm flex flex-col items-center animate-bounce hover:text-[#FED34C] transition-colors duration-300">
@@ -232,7 +252,7 @@ export default function Hero() {
 				</svg>
 			</a>
 
-			{/* Modal */}
+			{/* Manual Entry Modal */}
 			{showModal && (
 				<div className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50">
 					<div className="bg-[#121212] rounded-lg p-6 w-[90%] max-w-lg shadow-2xl relative">
