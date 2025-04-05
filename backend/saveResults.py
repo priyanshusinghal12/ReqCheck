@@ -22,7 +22,7 @@ db = firestore.client()
 router = APIRouter()
 
 # === Pydantic Models ===
-class Requirement(BaseModel):
+class RequirementItem(BaseModel):
     name: str
     met: bool
     courses: List[str]
@@ -30,8 +30,10 @@ class Requirement(BaseModel):
 class SaveResultRequest(BaseModel):
     id_token: str
     major: str
+    name: str
     completed_courses: List[str]
-    requirements: List[Requirement]
+    requirements: List[RequirementItem]
+
 
 # === POST: Save Results ===
 @router.post("/save-results/")
@@ -43,9 +45,10 @@ async def save_results(req: SaveResultRequest):
 
         result_data = {
             "timestamp": timestamp,
+            "name": req.name,
             "major": req.major,
             "completed_courses": req.completed_courses,
-            "requirements": [r.dict() for r in req.requirements]
+            "requirements": req.requirements
         }
 
         user_ref = db.collection("users").document(uid)

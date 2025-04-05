@@ -44,6 +44,10 @@ const Results = () => {
 	);
 
 	const handleSaveResults = async () => {
+		// Prompt user
+		const name = prompt("Give a name to this save (e.g. 'Fall 2024 Audit'):");
+		if (!name) return;
+
 		try {
 			const user = auth.currentUser;
 			if (!user) {
@@ -59,6 +63,7 @@ const Results = () => {
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						id_token: idToken,
+						name: name,
 						major: results.major,
 						completed_courses: results.completed_courses,
 						requirements: Object.entries(results.requirements).map(
