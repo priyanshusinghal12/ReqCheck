@@ -18,7 +18,12 @@ const Results = () => {
 	const [newlyFulfilledKeys, setNewlyFulfilledKeys] = useState([]);
 	const [updatedKeys, setUpdatedKeys] = useState([]);
 	const [newMajor, setNewMajor] = useState(initialResults?.major || "");
-	const [errorMessage, setErrorMessage] = useState("");
+	const [showNameModal, setShowNameModal] = useState(false);
+	const [tempSaveName, setTempSaveName] = useState("");
+	const [showCourseEditModal, setShowCourseEditModal] = useState(false);
+	const [editedCoursesText, setEditedCoursesText] = useState(
+		results?.completed_courses?.join(", ") || ""
+	);
 
 	const whatIfRef = useRef(null);
 
@@ -43,11 +48,7 @@ const Results = () => {
 		results.requirements
 	);
 
-	const handleSaveResults = async () => {
-		// Prompt user
-		const name = prompt("Give a name to this save (e.g. 'Fall 2024 Audit'):");
-		if (!name) return;
-
+	const handleSaveResults = async (name) => {
 		try {
 			const user = auth.currentUser;
 			if (!user) {
@@ -56,6 +57,17 @@ const Results = () => {
 			}
 			const idToken = await user.getIdToken();
 
+			const dataToSave = showWhatIf
+				? {
+						requirements: whatIfResults,
+						completed_courses: [
+							...results.completed_courses,
+							...whatIfText.split(",").map((c) => c.trim().toUpperCase()),
+						],
+						major: results.major,
+				  }
+				: results;
+
 			const response = await fetch(
 				`${import.meta.env.VITE_BACKEND_URL}/save-results/`,
 				{
@@ -63,10 +75,10 @@ const Results = () => {
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						id_token: idToken,
-						name: name,
-						major: results.major,
-						completed_courses: results.completed_courses,
-						requirements: Object.entries(results.requirements).map(
+						name,
+						major: dataToSave.major,
+						completed_courses: dataToSave.completed_courses,
+						requirements: Object.entries(dataToSave.requirements).map(
 							([name, [met, courses]]) => ({
 								name,
 								met,
@@ -78,15 +90,14 @@ const Results = () => {
 			);
 
 			const data = await response.json();
-
 			if (data.status === "success") {
-				toast.success("Results saved to your account!");
+				toast.success("Saved successfully!");
 			} else {
-				toast.error("Failed to save results.");
+				toast.error("Failed to save.");
 				console.error(data.message);
 			}
 		} catch (error) {
-			toast.error("Something went wrong while saving.");
+			toast.error("Something went wrong.");
 			console.error(error);
 		}
 	};
@@ -248,6 +259,111 @@ const Results = () => {
 	return (
 		<>
 			<Navbar />
+
+			{/* Custom Save Modal */}
+			{showNameModal && (
+				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg border border-[#FED34C] max-w-sm w-full">
+						<h2 className="text-lg font-semibold mb-3 text-white">
+							Save Your Results
+						</h2>
+						<input
+							type="text"
+							placeholder="e.g. Fall 2024 Audit"
+							className="w-full p-2 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
+							value={tempSaveName}
+							onChange={(e) => setTempSaveName(e.target.value)}
+						/>
+						<div className="mt-4 flex justify-end gap-2">
+							<button
+								onClick={() => setShowNameModal(false)}
+								className="text-gray-300 hover:text-white">
+								Cancel
+							</button>
+							<button
+								onClick={() => {
+									setShowNameModal(false);
+									handleSaveResults(tempSaveName);
+								}}
+								className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
+								Save
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+			{showCourseEditModal && (
+				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg border border-[#FED34C] max-w-md w-full">
+						<h2 className="text-lg font-semibold mb-3 text-white">
+							Edit Completed Courses
+						</h2>
+						<textarea
+							rows={5}
+							value={editedCoursesText}
+							onChange={(e) => setEditedCoursesText(e.target.value)}
+							className="w-full p-3 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
+							placeholder="e.g. CS 136, MATH 135, STAT 231"
+						/>
+						<div className="mt-4 flex justify-end gap-2">
+							<button
+								onClick={() => setShowCourseEditModal(false)}
+								className="text-gray-300 hover:text-white">
+								Cancel
+							</button>
+							<button
+								onClick={async () => {
+									const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
+									const parsedCourses = editedCoursesText
+										.split(",")
+										.map((c) => c.trim().toUpperCase())
+										.filter((c) => validCourseRegex.test(c));
+
+									if (parsedCourses.length === 0) {
+										toast.error("Please enter valid course codes.");
+										return;
+									}
+
+									try {
+										const response = await fetch(
+											`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+											{
+												method: "POST",
+												headers: { "Content-Type": "application/json" },
+												body: JSON.stringify({
+													major: results.major,
+													completed_courses: parsedCourses,
+												}),
+											}
+										);
+
+										const data = await response.json();
+
+										if (data.error) {
+											toast.error("Failed to update results.");
+										} else {
+											setResults({
+												...data,
+												completed_courses: parsedCourses,
+												major: results.major,
+											});
+											setShowWhatIf(false);
+											toast.success("Courses updated!");
+											setShowCourseEditModal(false);
+										}
+									} catch (err) {
+										console.error(err);
+										toast.error("Something went wrong.");
+									}
+								}}
+								className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
+								Update
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
@@ -256,14 +372,12 @@ const Results = () => {
 						<span className="text-white">{capitalizedMajor}</span>
 					</h1>
 
-					{/* Custom Styled Dropdown + Button */}
 					<div className="flex flex-row gap-2 items-center w-full sm:w-auto">
 						<MajorChangeDropDown
 							selectedMajor={newMajor}
 							setSelectedMajor={setNewMajor}
 							fullWidth={false}
 						/>
-						{console.log(newMajor, setNewMajor)}
 						<button
 							onClick={handleMajorChange}
 							disabled={isLoading}
@@ -293,9 +407,14 @@ const Results = () => {
 
 				<div className="mt-6 flex items-center justify-end">
 					<button
-						onClick={handleSaveResults}
+						onClick={() => setShowNameModal(true)}
 						className="bg-[#FED34C] text-black font-semibold px-5 py-2 rounded-lg hover:bg-yellow-400 transition">
 						Save My Results
+					</button>
+					<button
+						onClick={() => setShowCourseEditModal(true)}
+						className="border border-white text-white font-semibold px-5 py-2 rounded-lg hover:bg-white hover:text-black transition mr-4">
+						Edit My Courses
 					</button>
 				</div>
 
@@ -331,11 +450,9 @@ const Results = () => {
 					</div>
 				</div>
 
-				{/* Feedback Message */}
 				<div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
 					<div
-						ref={whatIfRef}
-						className={`mt-6 text-sm text-white font-medium transition-all duration-300 ${
+						className={`transition-all duration-300 ${
 							showWhatIf ? "min-h-[48px] opacity-100" : "min-h-[48px] opacity-0"
 						}`}>
 						{showWhatIf && (

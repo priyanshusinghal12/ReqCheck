@@ -33,6 +33,16 @@ class SaveResultRequest(BaseModel):
     name: str
     completed_courses: List[str]
     requirements: List[RequirementItem]
+    
+class EditNameRequest(BaseModel):
+    id_token: str
+    index: int
+    new_name: str
+
+class DeleteResultRequest(BaseModel):
+    id_token: str
+    index: int
+
 
 
 # === POST: Save Results ===
@@ -81,3 +91,48 @@ async def get_saved_results(Authorization: str = Header(...)):
             return {"status": "error", "message": "No results found"}
     except Exception as e:
         return JSONResponse(status_code=401, content={"status": "error", "message": str(e)})
+    
+    
+@router.patch("/edit-result-name/")
+async def edit_result_name(req: EditNameRequest):
+    try:
+        decoded = auth.verify_id_token(req.id_token)
+        uid = decoded["uid"]
+
+        user_ref = db.collection("users").document(uid)
+        user_doc = user_ref.get()
+        if not user_doc.exists:
+            raise HTTPException(status_code=404, detail="User not found.")
+
+        results = user_doc.to_dict().get("results", [])
+        if req.index < 0 or req.index >= len(results):
+            raise HTTPException(status_code=400, detail="Invalid index.")
+
+        results[req.index]["name"] = req.new_name
+        user_ref.set({"results": results}, merge=True)
+        return {"status": "success", "message": "Name updated."}
+
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})
+
+@router.delete("/delete-result/")
+async def delete_result(req: DeleteResultRequest):
+    try:
+        decoded = auth.verify_id_token(req.id_token)
+        uid = decoded["uid"]
+
+        user_ref = db.collection("users").document(uid)
+        user_doc = user_ref.get()
+        if not user_doc.exists:
+            raise HTTPException(status_code=404, detail="User not found.")
+
+        results = user_doc.to_dict().get("results", [])
+        if req.index < 0 or req.index >= len(results):
+            raise HTTPException(status_code=400, detail="Invalid index.")
+
+        results.pop(req.index)
+        user_ref.set({"results": results}, merge=True)
+        return {"status": "success", "message": "Result deleted."}
+
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})

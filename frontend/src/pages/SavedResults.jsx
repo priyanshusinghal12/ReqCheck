@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { FaTrash, FaPen } from "react-icons/fa";
 import { motion } from "framer-motion";
 
 const SavedResults = () => {
 	const [savedList, setSavedList] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [expandedIndexes, setExpandedIndexes] = useState([]);
+	const [showNameModal, setShowNameModal] = useState(false);
+	const [tempSaveName, setTempSaveName] = useState("");
+
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -47,6 +51,66 @@ const SavedResults = () => {
 		setExpandedIndexes((prev) =>
 			prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
 		);
+	};
+
+	const handleEditName = async (index) => {
+		const user = auth.currentUser;
+		if (!user) return toast.error("You must be logged in.");
+
+		const newName = prompt("Enter a new name:");
+		if (!newName) return;
+
+		const token = await user.getIdToken();
+		const res = await fetch(
+			`${import.meta.env.VITE_BACKEND_URL}/edit-result-name/`,
+			{
+				method: "PATCH",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id_token: token, index, new_name: newName }),
+			}
+		);
+
+		const data = await res.json();
+		if (data.status === "success") {
+			toast.success("Name updated.");
+			setSavedList((prev) => {
+				const updated = [...prev];
+				updated[index].name = newName;
+				return updated;
+			});
+		} else {
+			toast.error("Update failed.");
+			console.error(data.message);
+		}
+	};
+
+	const handleDelete = async (index) => {
+		const confirmDelete = window.confirm(
+			"Are you sure you want to delete this result?"
+		);
+		if (!confirmDelete) return;
+
+		const user = auth.currentUser;
+		if (!user) return toast.error("You must be logged in.");
+		const token = await user.getIdToken();
+
+		const res = await fetch(
+			`${import.meta.env.VITE_BACKEND_URL}/delete-result/`,
+			{
+				method: "DELETE",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id_token: token, index }),
+			}
+		);
+
+		const data = await res.json();
+		if (data.status === "success") {
+			toast.success("Result deleted.");
+			setSavedList((prev) => prev.filter((_, i) => i !== index));
+		} else {
+			toast.error("Failed to delete.");
+			console.error(data.message);
+		}
 	};
 
 	const handleLoadToResults = (result) => {
@@ -98,11 +162,13 @@ const SavedResults = () => {
 											<p className="text-sm text-gray-400">
 												{new Date(result.timestamp).toLocaleString()}
 											</p>
-											<h2 className="text-lg font-semibold text-[#FED34C]">
+											<h2 className="text-lg font-semibold text-white">
 												Major:{" "}
-												{result.major.charAt(0).toUpperCase() +
-													result.major.slice(1)}
+												<span className="text-white">
+													{capitalize(result.major)}
+												</span>
 											</h2>
+
 											{result.name && (
 												<p className="text-sm italic text-gray-300">
 													“{result.name}”
@@ -117,9 +183,14 @@ const SavedResults = () => {
 												Load Result
 											</button>
 											<button
-												onClick={() => toggleExpand(index)}
+												onClick={() => handleEditName(index)}
 												className="bg-gray-800 border border-gray-600 px-3 py-1 rounded text-white hover:bg-gray-700">
-												{isExpanded ? "↓ Minimize" : "➡️ Expand"}
+												<FaPen />
+											</button>
+											<button
+												onClick={() => handleDelete(index)}
+												className="bg-gray-800 border border-gray-600 px-3 py-1 rounded text-white hover:bg-gray-700">
+												<FaTrash />
 											</button>
 										</div>
 									</div>
