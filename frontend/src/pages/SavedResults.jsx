@@ -11,9 +11,7 @@ const SavedResults = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		console.log("📥 fetchSaved started");
-		const fetchSaved = async () => {
-			const user = auth.currentUser;
+		const unsubscribe = auth.onAuthStateChanged(async (user) => {
 			if (!user) {
 				console.warn("⚠️ No user logged in");
 				setLoading(false);
@@ -40,9 +38,9 @@ const SavedResults = () => {
 			}
 
 			setLoading(false);
-		};
+		});
 
-		fetchSaved();
+		return () => unsubscribe();
 	}, []);
 
 	const toggleExpand = (index) => {
@@ -72,6 +70,7 @@ const SavedResults = () => {
 				},
 			},
 		});
+		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
 	return (

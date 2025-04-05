@@ -48,8 +48,9 @@ async def save_results(req: SaveResultRequest):
             "name": req.name,
             "major": req.major,
             "completed_courses": req.completed_courses,
-            "requirements": req.requirements
+            "requirements": [r.dict() for r in req.requirements]  # FIXED
         }
+
 
         user_ref = db.collection("users").document(uid)
         user_doc = user_ref.get()
