@@ -33,14 +33,19 @@ class SaveResultRequest(BaseModel):
     name: str
     completed_courses: List[str]
     requirements: List[RequirementItem]
-    
+
 class EditNameRequest(BaseModel):
     id_token: str
     index: int
     new_name: str
 
+class DeleteResultRequest(BaseModel): 
+    id_token: str
+    index: int
+
 class DeleteAccountRequest(BaseModel):
     id_token: str
+
 
 
 
