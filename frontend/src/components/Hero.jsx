@@ -25,6 +25,10 @@ export default function Hero() {
 		if (showModal) window.scrollTo({ top: 0, behavior: "smooth" });
 	}, [showModal]);
 
+	useEffect(() => {
+		fetch(`${import.meta.env.VITE_BACKEND_URL}/`).catch(() => {});
+	}, []);
+
 	// Load saved session state
 	useEffect(() => {
 		const savedMajor = sessionStorage.getItem("selectedMajor");
