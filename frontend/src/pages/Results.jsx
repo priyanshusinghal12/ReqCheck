@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { auth } from "../firebase";
+import ParticlesBackground from "../components/ParticlesBackground";
 
 const Results = () => {
 	const location = useLocation();
@@ -24,6 +25,10 @@ const Results = () => {
 	const [editedCoursesText, setEditedCoursesText] = useState(
 		results?.completed_courses?.join(", ") || ""
 	);
+
+	useEffect(() => {
+		window.scrollTo({ top: 0, behavior: "smooth" });
+	}, []);
 
 	const whatIfRef = useRef(null);
 
@@ -259,7 +264,7 @@ const Results = () => {
 	return (
 		<>
 			<Navbar />
-
+			<ParticlesBackground />
 			{/* Custom Save Modal */}
 			{showNameModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
@@ -294,7 +299,7 @@ const Results = () => {
 			)}
 			{showCourseEditModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
-					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg border border-[#FED34C] max-w-md w-full">
+					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-md w-full">
 						<h2 className="text-lg font-semibold mb-3 text-white">
 							Edit Completed Courses
 						</h2>
@@ -412,7 +417,7 @@ const Results = () => {
 						Save My Results
 					</button>
 					<button
-						onClick={() => setShowEditCoursesModal(true)}
+						onClick={() => setShowCourseEditModal(true)}
 						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
 						Edit My Courses
 					</button>

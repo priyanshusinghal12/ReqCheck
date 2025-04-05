@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import { FaTrash, FaPen } from "react-icons/fa";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import ParticlesBackground from "../components/ParticlesBackground";
 
 const SavedResults = () => {
 	const [savedList, setSavedList] = useState([]);
@@ -153,8 +154,7 @@ const SavedResults = () => {
 	return (
 		<>
 			<Navbar />
-
-			{/* Edit Name Modal */}
+			<ParticlesBackground />
 			{editIndex !== null && (
 				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
 					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg border border-gray-600 max-w-sm w-full">
