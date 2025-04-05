@@ -81,6 +81,12 @@ const Navbar = () => {
 										{user.displayName || user.email}
 									</p>
 									<hr className="border-gray-600 my-1" />
+									<a
+										href="/saved"
+										className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#333] transition">
+										My Results
+									</a>
+									<hr className="border-gray-600 my-1" />
 									<button
 										onClick={handleLogout}
 										className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#333] transition">
@@ -138,6 +144,17 @@ const Navbar = () => {
 						className="hover:text-[#FED34C]">
 						Feedback
 					</a>
+
+					{/* Show this if user is signed in */}
+					{user && (
+						<a
+							href="/saved"
+							onClick={() => setMenuOpen(false)}
+							className="hover:text-[#FED34C]">
+							See Your Results
+						</a>
+					)}
+
 					{user ? (
 						<button
 							onClick={handleLogout}

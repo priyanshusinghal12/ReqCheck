@@ -3,7 +3,7 @@ import { auth } from "../firebase";
 import Navbar from "../components/Navbar";
 
 const SavedResults = () => {
-	const [savedData, setSavedData] = useState(null);
+	const [savedResults, setSavedResults] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
@@ -12,18 +12,16 @@ const SavedResults = () => {
 			if (!user) return;
 
 			const token = await user.getIdToken();
-
 			const response = await fetch(
 				`${import.meta.env.VITE_BACKEND_URL}/get-saved-results/`,
 				{
 					headers: { Authorization: `Bearer ${token}` },
 				}
 			);
-
 			const data = await response.json();
-			if (data?.status === "success") setSavedData(data.results);
-			else console.error("Failed to load saved results");
-
+			if (data?.status === "success") {
+				setSavedResults(data.results.reverse()); // Show most recent first
+			}
 			setLoading(false);
 		};
 
@@ -31,36 +29,36 @@ const SavedResults = () => {
 	}, []);
 
 	if (loading)
-		return <p className="text-center text-white mt-10">Loading...</p>;
-	if (!savedData)
-		return (
-			<p className="text-center text-white mt-10">No saved results found.</p>
-		);
+		return <p className="text-white text-center mt-10">Loading...</p>;
 
 	return (
 		<>
 			<Navbar />
 			<div className="pt-20 px-6 md:px-16 text-white">
-				<h1 className="text-3xl font-bold mb-4">Your Saved Results</h1>
-				<p className="text-lg mb-6">
-					Major:{" "}
-					<span className="text-[#FED34C] font-semibold">
-						{savedData.major}
-					</span>
-				</p>
-				{Object.entries(savedData.requirements).map(
-					([req, [met, courses]], i) => (
+				<h1 className="text-3xl font-bold mb-6">Saved Results</h1>
+				{savedResults.length === 0 ? (
+					<p>No saved results yet.</p>
+				) : (
+					savedResults.map((item, index) => (
 						<div
-							key={i}
-							className={`p-4 rounded-xl mb-3 ${
-								met
-									? "bg-[#1A1A1A] border-l-4 border-[#FED34C]"
-									: "bg-[#2A1A1A] border-l-4 border-red-500"
-							}`}>
-							<h2 className="font-semibold text-lg mb-1">{req}</h2>
-							<p className="text-sm text-gray-300">{courses.join(", ")}</p>
+							key={index}
+							className="mb-6 p-4 border-l-4 border-[#FED34C] bg-[#1A1A1A] rounded-xl">
+							<p className="text-[#FED34C] font-semibold">
+								{item.major.toUpperCase()} —{" "}
+								{new Date(item.timestamp).toLocaleString()}
+							</p>
+							{Object.entries(item.requirements).map(
+								([req, [met, courses]], i) => (
+									<div key={i} className="mt-3">
+										<h2 className="font-semibold">{req}</h2>
+										<p className="text-sm text-gray-300">
+											{courses.join(", ")}
+										</p>
+									</div>
+								)
+							)}
 						</div>
-					)
+					))
 				)}
 			</div>
 		</>

@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Request, Depends, Header
+from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from typing import List, Dict, Any
 from fastapi.responses import JSONResponse
-import os
-import json
-import firebase_admin
+import os, json, firebase_admin
 from firebase_admin import credentials, auth, firestore
+from datetime import datetime
 
 # Initialize Firebase Admin
 try:
@@ -17,41 +16,42 @@ except ValueError:
         cred = credentials.Certificate(cred_dict)
         firebase_admin.initialize_app(cred)
     else:
-        raise ValueError("FIREBASE_ADMIN_KEY not found in environment variables")
+        raise ValueError("FIREBASE_ADMIN_KEY not found in env")
 
-# Firestore setup
 db = firestore.client()
 router = APIRouter()
 
-# Request Model
 class SaveResultRequest(BaseModel):
     id_token: str
     major: str
     completed_courses: List[str]
-    requirements: Dict[str, Any]  # NOTE: This must be JSON-serializable!
+    requirements: Dict[str, Any]
 
-# POST endpoint to save results
 @router.post("/save-results/")
 async def save_results(req: SaveResultRequest):
     try:
-        decoded_token = auth.verify_id_token(req.id_token)
-        uid = decoded_token["uid"]
+        decoded = auth.verify_id_token(req.id_token)
+        uid = decoded["uid"]
+        timestamp = datetime.utcnow().isoformat()
 
-        # Save results to Firestore under the user's document
+        result_data = {
+            "timestamp": timestamp,
+            "major": req.major,
+            "completed_courses": req.completed_courses,
+            "requirements": json.loads(json.dumps(req.requirements))
+        }
+
         user_ref = db.collection("users").document(uid)
-        user_ref.set({
-            "results": {
-                "major": req.major,
-                "completed_courses": req.completed_courses,
-                "requirements": json.loads(json.dumps(req.requirements))  # force JSON serializability
-            }
-        }, merge=True)
+        user_doc = user_ref.get()
+        current = user_doc.to_dict().get("results", []) if user_doc.exists else []
 
-        return {"status": "success", "message": "Results saved."}
+        current.append(result_data)
+        user_ref.set({"results": current}, merge=True)
+
+        return {"status": "success", "message": "Result saved."}
     except Exception as e:
         return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})
 
-# GET endpoint to retrieve saved results
 @router.get("/get-saved-results/")
 async def get_saved_results(Authorization: str = Header(...)):
     try:
@@ -61,8 +61,11 @@ async def get_saved_results(Authorization: str = Header(...)):
 
         doc = db.collection("users").document(uid).get()
         if doc.exists:
-            return {"status": "success", "results": doc.to_dict().get("results", {})}
+            return {
+                "status": "success",
+                "results": doc.to_dict().get("results", [])
+            }
         else:
-            return {"status": "error", "message": "No results saved."}
+            return {"status": "error", "message": "No results found"}
     except Exception as e:
         return JSONResponse(status_code=401, content={"status": "error", "message": str(e)})
