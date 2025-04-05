@@ -29,9 +29,24 @@ const faqs = [
 			"We use the 2024–2025 University of Waterloo Undergraduate Academic Calendar. The tool will be updated yearly to reflect the latest requirements.",
 	},
 	{
+		question: "How does saving my results work?",
+		answer:
+			"Once you log in with your custom email or google account, you can save your current or even other requirement results—including What-If simulations. To keep your original transcript results, click 'Reset to Original' before saving again. Everything is securely stored and tied to your account for future access.",
+	},
+	{
+		question: "Can I change my major or edit my courses later?",
+		answer:
+			"Yes! you can use the change major and edit courses buttons on the results page or you can just come back and change your major!",
+	},
+	{
 		question: "Which majors can I check?",
 		answer:
 			"Currently, you can check majors under the Honours Mathematics program; we're working to integrate more options.",
+	},
+	{
+		question: "Moreover!?",
+		answer:
+			"We are burning the midight oil to integrate more features and majors! Stay tuned!.",
 	},
 ];
 

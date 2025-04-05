@@ -3,6 +3,7 @@ import {
 	FaLock,
 	FaUserGraduate,
 	FaProjectDiagram,
+	FaUserCheck,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -25,9 +26,10 @@ const features = [
 			"We don’t store your transcript- all processing is done locally in your browser",
 	},
 	{
-		title: "Made by UW Students",
-		icon: <FaUserGraduate size={24} />,
-		description: "By UW students, for UW students",
+		title: "Save your results!",
+		icon: <FaUserCheck size={24} />,
+		description:
+			"Save your progress and analysis, and access from anywhere by logging in!",
 	},
 ];
 
