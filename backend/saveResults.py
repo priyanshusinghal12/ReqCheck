@@ -39,9 +39,8 @@ class EditNameRequest(BaseModel):
     index: int
     new_name: str
 
-class DeleteResultRequest(BaseModel):
+class DeleteAccountRequest(BaseModel):
     id_token: str
-    index: int
 
 
 
@@ -140,11 +139,11 @@ async def delete_result(req: DeleteResultRequest):
 
 
 @router.delete("/delete-account/")
-def delete_account(request: Request, id_token: str = Body(...)):
+async def delete_account(req: DeleteAccountRequest):
     try:
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(req.id_token)
         user_id = decoded_token["uid"]
         db.collection("users").document(user_id).delete()
         return {"status": "success"}
     except Exception as e:
-        return {"status": "error", "message": str(e)}
+        return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})
