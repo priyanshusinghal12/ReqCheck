@@ -43,11 +43,6 @@ const faqs = [
 		answer:
 			"Currently, you can check majors under the Honours Mathematics program; we're working to integrate more options.",
 	},
-	{
-		question: "Moreover!?",
-		answer:
-			"We are burning the midight oil to integrate more features and majors! Stay tuned!.",
-	},
 ];
 
 export default function FAQ() {
