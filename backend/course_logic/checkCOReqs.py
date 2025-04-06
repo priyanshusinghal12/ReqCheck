@@ -48,10 +48,10 @@ def check_co_major(student_courses):
                       ["PMATH 336", "PMATH 347"], n=1, student_courses=student_courses, major_reqs=co_reqs)
 
     #Req 6: Complete 3 additional CO courses
-    co_courses = [ "CO 330", "CO 331", "CO 342", "CO 351", "CO 353", "CO 367", "CO 430", "CO 431",
+    co_courses = [ "CS 467", "PHYS 467", "CO 330", "CO 331", "CO 342", "CO 351", "CO 353", "CO 367", "CO 430", "CO 431",
                    "CO 432", "CO 434", "CO 439", "CO 440", "CO 442", "CO 444", "CO 446", "CO 450", "CO 452",
                    "CO 454", "CO 456", "CO 459", "CO 463", "CO 466", "CO 471", "CO 481",
-                   "CS 467", "PHYS 467", "CO 485", "CO 486", "CO 487"]
+                   "CO 485", "CO 486", "CO 487"]
 
     check_n_from_list("Complete 3 of: CO 330, CO 331, CO 342, CO 351, CO 353, CO 367, CO 430, CO 431, CO 432, CO 434, CO 439, CO 440, CO 442, CO 444, CO 446, CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471, CO 481, CO 485, CO 486, CO 487, CS 467, PHYS 467",
                       co_courses, n=3, student_courses=student_courses, major_reqs=co_reqs)
