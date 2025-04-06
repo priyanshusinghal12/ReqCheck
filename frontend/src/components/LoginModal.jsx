@@ -104,7 +104,7 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 							exit={{ opacity: 0, scale: 0.95 }}
 							transition={{ duration: 0.3 }}>
 							<button
-								onClick={onClose}
+								onClick={continueAsGuest}
 								className="absolute top-4 right-5 text-gray-400 hover:text-white text-2xl">
 								×
 							</button>

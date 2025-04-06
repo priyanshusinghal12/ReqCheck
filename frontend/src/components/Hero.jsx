@@ -173,12 +173,13 @@ export default function Hero({ shouldType, name }) {
 				)}
 
 				<motion.p className="text-base text-gray-100 sm:text-lg font-medium mb-2">
-					The one-click tool to check your missing and satisfied major
-					requirements
+					This is ReqCheck, the one-click tool to check your progress on your
+					major's requirements and simulate how your future courses will affect
+					your progress.
 				</motion.p>
 				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base">
-					Upload your unofficial transcript or enter your completed courses
-					manually
+					To get started, upload your unofficial transcript or enter your
+					completed courses manually, select your major and hit go. 
 				</motion.p>
 
 				<div className="flex items-center gap-3 mb-6">
