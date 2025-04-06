@@ -84,6 +84,9 @@ const Navbar = () => {
 
 				{/* Desktop Nav */}
 				<nav className="hidden md:flex items-center gap-6 text-sm sm:text-base font-medium text-white">
+					<a href="/" className="hover:text-[#FED34C]">
+						Home
+					</a>
 					<HashLink
 						smooth
 						to="/#faq"
@@ -159,6 +162,12 @@ const Navbar = () => {
 					</button>
 				</div>
 				<div className="flex flex-col space-y-4 p-6 text-base">
+					<a
+						href="/"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						Home
+					</a>
 					<HashLink
 						smooth
 						to="/#faq"
