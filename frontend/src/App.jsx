@@ -3,13 +3,31 @@ import AppRouter from "./routes/AppRouter";
 import { Toaster } from "react-hot-toast";
 import LoginModal from "./components/LoginModal";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 function App() {
 	const [showLoginModal, setShowLoginModal] = useState(false);
 	const [shouldType, setShouldType] = useState(false);
 	const [name, setName] = useState("");
 
+	// Track page load to Firestore (visits)
+	useEffect(() => {
+		const logVisit = async () => {
+			try {
+				await addDoc(collection(db, "visits"), {
+					timestamp: serverTimestamp(),
+					userAgent: navigator.userAgent,
+					path: window.location.pathname,
+				});
+			} catch (err) {
+				console.error("Visit logging failed:", err);
+			}
+		};
+		logVisit();
+	}, []);
+
+	// Listen for user authentication
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (!user) {
@@ -27,6 +45,7 @@ function App() {
 		return () => unsubscribe();
 	}, []);
 
+	// Called when modal is closed (login/signup/guest)
 	const handleLoginModalClose = () => {
 		const stored = localStorage.getItem("reqcheck_name");
 		if (stored) {
@@ -35,10 +54,8 @@ function App() {
 		} else {
 			setName("");
 		}
-		setShouldType(false); // reset animation
-		setTimeout(() => {
-			setShouldType(true);
-		}, 10); // trigger animation restart
+		setShouldType(false);
+		setTimeout(() => setShouldType(true), 10);
 		setShowLoginModal(false);
 	};
 
