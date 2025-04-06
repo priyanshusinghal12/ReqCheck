@@ -7,7 +7,7 @@ import defaultUserIcon from "../assets/Sample_User_Icon.png";
 import { Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-const Navbar = () => {
+const Navbar = ({ setName, setShouldType }) => {
 	const [user, setUser] = useState(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
@@ -32,10 +32,17 @@ const Navbar = () => {
 	}, []);
 
 	const handleLogout = () => {
-		signOut(auth);
+		signOut(auth)
+			.then(() => {
+				localStorage.removeItem("reqcheck_name");
+				toast.success("Logged out.");
+				window.location.reload(); // forces Hero + App to re-check localStorage
+			})
+			.catch(() => {
+				toast.error("Logout failed.");
+			});
 		setShowDropdown(false);
 		setMenuOpen(false);
-		toast.success("Logged out.");
 	};
 
 	const handleDeleteAccount = async () => {
@@ -220,7 +227,12 @@ const Navbar = () => {
 				</div>
 			</div>
 
-			<LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+			<LoginModal
+				isOpen={isModalOpen}
+				onClose={() => setIsModalOpen(false)}
+				setName={setName}
+				setShouldType={setShouldType}
+			/>
 		</>
 	);
 };

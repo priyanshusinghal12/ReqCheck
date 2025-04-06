@@ -5,25 +5,51 @@ import {
 	createUserWithEmailAndPassword,
 	signInWithPopup,
 	sendPasswordResetEmail,
+	updateProfile,
 } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
-const LoginModal = ({ isOpen, onClose }) => {
+const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [nameInput, setNameInput] = useState("");
 	const [isSignup, setIsSignup] = useState(false);
 	const [error, setError] = useState("");
 
+	const triggerWelcomeAnimation = (name) => {
+		setName(name);
+		setShouldType(false);
+		setTimeout(() => setShouldType(true), 10);
+	};
+
 	const handleEmailAuth = async () => {
 		try {
+			let finalName = "";
+
 			if (isSignup) {
-				await createUserWithEmailAndPassword(auth, email, password);
-				toast.success("Account created successfully!");
+				const userCredential = await createUserWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
+				await updateProfile(userCredential.user, { displayName: nameInput });
+				finalName = nameInput.trim().split(" ")[0];
 			} else {
-				await signInWithEmailAndPassword(auth, email, password);
-				toast.success("Logged in successfully!");
+				const userCredential = await signInWithEmailAndPassword(
+					auth,
+					email,
+					password
+				);
+				const firebaseName = userCredential.user?.displayName || "";
+				finalName = firebaseName.trim().split(" ")[0];
 			}
+
+			localStorage.setItem("reqcheck_name", finalName);
+			triggerWelcomeAnimation(finalName);
+			toast.success(
+				isSignup ? "Account created successfully!" : "Logged in successfully!"
+			);
 			onClose();
 		} catch (err) {
 			setError(err.message);
@@ -33,10 +59,15 @@ const LoginModal = ({ isOpen, onClose }) => {
 
 	const handleGoogleSignIn = async () => {
 		try {
-			await signInWithPopup(auth, provider);
+			const result = await signInWithPopup(auth, provider);
+			const displayName = result.user.displayName || "";
+			const firstName = displayName.trim().split(" ")[0];
+
+			localStorage.setItem("reqcheck_name", firstName);
+			triggerWelcomeAnimation(firstName);
 			toast.success("Logged in with Google!");
 			onClose();
-		} catch (err) {
+		} catch {
 			toast.error("Google login failed.");
 		}
 	};
@@ -49,72 +80,76 @@ const LoginModal = ({ isOpen, onClose }) => {
 		try {
 			await sendPasswordResetEmail(auth, email);
 			toast.success("Password reset email sent.");
-		} catch (err) {
+		} catch {
 			toast.error("Failed to send reset email.");
 		}
 	};
 
+	const continueAsGuest = () => {
+		localStorage.removeItem("reqcheck_name");
+		triggerWelcomeAnimation("");
+		onClose();
+	};
+
 	return (
-		<AnimatePresence initial={false}>
+		<AnimatePresence>
 			{isOpen && (
-				<div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md backdrop-saturate-150">
+				<div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md">
 					<div className="w-full min-h-screen flex items-center justify-center mt-8">
 						<motion.div
-							className="bg-[#1A1A1A] p-8 sm:p-10 rounded-2xl w-[90%] sm:w-[500px] md:w-[600px] shadow-xl border border-[#2A2A2A] relative"
+							className="bg-[#1A1A1A] p-8 sm:p-10 rounded-2xl w-[90%] sm:w-[500px] shadow-xl border border-[#2A2A2A] relative"
 							initial={{ opacity: 0, scale: 0.95 }}
 							animate={{ opacity: 1, scale: 1 }}
 							exit={{ opacity: 0, scale: 0.95 }}
-							transition={{ duration: 0.3, ease: "easeOut" }}
-							onClick={(e) => e.stopPropagation()}>
-							{/* Close button */}
+							transition={{ duration: 0.3 }}>
 							<button
 								onClick={onClose}
-								className="absolute top-4 right-5 text-gray-400 hover:text-white text-2xl transition">
+								className="absolute top-4 right-5 text-gray-400 hover:text-white text-2xl">
 								×
 							</button>
 
-							{/* Title */}
-							<h1 className="text-white text-2xl font-extrabold mb-6 text-center tracking-tight">
+							<h1 className="text-white text-2xl font-extrabold mb-6 text-center">
 								{isSignup ? "Create an Account" : "Welcome Back"}
 							</h1>
 
-							{/* Email input */}
+							{isSignup && (
+								<input
+									type="text"
+									placeholder="Full Name"
+									className="w-full p-3 bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 mb-4"
+									value={nameInput}
+									onChange={(e) => setNameInput(e.target.value)}
+								/>
+							)}
+
 							<input
 								type="email"
 								placeholder="Email"
-								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none mb-4"
+								className="w-full p-3 bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 mb-4"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 							/>
 
-							{/* Password input */}
 							<input
 								type="password"
 								placeholder="Password"
-								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none mb-4"
+								className="w-full p-3 bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 mb-4"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 							/>
 
-							{/* Error */}
 							{error && (
 								<p className="text-red-400 text-sm text-center mb-3">{error}</p>
 							)}
 
-							{/* Submit button */}
 							<button
 								onClick={handleEmailAuth}
-								className="w-full bg-[#FED34C] hover:bg-[#f7c634] text-black py-3 rounded-md font-semibold text-base transition mb-4">
+								className="w-full bg-[#FED34C] text-black py-3 rounded-md font-semibold mb-4">
 								{isSignup ? "Sign Up" : "Login"}
 							</button>
 
-							{/* Conditional UW note or Forgot Password */}
-							{isSignup ? (
-								<p className="text-xs text-gray-500 font-medium mb-3 text-center">
-									Note: UW emails may not support password reset.
-								</p>
-							) : (
-								<p className="text-sm text-center mt-3">
+							{!isSignup && (
+								<p className="text-sm text-center mb-3">
 									<span
 										className="text-yellow-400 hover:underline cursor-pointer"
 										onClick={handleForgotPassword}>
@@ -123,8 +158,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 								</p>
 							)}
 
-							{/* Toggle Login/Signup */}
-							<p className="text-gray-300 text-center text-sm mt-5">
+							<p className="text-gray-300 text-center text-sm">
 								{isSignup
 									? "Already have an account? "
 									: "Don't have an account? "}
@@ -135,17 +169,24 @@ const LoginModal = ({ isOpen, onClose }) => {
 								</span>
 							</p>
 
-							{/* Google Sign In */}
 							<div className="flex items-center justify-center mt-6">
 								<button
 									onClick={handleGoogleSignIn}
-									className="flex items-center gap-3 px-6 py-3 bg-white text-black text-base rounded-md shadow hover:bg-gray-100 transition">
+									className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-md shadow">
 									<img
 										src="https://www.svgrepo.com/show/475656/google-color.svg"
 										alt="Google"
 										className="w-5 h-5"
 									/>
 									Continue with Google
+								</button>
+							</div>
+
+							<div className="text-center mt-5">
+								<button
+									onClick={continueAsGuest}
+									className="text-sm text-gray-400 hover:underline">
+									Continue as Guest
 								</button>
 							</div>
 						</motion.div>

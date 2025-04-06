@@ -1,15 +1,16 @@
 // Hero.jsx
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
+import { Typewriter } from "react-simple-typewriter";
 import ParticlesBackground from "./ParticlesBackground";
-import { useNavigate } from "react-router-dom";
 import MajorDropdown from "./MajorDropdown";
+import { useNavigate } from "react-router-dom";
+import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 
-export default function Hero() {
+export default function Hero({ shouldType, name }) {
 	const [selectedFile, setSelectedFile] = useState(null);
 	const [fileContent, setFileContent] = useState(null);
 	const [selectedMajor, setSelectedMajor] = useState("");
@@ -17,10 +18,14 @@ export default function Hero() {
 	const [badCourses, setBadCourses] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
-
 	const navigate = useNavigate();
 
-	// Scroll to top on modal open
+	useEffect(() => {
+		if (shouldType) {
+			// Reset will be handled by the key prop already
+		}
+	}, [shouldType]);
+
 	useEffect(() => {
 		if (showModal) window.scrollTo({ top: 0, behavior: "smooth" });
 	}, [showModal]);
@@ -29,7 +34,6 @@ export default function Hero() {
 		fetch(`${import.meta.env.VITE_BACKEND_URL}/`).catch(() => {});
 	}, []);
 
-	// Load saved session state
 	useEffect(() => {
 		const savedMajor = sessionStorage.getItem("selectedMajor");
 		const savedCourses = sessionStorage.getItem("manualCourses");
@@ -42,7 +46,6 @@ export default function Hero() {
 		if (savedFilename) setSelectedFile({ name: savedFilename });
 	}, []);
 
-	// Save state on change
 	useEffect(() => {
 		sessionStorage.setItem("selectedMajor", selectedMajor);
 	}, [selectedMajor]);
@@ -153,9 +156,22 @@ export default function Hero() {
 		<section className="relative z-0 min-h-[95vh] pt-24 flex items-center justify-center text-white text-center overflow-visible bg-black px-4 pb-10">
 			<ParticlesBackground />
 			<motion.div className="relative z-10 w-full max-w-2xl flex flex-col items-center">
-				<motion.h1 className="text-5xl sm:text-6xl font-medium mb-4">
-					<span className="text-[#FED34C]">Req</span>Check
-				</motion.h1>
+				{shouldType && (
+					<motion.h1 className="text-5xl sm:text-6xl font-medium mb-4">
+						<span className="text-[#FED34C]">Wel</span>
+						<span className="text-white">
+							<Typewriter
+								key={name + shouldType} // ensures animation restarts
+								words={[`come${name ? ` ${name}` : ""}`]}
+								cursor
+								typeSpeed={100}
+								deleteSpeed={0}
+								loop={1}
+							/>
+						</span>
+					</motion.h1>
+				)}
+
 				<motion.p className="text-base text-gray-100 sm:text-lg font-medium mb-2">
 					The one-click tool to check your missing and satisfied major
 					requirements
