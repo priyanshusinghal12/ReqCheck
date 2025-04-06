@@ -82,7 +82,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 							<input
 								type="email"
 								placeholder="Email"
-								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-4"
+								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none mb-4"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 							/>
@@ -91,7 +91,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 							<input
 								type="password"
 								placeholder="Password"
-								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-4"
+								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none mb-4"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 							/>
