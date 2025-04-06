@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import AppRouter from "./routes/AppRouter";
 import { Toaster } from "react-hot-toast";
 import LoginModal from "./components/LoginModal";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
 
 function App() {
 	const [showLoginModal, setShowLoginModal] = useState(false);
@@ -9,17 +11,23 @@ function App() {
 	const [name, setName] = useState("");
 
 	useEffect(() => {
-		const alreadyVisited = localStorage.getItem("reqcheck_has_visited");
-		if (!alreadyVisited) {
-			setShowLoginModal(true);
-			localStorage.setItem("reqcheck_has_visited", "true");
-		} else {
-			setNameFromLocalStorage();
-			setShouldType(true);
-		}
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
+			if (!user) {
+				setShowLoginModal(true);
+			} else {
+				const display =
+					user.displayName || localStorage.getItem("reqcheck_name");
+				if (display) {
+					const first = display.trim().split(" ")[0];
+					setName(first);
+				}
+				setShouldType(true);
+			}
+		});
+		return () => unsubscribe();
 	}, []);
 
-	const setNameFromLocalStorage = () => {
+	const handleLoginModalClose = () => {
 		const stored = localStorage.getItem("reqcheck_name");
 		if (stored) {
 			const first = stored.trim().split(" ")[0];
@@ -27,10 +35,6 @@ function App() {
 		} else {
 			setName("");
 		}
-	};
-
-	const handleLoginModalClose = () => {
-		setNameFromLocalStorage();
 		setShouldType(false); // reset animation
 		setTimeout(() => {
 			setShouldType(true);

@@ -6,6 +6,11 @@ import LoginModal from "./LoginModal";
 import defaultUserIcon from "../assets/Sample_User_Icon.png";
 import { Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
+import {
+	reauthenticateWithPopup,
+	reauthenticateWithCredential,
+	EmailAuthProvider,
+} from "firebase/auth"; // add this at the top
 
 const Navbar = ({ setName, setShouldType }) => {
 	const [user, setUser] = useState(null);
@@ -46,11 +51,78 @@ const Navbar = ({ setName, setShouldType }) => {
 	};
 
 	const handleDeleteAccount = async () => {
-		try {
-			const user = auth.currentUser;
-			if (!user) return toast.error("Not logged in.");
-			const idToken = await user.getIdToken();
+		const currentUser = auth.currentUser;
+		if (!currentUser) return toast.error("Not logged in.");
 
+		try {
+			// 1. Re-auth for Google users
+			if (currentUser.providerData[0]?.providerId === "google.com") {
+				await reauthenticateWithPopup(currentUser, provider);
+				await proceedWithDeletion(currentUser);
+				return;
+			}
+
+			// 2. Show toast with email/password inputs
+			let email = "";
+			let password = "";
+
+			toast.custom((t) => (
+				<div className="bg-[#1A1A1A] p-4 rounded-lg text-white shadow-md w-[320px] border border-[#333]">
+					<h3 className="font-semibold text-lg mb-2">
+						Re-authenticate to Delete
+					</h3>
+					<input
+						type="email"
+						placeholder="Email"
+						className="w-full mb-2 p-2 rounded bg-[#111] text-white border border-gray-700 text-sm"
+						onChange={(e) => (email = e.target.value)}
+					/>
+					<input
+						type="password"
+						placeholder="Password"
+						className="w-full mb-3 p-2 rounded bg-[#111] text-white border border-gray-700 text-sm"
+						onChange={(e) => (password = e.target.value)}
+					/>
+					<div className="flex justify-between text-sm">
+						<button
+							onClick={async () => {
+								if (!email || !password) {
+									toast.error("Both fields required");
+									return;
+								}
+								toast.dismiss(t.id);
+								try {
+									const credential = EmailAuthProvider.credential(
+										email,
+										password
+									);
+									await reauthenticateWithCredential(currentUser, credential);
+									await proceedWithDeletion(currentUser);
+								} catch (err) {
+									console.error(err);
+									toast.error("Re-authentication failed.");
+								}
+							}}
+							className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+							Delete
+						</button>
+						<button
+							onClick={() => toast.dismiss(t.id)}
+							className="text-gray-400 hover:text-gray-200">
+							Cancel
+						</button>
+					</div>
+				</div>
+			));
+		} catch (err) {
+			console.error(err);
+			toast.error("Re-authentication failed.");
+		}
+	};
+
+	const proceedWithDeletion = async (user) => {
+		try {
+			const idToken = await user.getIdToken();
 			const res = await fetch(
 				`${import.meta.env.VITE_BACKEND_URL}/delete-account/`,
 				{
@@ -61,15 +133,18 @@ const Navbar = ({ setName, setShouldType }) => {
 			);
 
 			const data = await res.json();
+
 			if (data.status === "success") {
 				await user.delete();
+				localStorage.removeItem("reqcheck_name");
 				toast.success("Account deleted.");
-				setUser(null);
+				window.location.reload();
 			} else {
 				toast.error(data.message || "Failed to delete account.");
 			}
 		} catch (err) {
-			toast.error("Error deleting account.");
+			console.error("Deletion error:", err);
+			toast.error("Account deletion failed.");
 		}
 	};
 

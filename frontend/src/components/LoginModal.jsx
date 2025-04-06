@@ -16,6 +16,7 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 	const [nameInput, setNameInput] = useState("");
 	const [isSignup, setIsSignup] = useState(false);
 	const [error, setError] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 
 	const triggerWelcomeAnimation = (name) => {
 		setName(name);
@@ -130,13 +131,21 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 								onChange={(e) => setEmail(e.target.value)}
 							/>
 
-							<input
-								type="password"
-								placeholder="Password"
-								className="w-full p-3 bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 mb-4"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-							/>
+							<div className="relative mb-4">
+								<input
+									type={showPassword ? "text" : "password"}
+									placeholder="Password"
+									className="w-full p-3 bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 pr-10"
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
+								/>
+								<button
+									type="button"
+									onClick={() => setShowPassword(!showPassword)}
+									className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-sm">
+									{showPassword ? "Hide" : "Show"}
+								</button>
+							</div>
 
 							{error && (
 								<p className="text-red-400 text-sm text-center mb-3">{error}</p>
