@@ -109,7 +109,7 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 							</button>
 
 							<h1 className="text-white text-2xl font-extrabold mb-6 text-center">
-								{isSignup ? "Create an Account" : "Welcome Back"}
+								{isSignup ? "Create an Account" : "Welcome to ReqCheck"}
 							</h1>
 
 							{isSignup && (
