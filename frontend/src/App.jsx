@@ -5,6 +5,7 @@ import LoginModal from "./components/LoginModal";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, getCountFromServer } from "firebase/firestore";
 
 function App() {
 	const [showLoginModal, setShowLoginModal] = useState(false);
@@ -29,7 +30,7 @@ function App() {
 
 	// Listen for user authentication
 	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, (user) => {
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
 			if (!user) {
 				setShowLoginModal(true);
 			} else {
@@ -41,7 +42,17 @@ function App() {
 				}
 				setShouldType(true);
 			}
+
+			// ✅ Add this block to get visitor count
+			try {
+				const coll = collection(db, "visits");
+				const snapshot = await getCountFromServer(coll);
+				console.log("🔥 Total Visits:", snapshot.data().count);
+			} catch (err) {
+				console.error("Failed to fetch visit count:", err);
+			}
 		});
+
 		return () => unsubscribe();
 	}, []);
 
