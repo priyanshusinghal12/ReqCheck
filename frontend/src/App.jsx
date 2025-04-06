@@ -43,7 +43,7 @@ function App() {
 				setShouldType(true);
 			}
 
-			// ✅ Add this block to get visitor count
+			// ✅ Log total visit count from Firestore
 			try {
 				const coll = collection(db, "visits");
 				const snapshot = await getCountFromServer(coll);
