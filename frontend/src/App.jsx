@@ -47,13 +47,15 @@ function App() {
 				setShouldType(true);
 			}
 
-			// ✅ Log total visit count from Firestore
-			try {
-				const coll = collection(db, "visits");
-				const snapshot = await getCountFromServer(coll);
-				console.log("🔥 Total Visits:", snapshot.data().count);
-			} catch (err) {
-				console.error("Failed to fetch visit count:", err);
+			// ✅ Visitor count: only log if you're signed in as admin
+			if (auth.currentUser?.uid === "PqirRr6CzkRpFQ24oQq9qcoA4Hg1") {
+				try {
+					const coll = collection(db, "visits");
+					const snapshot = await getCountFromServer(coll);
+					console.log("🔥 Total Visits:", snapshot.data().count);
+				} catch (err) {
+					console.error("Failed to fetch visit count:", err);
+				}
 			}
 		});
 
