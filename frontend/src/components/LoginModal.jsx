@@ -58,73 +58,92 @@ const LoginModal = ({ isOpen, onClose }) => {
 		<AnimatePresence initial={false}>
 			{isOpen && (
 				<div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md backdrop-saturate-150">
-					<div className="w-full min-h-screen flex items-center justify-center mt-[30px] -translate-y-4">
+					<div className="w-full min-h-screen flex items-center justify-center mt-8">
 						<motion.div
-							className="bg-[#1A1A1A] p-10 rounded-2xl w-[95%] sm:w-[600px] md:w-[700px] shadow-2xl border border-[#333] relative"
+							className="bg-[#1A1A1A] p-8 sm:p-10 rounded-2xl w-[90%] sm:w-[500px] md:w-[600px] shadow-xl border border-[#2A2A2A] relative"
 							initial={{ opacity: 0, scale: 0.95 }}
 							animate={{ opacity: 1, scale: 1 }}
 							exit={{ opacity: 0, scale: 0.95 }}
-							transition={{ duration: 0.25, ease: "easeOut" }}
+							transition={{ duration: 0.3, ease: "easeOut" }}
 							onClick={(e) => e.stopPropagation()}>
+							{/* Close button */}
 							<button
 								onClick={onClose}
-								className="absolute top-3 right-4 text-white text-xl">
+								className="absolute top-4 right-5 text-gray-400 hover:text-white text-2xl transition">
 								×
 							</button>
 
-							<h2 className="text-white text-xl font-bold mb-4 text-center">
-								{isSignup ? "Sign Up" : "Login"}
-							</h2>
+							{/* Title */}
+							<h1 className="text-white text-2xl font-extrabold mb-6 text-center tracking-tight">
+								{isSignup ? "Create an Account" : "Welcome Back"}
+							</h1>
 
+							{/* Email input */}
 							<input
 								type="email"
-								placeholder="abc@example.com"
-								className="w-full text-lg p-4 mb-4 bg-[#111] border border-gray-700 rounded text-white"
+								placeholder="Email"
+								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-4"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
 							/>
+
+							{/* Password input */}
 							<input
 								type="password"
 								placeholder="Password"
-								className="w-full text-lg p-4 mb-5 bg-[#111] border border-gray-700 rounded text-white"
+								className="w-full p-3 text-sm sm:text-base bg-[#111] border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 mb-4"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 							/>
 
-							{error && <p className="text-red-400 text-sm mb-3">{error}</p>}
+							{/* Error */}
+							{error && (
+								<p className="text-red-400 text-sm text-center mb-3">{error}</p>
+							)}
 
+							{/* Submit button */}
 							<button
 								onClick={handleEmailAuth}
-								className="w-full bg-[#FED34C] text-black py-3 text-lg rounded font-semibold mb-4">
-								{isSignup ? "Create Account" : "Login"}
+								className="w-full bg-[#FED34C] hover:bg-[#f7c634] text-black py-3 rounded-md font-semibold text-base transition mb-4">
+								{isSignup ? "Sign Up" : "Login"}
 							</button>
 
-							<p className="text-white text-center text-sm mb-3">
+							{/* Conditional UW note or Forgot Password */}
+							{isSignup ? (
+								<p className="text-xs text-gray-500 font-medium mb-3 text-center">
+									Note: UW emails may not support password reset.
+								</p>
+							) : (
+								<p className="text-sm text-center mt-3">
+									<span
+										className="text-yellow-400 hover:underline cursor-pointer"
+										onClick={handleForgotPassword}>
+										Forgot your password?
+									</span>
+								</p>
+							)}
+
+							{/* Toggle Login/Signup */}
+							<p className="text-gray-300 text-center text-sm mt-5">
 								{isSignup
-									? "Already have an account?"
-									: "Don't have an account?"}{" "}
+									? "Already have an account? "
+									: "Don't have an account? "}
 								<span
-									className="text-[#FED34C] cursor-pointer underline"
+									className="text-yellow-400 hover:underline cursor-pointer"
 									onClick={() => setIsSignup(!isSignup)}>
 									{isSignup ? "Log in here" : "Sign up here"}
 								</span>
 							</p>
-							<p className="text-sm text-gray-400 mt-2 text-center">
-								<span
-									className="text-yellow-400 hover:underline cursor-pointer"
-									onClick={handleForgotPassword}>
-									Forgot your password?
-								</span>
-							</p>
 
-							<div className="flex items-center justify-center mt-4">
+							{/* Google Sign In */}
+							<div className="flex items-center justify-center mt-6">
 								<button
 									onClick={handleGoogleSignIn}
-									className="flex items-center gap-3 px-6 py-3 bg-white text-black text-base rounded hover:bg-gray-200 transition">
+									className="flex items-center gap-3 px-6 py-3 bg-white text-black text-base rounded-md shadow hover:bg-gray-100 transition">
 									<img
 										src="https://www.svgrepo.com/show/475656/google-color.svg"
 										alt="Google"
-										className="w-6 h-6"
+										className="w-5 h-5"
 									/>
 									Continue with Google
 								</button>
