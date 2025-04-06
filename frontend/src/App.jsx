@@ -4,8 +4,12 @@ import { Toaster } from "react-hot-toast";
 import LoginModal from "./components/LoginModal";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { collection, getCountFromServer } from "firebase/firestore";
+import {
+	collection,
+	addDoc,
+	serverTimestamp,
+	getCountFromServer,
+} from "firebase/firestore";
 
 function App() {
 	const [showLoginModal, setShowLoginModal] = useState(false);
