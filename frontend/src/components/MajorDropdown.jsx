@@ -25,6 +25,8 @@ const majors = [
 	"AFM Financial Markets Specialization",
 	"AFM Professional Accountant Specialization",
 	"AFM Sustainability Specialization",
+	"Farm Professional Risk Management Specialization",
+	"Farm Professional Financial Analyst Specialization",
 ];
 
 export default function MajorDropdown({

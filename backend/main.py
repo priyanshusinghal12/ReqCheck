@@ -44,6 +44,12 @@ from course_logic.checkAFMReqs import (
     check_afm_professional_accountant_reqs,
     check_afm_sustainability_reqs,
 )
+from course_logic.checkFARMReqs import (
+    
+    check_farm_professional_risk_management_reqs,
+    check_farm_professional_fin_analyst_reqs
+    
+)
 from saveResults import router as save_router
 
 
@@ -138,6 +144,10 @@ def check_requirements(request: TranscriptRequest):
                 result = check_afm_professional_accountant_reqs(completed_courses)
             case "afm sustainability specialization":
                 result = check_afm_sustainability_reqs(completed_courses)
+            case "farm professional risk management specialization":
+                result = check_farm_professional_risk_management_reqs(completed_courses)
+            case "farm professional financial analyst specialization":
+                result = check_farm_professional_fin_analyst_reqs(completed_courses)
             case _:
                 return {"error": f"Major '{major}' not supported"}
 
