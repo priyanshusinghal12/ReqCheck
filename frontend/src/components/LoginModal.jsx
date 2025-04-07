@@ -9,6 +9,8 @@ import {
 } from "firebase/auth";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Eye, EyeOff } from "lucide-react";
 
 const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 	const [email, setEmail] = useState("");
@@ -48,6 +50,7 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 
 			localStorage.setItem("reqcheck_name", finalName);
 			triggerWelcomeAnimation(finalName);
+			sessionStorage.removeItem("reqcheck_guest_session");
 			toast.success(
 				isSignup ? "Account created successfully!" : "Logged in successfully!"
 			);
@@ -66,6 +69,7 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 
 			localStorage.setItem("reqcheck_name", firstName);
 			triggerWelcomeAnimation(firstName);
+			sessionStorage.removeItem("reqcheck_guest_session");
 			toast.success("Logged in with Google!");
 			onClose();
 		} catch {
@@ -87,6 +91,7 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 	};
 
 	const continueAsGuest = () => {
+		sessionStorage.setItem("reqcheck_guest_session", "true");
 		localStorage.removeItem("reqcheck_name");
 		triggerWelcomeAnimation("");
 		onClose();
@@ -142,8 +147,8 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 								<button
 									type="button"
 									onClick={() => setShowPassword(!showPassword)}
-									className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white text-sm">
-									{showPassword ? "Hide" : "Show"}
+									className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white">
+									{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
 								</button>
 							</div>
 

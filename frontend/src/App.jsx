@@ -16,54 +16,12 @@ function App() {
 	const [shouldType, setShouldType] = useState(false);
 	const [name, setName] = useState("");
 
-	// Track page load to Firestore (visits)
-	useEffect(() => {
-		const logVisit = async () => {
-			try {
-				await addDoc(collection(db, "visits"), {
-					timestamp: serverTimestamp(),
-					userAgent: navigator.userAgent,
-					path: window.location.pathname,
-				});
-			} catch (err) {
-				console.error("Visit logging failed:", err);
-			}
-		};
-		logVisit();
-	}, []);
+	const EXEMPT_UIDS = [
+		"PqirRr6CzkRpFQ24oQq9qcoA4Hg1",
+		"jJ83UnrzQCeZfAjmBDyZt7hHOMA3",
+	];
 
-	// Listen for user authentication
-	useEffect(() => {
-		const unsubscribe = onAuthStateChanged(auth, async (user) => {
-			if (!user) {
-				setShowLoginModal(true);
-			} else {
-				const display =
-					user.displayName || localStorage.getItem("reqcheck_name");
-				if (display) {
-					const first = display.trim().split(" ")[0];
-					setName(first);
-				}
-				setShouldType(true);
-			}
-
-			// ✅ Visitor count: only log if you're signed in as admin
-			if (auth.currentUser?.uid === "PqirRr6CzkRpFQ24oQq9qcoA4Hg1") {
-				try {
-					const coll = collection(db, "visits");
-					const snapshot = await getCountFromServer(coll);
-					console.log("🔥 Total Visits:", snapshot.data().count);
-				} catch (err) {
-					console.error("Failed to fetch visit count:", err);
-				}
-			}
-		});
-
-		return () => unsubscribe();
-	}, []);
-
-	// Called when modal is closed (login/signup/guest)
-	const handleLoginModalClose = () => {
+	const setNameFromLocalStorage = () => {
 		const stored = localStorage.getItem("reqcheck_name");
 		if (stored) {
 			const first = stored.trim().split(" ")[0];
@@ -71,7 +29,84 @@ function App() {
 		} else {
 			setName("");
 		}
-		setShouldType(false);
+	};
+
+	useEffect(() => {
+		const alreadyVisited = localStorage.getItem("reqcheck_has_visited");
+		const isGuestSession = sessionStorage.getItem("reqcheck_guest_session");
+
+		if (!alreadyVisited && !isGuestSession) {
+			setShowLoginModal(true);
+		} else {
+			setNameFromLocalStorage();
+			setShouldType(true);
+		}
+	}, []);
+
+	// Log visit ONCE per session — exclude specific UIDs
+	useEffect(() => {
+		const logVisit = async () => {
+			const alreadyLogged = sessionStorage.getItem("reqcheck_logged_visit");
+			const user = auth.currentUser;
+
+			const isExemptUser = user && EXEMPT_UIDS.includes(user.uid);
+
+			if (!alreadyLogged && !isExemptUser) {
+				try {
+					await addDoc(collection(db, "visits"), {
+						timestamp: serverTimestamp(),
+						userAgent: navigator.userAgent,
+						path: window.location.pathname,
+					});
+					sessionStorage.setItem("reqcheck_logged_visit", "true");
+				} catch (err) {
+					console.error("Visit logging failed:", err);
+				}
+			}
+		};
+
+		logVisit();
+	}, []);
+
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, async (user) => {
+			const isGuestSession = sessionStorage.getItem("reqcheck_guest_session");
+
+			if (!user && !isGuestSession) {
+				setShowLoginModal(true);
+			} else if (user) {
+				const display =
+					user.displayName || localStorage.getItem("reqcheck_name");
+				if (display) {
+					const first = display.trim().split(" ")[0];
+					setName(first);
+				}
+				setShouldType(true);
+
+				if (EXEMPT_UIDS.includes(user.uid)) {
+					try {
+						const snapshot = await getCountFromServer(collection(db, "visits"));
+						console.log("Total Visits:", snapshot.data().count);
+					} catch (err) {
+						console.error("Failed to fetch visit count:", err);
+					}
+				}
+			}
+		});
+		return () => unsubscribe();
+	}, []);
+
+	const handleLoginModalClose = () => {
+		const stored = localStorage.getItem("reqcheck_name");
+		if (stored) {
+			const first = stored.trim().split(" ")[0];
+			setName(first);
+		} else {
+			setName("");
+			sessionStorage.setItem("reqcheck_guest_session", "true");
+		}
+
+		setShouldType(false); // reset animation
 		setTimeout(() => setShouldType(true), 10);
 		setShowLoginModal(false);
 	};
