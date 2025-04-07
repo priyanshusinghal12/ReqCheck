@@ -133,16 +133,10 @@ const Results = () => {
 				setResults({
 					...data,
 					completed_courses: results.completed_courses,
-					major: trimmedMajor,
+					major: newMajor,
 				});
 				setShowWhatIf(false);
-				const formattedMajor = newMajor
-					.trim()
-					.split(" ")
-					.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-					.join(" ");
-
-				toast.success(`Switched to ${formattedMajor}!`);
+				toast.success(`Switched to ${newMajor}!`);
 			}
 		} catch (error) {
 			console.error("Major change failed", error);
