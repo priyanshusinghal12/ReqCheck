@@ -1,6 +1,6 @@
 import { HashLink } from "react-router-hash-link";
 import { auth } from "../firebase";
-import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect, useRef } from "react";
 import LoginModal from "./LoginModal";
 import defaultUserIcon from "../assets/Sample_User_Icon.png";
@@ -191,7 +191,7 @@ const Navbar = ({ setName, setShouldType }) => {
 							/>
 							{showDropdown && (
 								<div className="absolute right-0 mt-2 w-40 bg-[#1A1A1A] border border-gray-700 rounded-md shadow-lg py-2 z-50">
-									<p className="text-sm text-center px-3 py-1 text-white truncate">
+									<p className="text-sm text-left px-3 py-1 text-white truncate">
 										{user.displayName || user.email}
 									</p>
 									<hr className="border-gray-600 my-1" />
