@@ -330,3 +330,20 @@ def check_one_course_from_list(current_requirement, subject_codes, student_cours
           for course in completed_courses[:1]:
               if course in student_courses:
                   student_courses.remove(course)
+
+
+def check_one_group_complete_all(requirement_name, groups, student_courses, major_reqs):
+    """
+    Checks if a student has completed all courses in at least one of the provided groups.
+
+    Args:
+        requirement_name: Descriptive name of the requirement.
+        groups: A list of lists, where each sublist is a group of required courses.
+        student_courses: A list of student's completed courses.
+        major_reqs: The dictionary where the result will be updated.
+    """
+    for group in groups:
+        if all(course in student_courses for course in group):
+            major_reqs[requirement_name] = [True, group]
+            return
+    major_reqs[requirement_name] = [False, []]

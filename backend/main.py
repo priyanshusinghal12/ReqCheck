@@ -36,6 +36,14 @@ from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major
 from course_logic.checkCOReqs import check_co_major
 from course_logic.checkCSReqs import check_computer_science_major
+from course_logic.checkAFMReqs import (
+    check_afm_ba_reqs,
+    check_afm_entrepreneurial_mindset_reqs,
+    check_afm_enterprise_performance_risk_reqs,
+    check_afm_financial_markets_reqs,
+    check_afm_professional_accountant_reqs,
+    check_afm_sustainability_reqs,
+)
 from saveResults import router as save_router
 
 
@@ -118,6 +126,18 @@ def check_requirements(request: TranscriptRequest):
                 result = check_co_major(completed_courses)
             case "bcs computer science":
                 result = check_computer_science_major(completed_courses)
+            case "afm ba":
+                result = check_afm_ba_reqs(completed_courses)
+            case "afm entrepreneurial mindset":
+                result = check_afm_entrepreneurial_mindset_reqs(completed_courses)
+            case "afm enterprise performance and risk":
+                result = check_afm_enterprise_performance_risk_reqs(completed_courses)
+            case "afm financial markets":
+                result = check_afm_financial_markets_reqs(completed_courses)
+            case "afm professional accountant":
+                result = check_afm_professional_accountant_reqs(completed_courses)
+            case "afm sustainability":
+                result = check_afm_sustainability_reqs(completed_courses)
             case _:
                 return {"error": f"Major '{major}' not supported"}
 

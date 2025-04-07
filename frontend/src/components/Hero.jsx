@@ -107,7 +107,7 @@ export default function Hero({ shouldType, name }) {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
-						major: selectedMajor.toLowerCase(),
+						major: selectedMajor,
 						completed_courses: courses,
 					}),
 				}
@@ -120,7 +120,7 @@ export default function Hero({ shouldType, name }) {
 					state: {
 						results: {
 							...data,
-							major: selectedMajor.trim().toLowerCase(),
+							major: selectedMajor.trim(),
 							completed_courses: courses,
 						},
 					},
@@ -179,7 +179,7 @@ export default function Hero({ shouldType, name }) {
 				</motion.p>
 				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base">
 					To get started, upload your unofficial transcript or enter your
-					completed courses manually, select your major and hit go. 
+					completed courses manually, select your major and hit go.
 				</motion.p>
 
 				<div className="flex items-center gap-3 mb-6">

@@ -41,11 +41,6 @@ const Results = () => {
 	if (!results)
 		return <div className="text-center p-10 text-white">No results found.</div>;
 
-	const capitalizedMajor = results.major
-		.split(" ")
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-		.join(" ");
-
 	const areAllRequirementsFulfilled = (requirements) =>
 		Object.values(requirements).every(([met]) => met);
 
@@ -374,7 +369,7 @@ const Results = () => {
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
 					<h1 className="text-3xl font-bold">
 						Requirement Checklist:{" "}
-						<span className="text-white">{capitalizedMajor}</span>
+						<span className="text-white">{results.major}</span>
 					</h1>
 
 					<div className="flex flex-row gap-2 items-center w-full sm:w-auto">
