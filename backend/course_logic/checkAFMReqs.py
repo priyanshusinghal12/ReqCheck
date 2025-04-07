@@ -442,3 +442,4 @@ def check_afm_sustainability_reqs(student_courses):
     )
 
     return afm_sustainability_reqs
+
