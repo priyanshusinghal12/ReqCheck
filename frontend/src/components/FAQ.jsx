@@ -26,7 +26,7 @@ const faqs = [
 	{
 		question: "Which undergrad calendar do we use?",
 		answer:
-			"We use the 2024–2025 University of Waterloo Undergraduate Academic Calendar. The tool will be updated yearly to reflect the latest requirements.",
+			"We use the 2025-2026 (latest) University of Waterloo Undergraduate Academic Calendar. The tool will be updated yearly to reflect the latest requirements.",
 	},
 	{
 		question: "How does saving my results work?",
@@ -41,7 +41,7 @@ const faqs = [
 	{
 		question: "Which majors can I check?",
 		answer:
-			"Currently, you can check majors under the Math Faculty; we're working to integrate more options.",
+			"Currently, you can check majors under the Math Faculty, AFM and FARM; we're working to integrate more options.",
 	},
 ];
 
@@ -58,7 +58,7 @@ export default function FAQ() {
 				viewport={{ once: true }}>
 				Frequently Asked Questions
 			</motion.h2>
-
+			{/* test comment */}
 			<div className="max-w-5xl mx-auto flex flex-col gap-6">
 				{faqs.map((faq, idx) => (
 					<Disclosure key={idx}>
