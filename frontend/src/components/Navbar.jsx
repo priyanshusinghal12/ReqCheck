@@ -40,8 +40,12 @@ const Navbar = ({ setName, setShouldType }) => {
 		signOut(auth)
 			.then(() => {
 				localStorage.removeItem("reqcheck_name");
+				sessionStorage.removeItem("transcriptFilename");
+				sessionStorage.removeItem("parsedCourses");
+				sessionStorage.removeItem("selectedMajor");
+				sessionStorage.removeItem("manualCourses");
 				toast.success("Logged out.");
-				window.location.reload(); // forces Hero + App to re-check localStorage
+				window.location.reload(); // this is fine to keep
 			})
 			.catch(() => {
 				toast.error("Logout failed.");

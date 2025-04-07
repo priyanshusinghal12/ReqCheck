@@ -18,11 +18,12 @@ export default function Hero({ shouldType, name }) {
 	const [badCourses, setBadCourses] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [dragCounter, setDragCounter] = useState(0);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (shouldType) {
-			// Reset will be handled by the key prop already
+			// Reset handled by key prop
 		}
 	}, [shouldType]);
 
@@ -54,8 +55,7 @@ export default function Hero({ shouldType, name }) {
 		sessionStorage.setItem("manualCourses", manualCourses);
 	}, [manualCourses]);
 
-	const handleFileChange = async (event) => {
-		const file = event.target.files[0];
+	const processFile = (file) => {
 		if (file?.type === "application/pdf") {
 			setSelectedFile(file);
 			sessionStorage.setItem("transcriptFilename", file.name);
@@ -83,6 +83,36 @@ export default function Hero({ shouldType, name }) {
 		} else {
 			toast.error("Please upload a valid PDF file.");
 		}
+	};
+
+	const handleFileChange = async (event) => {
+		const file = event.target.files[0];
+		processFile(file);
+	};
+
+	const handleDragEnter = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragCounter((prev) => prev + 1);
+	};
+
+	const handleDragLeave = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragCounter((prev) => Math.max(prev - 1, 0));
+	};
+
+	const handleDragOver = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+	};
+
+	const handleDrop = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setDragCounter(0);
+		const file = e.dataTransfer.files[0];
+		processFile(file);
 	};
 
 	const handleClearTranscript = () => {
@@ -153,7 +183,12 @@ export default function Hero({ shouldType, name }) {
 	};
 
 	return (
-		<section className="relative z-0 min-h-[95vh] pt-24 flex items-center justify-center text-white text-center overflow-visible bg-black px-4 pb-10">
+		<section
+			className="relative z-0 min-h-[95vh] pt-24 flex items-center justify-center text-white text-center overflow-visible bg-black px-4 pb-10"
+			onDragEnter={handleDragEnter}
+			onDragLeave={handleDragLeave}
+			onDragOver={handleDragOver}
+			onDrop={handleDrop}>
 			<ParticlesBackground />
 			<motion.div className="relative z-10 w-full max-w-2xl flex flex-col items-center">
 				{shouldType && (
@@ -161,7 +196,7 @@ export default function Hero({ shouldType, name }) {
 						<span className="text-[#FED34C]">Wel</span>
 						<span className="text-white">
 							<Typewriter
-								key={name + shouldType} // ensures animation restarts
+								key={name + shouldType}
 								words={[`come${name ? ` ${name}` : ""}`]}
 								cursor
 								typeSpeed={100}
@@ -203,10 +238,10 @@ export default function Hero({ shouldType, name }) {
 				</div>
 
 				{!showModal && (
-					<div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2">
+					<div className="relative flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2">
 						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-4 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md sm:w-auto w-full">
 							<FaUpload />
-							Upload Transcript
+							Upload/Drop Transcript
 							<input
 								type="file"
 								accept=".pdf"
@@ -232,6 +267,14 @@ export default function Hero({ shouldType, name }) {
 							whileTap={!isLoading ? { scale: 0.95 } : {}}>
 							<FaArrowRight />
 						</motion.button>
+
+						{dragCounter > 0 && (
+							<div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-xl pointer-events-none z-20">
+								<p className="text-white text-xl font-semibold">
+									Drop your file here
+								</p>
+							</div>
+						)}
 					</div>
 				)}
 

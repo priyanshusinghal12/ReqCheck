@@ -36,7 +36,9 @@ export default function MajorDropdown({
 }) {
 	const [query, setQuery] = useState("");
 	const [open, setOpen] = useState(false);
+	const [highlightedIndex, setHighlightedIndex] = useState(0);
 	const dropdownRef = useRef();
+	const optionRefs = useRef([]);
 
 	const filteredMajors = majors.filter((major) =>
 		major.toLowerCase().includes(query.toLowerCase())
@@ -52,6 +54,44 @@ export default function MajorDropdown({
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
+	useEffect(() => {
+		// Reset highlight on new query
+		setHighlightedIndex(0);
+	}, [query]);
+
+	useEffect(() => {
+		// Auto scroll highlighted item into view
+		if (open && optionRefs.current[highlightedIndex]) {
+			optionRefs.current[highlightedIndex].scrollIntoView({
+				block: "nearest",
+			});
+		}
+	}, [highlightedIndex, open]);
+
+	const handleKeyDown = (e) => {
+		if (!open) return;
+
+		if (e.key === "ArrowDown") {
+			e.preventDefault();
+			setHighlightedIndex((prev) =>
+				prev + 1 < filteredMajors.length ? prev + 1 : prev
+			);
+		} else if (e.key === "ArrowUp") {
+			e.preventDefault();
+			setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : prev));
+		} else if (e.key === "Enter") {
+			e.preventDefault();
+			const selected = filteredMajors[highlightedIndex];
+			if (selected) {
+				setSelectedMajor(selected);
+				setQuery(selected);
+				setOpen(false);
+			}
+		} else if (e.key === "Escape") {
+			setOpen(false);
+		}
+	};
+
 	return (
 		<div
 			className={`relative ${fullWidth ? "w-full" : "w-full sm:w-60"}`}
@@ -64,6 +104,7 @@ export default function MajorDropdown({
 					setOpen(true);
 				}}
 				onClick={() => setOpen(true)}
+				onKeyDown={handleKeyDown}
 				placeholder="Select Major"
 				className="w-full px-4 py-3 bg-[#1A1A1A] text-white border border-[#333] rounded-xl cursor-pointer"
 			/>
@@ -73,12 +114,17 @@ export default function MajorDropdown({
 						filteredMajors.map((major, idx) => (
 							<div
 								key={idx}
+								ref={(el) => (optionRefs.current[idx] = el)}
 								onClick={() => {
 									setSelectedMajor(major);
 									setQuery(major);
 									setOpen(false);
 								}}
-								className="px-4 py-2 text-sm cursor-pointer hover:bg-[#FED34C] hover:text-black text-white">
+								className={`px-4 py-2 text-sm cursor-pointer ${
+									idx === highlightedIndex
+										? "bg-[#FED34C] text-black"
+										: "hover:bg-[#FED34C] hover:text-black text-white"
+								}`}>
 								{major}
 							</div>
 						))
