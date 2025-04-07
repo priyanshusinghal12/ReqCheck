@@ -19,6 +19,7 @@ export default function Hero({ shouldType, name }) {
 	const [showModal, setShowModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [dragCounter, setDragCounter] = useState(0);
+	const [isRetrying, setIsRetrying] = useState(false);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -122,8 +123,25 @@ export default function Hero({ shouldType, name }) {
 		sessionStorage.removeItem("transcriptFilename");
 	};
 
+	const retryFetch = async (url, options, retries = 1) => {
+		try {
+			const res = await fetch(url, options);
+			if (!res.ok) throw new Error("Fetch failed");
+			return res;
+		} catch (err) {
+			if (retries > 0) {
+				setIsRetrying(true);
+				await new Promise((res) => setTimeout(res, 2000));
+				return retryFetch(url, options, retries - 1);
+			}
+			throw err;
+		}
+	};
+
 	const handleGoClick = async (courses) => {
 		setIsLoading(true);
+		setIsRetrying(false);
+
 		if (!selectedMajor || !courses?.length) {
 			toast.error("Please select a major and/or provide courses.");
 			setIsLoading(false);
@@ -131,17 +149,31 @@ export default function Hero({ shouldType, name }) {
 		}
 
 		try {
-			const response = await fetch(
-				`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						major: selectedMajor,
-						completed_courses: courses,
-					}),
-				}
-			);
+			let response;
+			try {
+				response = await retryFetch(
+					`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+					{
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({
+							major: selectedMajor,
+							completed_courses: courses,
+						}),
+					},
+					1 // retry once
+				);
+			} catch {
+				setIsRetrying(false);
+				throw new Error("Retry failed");
+			}
+
+			if (!response.ok) {
+				toast.error("Backend not ready. Please wait and try again.");
+				setIsLoading(false);
+				return;
+			}
+
 			const data = await response.json();
 			if (data.error) {
 				toast.error("Invalid major or backend error.");
@@ -157,10 +189,12 @@ export default function Hero({ shouldType, name }) {
 				});
 			}
 		} catch (err) {
-			console.error(err);
-			toast.error("Failed to fetch requirements.");
+			console.error("Request failed:", err);
+			toast.error("Backend is sleeping or unreachable. Please try again.");
+		} finally {
+			setIsRetrying(false);
+			setIsLoading(false);
 		}
-		setIsLoading(false);
 	};
 
 	const handleManualSubmit = () => {
@@ -279,9 +313,32 @@ export default function Hero({ shouldType, name }) {
 				)}
 
 				{isLoading && (
-					<p className="text-sm text-gray-400 mt-3 animate-pulse">
-						Checking requirements...
-					</p>
+					<div className="flex items-center gap-2 text-sm text-gray-400 mt-3 animate-pulse">
+						<svg
+							className="w-4 h-4 animate-spin text-[#FED34C]"
+							fill="none"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg">
+							<circle
+								className="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								strokeWidth="4"
+							/>
+							<path
+								className="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+							/>
+						</svg>
+						<span>
+							{isRetrying
+								? "Backend waking up... Retrying shortly."
+								: "Checking requirements..."}
+						</span>
+					</div>
 				)}
 
 				{selectedFile && !showModal && (
