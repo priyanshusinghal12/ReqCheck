@@ -19,12 +19,12 @@ const majors = [
 	"Mathematical Optimization Operations Research Specialization",
 	"Pure Mathematics",
 	"Mathematics Teaching",
-	"AFM BA",
-	"AFM Entrepreneurial Mindset",
-	"AFM Enterprise Performance and Risk",
-	"AFM Financial Markets",
-	"AFM Professional Accountant",
-	"AFM Sustainability",
+	"AFM BA Specialization",
+	"AFM Entrepreneurial Mindset Specialization",
+	"AFM Enterprise Performance and Risk Specialization",
+	"AFM Financial Markets Specialization",
+	"AFM Professional Accountant Specialization",
+	"AFM Sustainability Specialization",
 ];
 
 export default function MajorDropdown({

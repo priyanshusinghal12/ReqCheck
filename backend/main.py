@@ -126,17 +126,17 @@ def check_requirements(request: TranscriptRequest):
                 result = check_co_major(completed_courses)
             case "bcs computer science":
                 result = check_computer_science_major(completed_courses)
-            case "afm ba":
+            case "afm ba specialization":
                 result = check_afm_ba_reqs(completed_courses)
-            case "afm entrepreneurial mindset":
+            case "afm entrepreneurial mindset specialization":
                 result = check_afm_entrepreneurial_mindset_reqs(completed_courses)
-            case "afm enterprise performance and risk":
+            case "afm enterprise performance and risk specialization":
                 result = check_afm_enterprise_performance_risk_reqs(completed_courses)
-            case "afm financial markets":
+            case "afm financial markets specialization":
                 result = check_afm_financial_markets_reqs(completed_courses)
-            case "afm professional accountant":
+            case "afm professional accountant specialization":
                 result = check_afm_professional_accountant_reqs(completed_courses)
-            case "afm sustainability":
+            case "afm sustainability specialization":
                 result = check_afm_sustainability_reqs(completed_courses)
             case _:
                 return {"error": f"Major '{major}' not supported"}
