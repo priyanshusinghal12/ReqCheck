@@ -267,7 +267,15 @@ const Results = () => {
 							className="w-full p-2 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
 							value={tempSaveName}
 							onChange={(e) => setTempSaveName(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									e.preventDefault();
+									setShowNameModal(false);
+									handleSaveResults(tempSaveName);
+								}
+							}}
 						/>
+
 						<div className="mt-4 flex justify-end gap-2">
 							<button
 								onClick={() => setShowNameModal(false)}
@@ -296,6 +304,53 @@ const Results = () => {
 							rows={5}
 							value={editedCoursesText}
 							onChange={(e) => setEditedCoursesText(e.target.value)}
+							onKeyDown={async (e) => {
+								if (e.key === "Enter" && !e.shiftKey) {
+									e.preventDefault();
+									const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
+									const parsedCourses = editedCoursesText
+										.split(",")
+										.map((c) => c.trim().toUpperCase())
+										.filter((c) => validCourseRegex.test(c));
+
+									if (parsedCourses.length === 0) {
+										toast.error("Please enter valid course codes.");
+										return;
+									}
+
+									try {
+										const response = await fetch(
+											`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+											{
+												method: "POST",
+												headers: { "Content-Type": "application/json" },
+												body: JSON.stringify({
+													major: results.major,
+													completed_courses: parsedCourses,
+												}),
+											}
+										);
+
+										const data = await response.json();
+
+										if (data.error) {
+											toast.error("Failed to update results.");
+										} else {
+											setResults({
+												...data,
+												completed_courses: parsedCourses,
+												major: results.major,
+											});
+											setShowWhatIf(false);
+											toast.success("Courses updated!");
+											setShowCourseEditModal(false);
+										}
+									} catch (err) {
+										console.error(err);
+										toast.error("Something went wrong.");
+									}
+								}
+							}}
 							className="w-full p-3 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
 							placeholder="e.g. CS 136, MATH 135, STAT 231"
 						/>
@@ -357,7 +412,6 @@ const Results = () => {
 					</div>
 				</div>
 			)}
-
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
@@ -366,7 +420,16 @@ const Results = () => {
 						<span className="text-white">{results.major}</span>
 					</h1>
 
-					<div className="flex flex-row gap-2 items-center w-full sm:w-auto">
+					<div
+						className="flex flex-row gap-2 items-center w-full sm:w-auto"
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								e.preventDefault();
+								handleMajorChange();
+							}
+						}}
+						tabIndex={0} // Allows div to be focusable for key press
+					>
 						<MajorChangeDropDown
 							selectedMajor={newMajor}
 							setSelectedMajor={setNewMajor}
@@ -375,14 +438,8 @@ const Results = () => {
 						<button
 							onClick={handleMajorChange}
 							disabled={isLoading}
-							className={`bg-white text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200 ${
-								isLoading ? "opacity-60 cursor-not-allowed" : ""
-							}`}>
-							{isLoading ? (
-								<div className="animate-spin rounded-full h-5 w-5 border-2 border-t-black border-white" />
-							) : (
-								<FaArrowRight size={16} />
-							)}
+							className="bg-white text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200">
+							<FaArrowRight size={16} />
 						</button>
 					</div>
 				</div>

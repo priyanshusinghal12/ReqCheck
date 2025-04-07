@@ -272,7 +272,15 @@ export default function Hero({ shouldType, name }) {
 				</div>
 
 				{!showModal && (
-					<div className="relative flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2">
+					<div
+						className="relative flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2"
+						tabIndex={0}
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								e.preventDefault();
+								handleGoClick(fileContent);
+							}
+						}}>
 						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-4 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md sm:w-auto w-full">
 							<FaUpload />
 							Upload/Drop Transcript
@@ -394,6 +402,12 @@ export default function Hero({ shouldType, name }) {
 							onChange={(e) => {
 								setManualCourses(e.target.value);
 								setBadCourses([]);
+							}}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" && !e.shiftKey) {
+									e.preventDefault();
+									handleManualSubmit();
+								}
 							}}
 						/>
 
