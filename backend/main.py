@@ -93,63 +93,62 @@ def check_requirements(request: TranscriptRequest):
         major = request.major.strip().lower()
         completed_courses = request.completed_courses
 
-        match major:
-            case "math degree requirements":
-                result = check_math_degree_reqs(completed_courses)
-            case "statistics":
-                result = check_stats_major(completed_courses)
-            case "actuarial science":
-                result = check_actsci_major(completed_courses)
-            case "applied mathematics":
-                result = check_amath_major(completed_courses)
-            case "biostatistics":
-                result = check_biostats_major(completed_courses)
-            case "computational mathematics":
-                result = check_comp_math_reqs(completed_courses)
-            case "computer science":
-                result = check_computer_science_major(completed_courses)
-            case "bmath data science":
-                result = check_data_science_major(completed_courses)
-            case "mathematical studies":
-                result = math_studies_reqs(completed_courses)
-            case "mathematical studies business specialization":
-                result = math_studies_business_reqs(completed_courses)
-            case "mathematical economics":
-                result = check_math_econ_reqs(completed_courses)
-            case "mathematical finance":
-                result = check_math_finance_reqs(completed_courses)
-            case "mathematical physics":
-                result = check_math_physics_reqs(completed_courses)
-            case "pure mathematics":
-                result = check_pmath_major(completed_courses)
-            case "mathematical optimization business specialization":
-                result = check_math_opt_bus_specialization(completed_courses)
-            case "mathematical optimization operations research specialization":
-                result = check_math_opt_ops_specialization(completed_courses)
-            case "mathematics teaching":
-                result = check_math_teaching_major(completed_courses)
-            case "combinatorics and optimization":
-                result = check_co_major(completed_courses)
-            case "bcs computer science":
-                result = check_computer_science_major(completed_courses)
-            case "afm ba specialization":
-                result = check_afm_ba_reqs(completed_courses)
-            case "afm entrepreneurial mindset specialization":
-                result = check_afm_entrepreneurial_mindset_reqs(completed_courses)
-            case "afm enterprise performance and risk specialization":
-                result = check_afm_enterprise_performance_risk_reqs(completed_courses)
-            case "afm financial markets specialization":
-                result = check_afm_financial_markets_reqs(completed_courses)
-            case "afm professional accountant specialization":
-                result = check_afm_professional_accountant_reqs(completed_courses)
-            case "afm sustainability specialization":
-                result = check_afm_sustainability_reqs(completed_courses)
-            case "farm professional risk management specialization":
-                result = check_farm_professional_risk_management_reqs(completed_courses)
-            case "farm professional financial analyst specialization":
-                result = check_farm_professional_fin_analyst_reqs(completed_courses)
-            case _:
-                return {"error": f"Major '{major}' not supported"}
+    match major.lower():
+        case "math degree requirements":
+            result = check_math_degree_reqs(completed_courses)
+        case "bmath data science":
+            result = check_data_science_major(completed_courses)
+        case "bcs computer science":
+            result = check_computer_science_major(completed_courses)
+        case "computational mathematics":
+            result = check_comp_math_reqs(completed_courses)
+        case "statistics":
+            result = check_stats_major(completed_courses)
+        case "biostatistics":
+            result = check_biostats_major(completed_courses)
+        case "mathematical economics":
+            result = check_math_econ_reqs(completed_courses)
+        case "mathematical finance":
+            result = check_math_finance_reqs(completed_courses)
+        case "mathematical physics":
+            result = check_math_physics_reqs(completed_courses)
+        case "mathematical studies":
+            result = math_studies_reqs(completed_courses)
+        case "mathematical studies business":
+            result = math_studies_business_reqs(completed_courses)
+        case "actuarial science":
+            result = check_actsci_major(completed_courses)
+        case "applied mathematics":
+            result = check_amath_major(completed_courses)
+        case "combinatorics & optimization":
+            result = check_co_major(completed_courses)
+        case "math opt: business specialization":
+            result = check_math_opt_bus_specialization(completed_courses)
+        case "math opt: operations research":
+            result = check_math_opt_ops_specialization(completed_courses)
+        case "pure mathematics":
+            result = check_pmath_major(completed_courses)
+        case "mathematics teaching":
+            result = check_math_teaching_major(completed_courses)
+        case "afm ba specialization":
+            result = check_afm_ba_reqs(completed_courses)
+        case "afm entrepreneurial":
+            result = check_afm_entrepreneurial_mindset_reqs(completed_courses)
+        case "afm performance & risk":
+            result = check_afm_enterprise_performance_risk_reqs(completed_courses)
+        case "afm fin markets specialization":
+            result = check_afm_financial_markets_reqs(completed_courses)
+        case "afm prof acct specialization":
+            result = check_afm_professional_accountant_reqs(completed_courses)
+        case "afm sustainability specialization":
+            result = check_afm_sustainability_reqs(completed_courses)
+        case "farm risk mgmt":
+            result = check_farm_professional_risk_management_reqs(completed_courses)
+        case "farm fin analyst":
+            result = check_farm_professional_fin_analyst_reqs(completed_courses)
+        case _:
+            return {"error": f"Major '{major}' not supported"}
+
 
         # Validate result
         if not isinstance(result, dict):

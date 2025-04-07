@@ -41,7 +41,7 @@ const faqs = [
 	{
 		question: "Which majors can I check?",
 		answer:
-			"Currently, you can check majors under the Math Faculty, AFM and FARM; we're working to integrate more options.",
+			"Currently, you can check majors under the Math Faculty, AFM and FARM majors; we're working to integrate more options! Stay tuned!",
 	},
 ];
 
