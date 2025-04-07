@@ -107,17 +107,23 @@ const AboutUs = () => {
 										href={member.linkedin}
 										target="_blank"
 										rel="noopener noreferrer"
-										whileHover={{ scale: 1.15 }}>
+										whileHover={{ scale: 1.15 }}
+										onClick={(e) => e.stopPropagation()} // Prevent modal trigger
+									>
 										<FaLinkedin className="hover:text-blue-400 transition duration-200" />
 									</motion.a>
 									<motion.a
 										href={member.github}
 										target="_blank"
 										rel="noopener noreferrer"
-										whileHover={{ scale: 1.15 }}>
+										whileHover={{ scale: 1.15 }}
+										onClick={(e) => e.stopPropagation()}>
 										<FaGithub className="hover:text-gray-300 transition duration-200" />
 									</motion.a>
-									<motion.a href={member.email} whileHover={{ scale: 1.15 }}>
+									<motion.a
+										href={member.email}
+										whileHover={{ scale: 1.15 }}
+										onClick={(e) => e.stopPropagation()}>
 										<FaEnvelope className="hover:text-red-400 transition duration-200" />
 									</motion.a>
 								</div>
