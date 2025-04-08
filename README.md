@@ -2,7 +2,7 @@
 
 Hosted on https://req-check.vercel.app/
 
-This is ReqCheck, the one-click tool to check your progress on your major's requirements and simulate how your future courses will affect your progress. Explore our code. 
+This is ReqCheck (currently for UWaterloo), the one-click tool to check your progress on your major's requirements and simulate how your future courses will affect your progress. Explore our code. 
 
 We have two folders:
 
