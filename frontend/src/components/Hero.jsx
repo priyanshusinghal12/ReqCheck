@@ -260,6 +260,11 @@ export default function Hero({ shouldType, name }) {
 						Upload Transcript
 					</button>
 					<button
+						id="upload-enter-trigger"
+						onClick={() => handleGoClick(fileContent)}
+						className="hidden"
+					/>
+					<button
 						className={`px-4 py-2 rounded-lg font-semibold ${
 							showModal ? "border border-[#FED34C]" : "border border-[#333]"
 						} bg-[#1A1A1A] text-white`}
@@ -278,7 +283,11 @@ export default function Hero({ shouldType, name }) {
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
 								e.preventDefault();
-								handleGoClick(fileContent);
+								if (selectedMajor?.trim()) {
+									handleGoClick(fileContent);
+								} else {
+									toast.error("Please select a major.");
+								}
 							}
 						}}>
 						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-4 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md sm:w-auto w-full">
@@ -384,7 +393,16 @@ export default function Hero({ shouldType, name }) {
 			{/* Manual Entry Modal */}
 			{showModal && (
 				<div className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50">
-					<div className="bg-[#121212] rounded-lg p-6 w-[90%] max-w-lg shadow-2xl relative">
+					<div
+						className="bg-[#121212] rounded-lg p-6 w-[90%] max-w-lg shadow-2xl relative"
+						onKeyDown={(e) => {
+							if (e.key === "Enter" && !e.shiftKey) {
+								e.preventDefault();
+								handleManualSubmit();
+							}
+						}}
+						tabIndex={0} // makes it focusable for key presses
+					>
 						<button
 							onClick={() => setShowModal(false)}
 							className="absolute top-3 right-3 text-gray-400 hover:text-white">

@@ -69,6 +69,21 @@ export default function MajorDropdown({
 	}, [highlightedIndex, open]);
 
 	const handleKeyDown = (e) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			const selected = filteredMajors[highlightedIndex];
+			if (selected) {
+				setSelectedMajor(selected);
+				setQuery(selected);
+				setOpen(false);
+			}
+
+			// 👇 Trigger the hidden button in Hero.jsx if it exists
+			setTimeout(() => {
+				document.getElementById("upload-enter-trigger")?.click();
+			}, 0);
+		}
+
 		if (!open) return;
 
 		if (e.key === "ArrowDown") {
@@ -79,14 +94,6 @@ export default function MajorDropdown({
 		} else if (e.key === "ArrowUp") {
 			e.preventDefault();
 			setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : prev));
-		} else if (e.key === "Enter") {
-			e.preventDefault();
-			const selected = filteredMajors[highlightedIndex];
-			if (selected) {
-				setSelectedMajor(selected);
-				setQuery(selected);
-				setOpen(false);
-			}
 		} else if (e.key === "Escape") {
 			setOpen(false);
 		}

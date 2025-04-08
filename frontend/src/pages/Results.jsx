@@ -554,7 +554,7 @@ const Results = () => {
 								}}
 							/>
 
-							<div className="mt-4 flex justify-end gap-2">
+							<div className="mt-4 flex justify-end gap-4">
 								<button
 									onClick={() => setShowNameModal(false)}
 									className="text-gray-300 hover:text-white">
@@ -600,7 +600,7 @@ const Results = () => {
 								className="w-full p-3 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
 								placeholder="e.g. CS 136, MATH 135, STAT 231"
 							/>
-							<div className="mt-4 flex justify-end gap-2">
+							<div className="mt-4 flex justify-end gap-4">
 								<button
 									onClick={() => setShowCourseEditModal(false)}
 									className="text-gray-300 hover:text-white">
