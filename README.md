@@ -1,4 +1,4 @@
-# REQCHECK
+# ReqCheck
 
 Hosted on https://req-check.vercel.app/
 
