@@ -50,7 +50,6 @@ const FeedbackForm = () => {
 				setSubmitted(true);
 				setMessage("");
 				setRating(0);
-				toast.success("Thanks for your feedback! 💛");
 			})
 			.catch((error) => {
 				console.error("EmailJS Error:", error);
