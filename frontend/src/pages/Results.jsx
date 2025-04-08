@@ -101,6 +101,23 @@ const Results = () => {
 			setUpdatedKeys([]);
 			toast.success("Courses updated!");
 			setShowCourseEditModal(false);
+
+			if (newMetKeys.length > 0) {
+				toast.success(
+					`You fulfilled ${newMetKeys.length} new requirement${
+						newMetKeys.length > 1 ? "s" : ""
+					}.`,
+					{ duration: 8000 }
+				);
+			}
+			if (changedKeys.length > 0) {
+				toast(
+					`You updated ${changedKeys.length} requirement${
+						changedKeys.length > 1 ? "s" : ""
+					}.`,
+					{ duration: 8000 }
+				);
+			}
 		} catch (err) {
 			console.error(err);
 			toast.error("Something went wrong.");
@@ -259,6 +276,23 @@ const Results = () => {
 		setUpdatedKeys(changedKeys);
 		setWhatIfResults(updated);
 		setShowWhatIf(true);
+
+		if (newMetKeys.length > 0) {
+			toast.success(
+				`You would fulfill ${newMetKeys.length} new requirement${
+					newMetKeys.length > 1 ? "s" : ""
+				}.`,
+				{ duration: 8000 }
+			);
+		}
+		if (changedKeys.length > 0) {
+			toast(
+				`You updated ${changedKeys.length} requirement${
+					changedKeys.length > 1 ? "s" : ""
+				}.`,
+				{ duration: 8000 }
+			);
+		}
 	};
 
 	const renderRequirements = (
@@ -421,43 +455,47 @@ const Results = () => {
 
 				{/* What-If */}
 				<div className="mt-10">
-					<h2 className="text-2xl font-bold mb-3">What-If Analysis</h2>
-					<textarea
-						placeholder="Type in courses like ECON 301, STAT 333..."
-						className="w-full bg-[#1A1A1A] text-white rounded-lg p-4 border-2 border-[#333] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2a2a2a]"
-						rows={5}
-						value={whatIfText}
-						onChange={(e) => setWhatIfText(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === "Enter") {
-								e.preventDefault();
-								handleWhatIf();
-							}
-						}}
-					/>
-					<div className="flex items-center mt-3 gap-3">
-						<button
-							onClick={handleWhatIf}
-							className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
-							Check What-If
-						</button>
-						{showWhatIf && (
+					<div className="bg-black p-0 mt-10 rounded-lg">
+						<h2 className="text-2xl font-bold mb-3">What-If Analysis</h2>
+
+						<textarea
+							placeholder="Type in courses like ECON 301, STAT 333..."
+							className="w-full bg-[#1A1A1A] text-white rounded-lg p-4 border-none outline-none focus:ring-2 focus:ring-[#2a2a2a] placeholder:text-gray-400"
+							rows={5}
+							value={whatIfText}
+							onChange={(e) => setWhatIfText(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									e.preventDefault();
+									handleWhatIf();
+								}
+							}}
+						/>
+
+						<div className="flex items-center mt-3 gap-3 pb-8">
 							<button
-								onClick={() => {
-									setShowWhatIf(false);
-									setWhatIfResults(null);
-									setNewlyFulfilledKeys([]);
-									setUpdatedKeys([]);
-								}}
+								onClick={handleWhatIf}
 								className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
-								Reset to Original
+								Check What-If
 							</button>
-						)}
+							{showWhatIf && (
+								<button
+									onClick={() => {
+										setShowWhatIf(false);
+										setWhatIfResults(null);
+										setNewlyFulfilledKeys([]);
+										setUpdatedKeys([]);
+									}}
+									className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
+									Reset to Original
+								</button>
+							)}
+						</div>
 					</div>
 				</div>
 
 				{/* What-if Messages */}
-				<div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
+				{/* <div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
 					<div
 						className={`transition-all duration-300 ${
 							showWhatIf ? "min-h-[48px] opacity-100" : "min-h-[48px] opacity-0"
@@ -492,7 +530,7 @@ const Results = () => {
 							</>
 						)}
 					</div>
-				</div>
+				</div> */}
 
 				{/* Save Modal */}
 				{showNameModal && (
