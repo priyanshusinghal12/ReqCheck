@@ -12,25 +12,30 @@ const Results = () => {
 	const location = useLocation();
 	const { results: initialResults } = location.state || {};
 	const [results, setResults] = useState(initialResults);
+	const [originalCourses, setOriginalCourses] = useState(
+		initialResults?.completed_courses || []
+	);
 	const [isLoading, setIsLoading] = useState(false);
 	const [whatIfText, setWhatIfText] = useState("");
 	const [whatIfResults, setWhatIfResults] = useState(null);
 	const [showWhatIf, setShowWhatIf] = useState(false);
 	const [newlyFulfilledKeys, setNewlyFulfilledKeys] = useState([]);
 	const [updatedKeys, setUpdatedKeys] = useState([]);
+	const [editFulfilledKeys, setEditFulfilledKeys] = useState([]);
+	const [editUpdatedKeys, setEditUpdatedKeys] = useState([]);
+	const [editUnfulfilledKeys, setEditUnfulfilledKeys] = useState([]);
 	const [newMajor, setNewMajor] = useState(initialResults?.major || "");
 	const [showNameModal, setShowNameModal] = useState(false);
 	const [tempSaveName, setTempSaveName] = useState("");
 	const [showCourseEditModal, setShowCourseEditModal] = useState(false);
 	const [editedCoursesText, setEditedCoursesText] = useState(
-		results?.completed_courses?.join(", ") || ""
+		initialResults?.completed_courses?.join(", ") || ""
 	);
+	const whatIfRef = useRef(null);
 
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	}, []);
-
-	const whatIfRef = useRef(null);
 
 	useEffect(() => {
 		if (showWhatIf && whatIfRef.current) {
@@ -38,15 +43,69 @@ const Results = () => {
 		}
 	}, [showWhatIf]);
 
-	if (!results)
-		return <div className="text-center p-10 text-white">No results found.</div>;
-
 	const areAllRequirementsFulfilled = (requirements) =>
 		Object.values(requirements).every(([met]) => met);
 
 	const allRequirementsFulfilled = areAllRequirementsFulfilled(
 		results.requirements
 	);
+
+	const handleCourseUpdate = async (parsedCourses) => {
+		try {
+			const response = await fetch(
+				`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						major: results.major,
+						completed_courses: parsedCourses,
+					}),
+				}
+			);
+
+			const data = await response.json();
+			if (data.error) return toast.error("Failed to update results.");
+
+			const original = results.requirements;
+			const updated = data.requirements;
+
+			const newMetKeys = [];
+			const changedKeys = [];
+			const lostKeys = [];
+
+			for (const key of Object.keys(updated)) {
+				const [originalMet, originalCourses = []] = original[key] || [];
+				const [updatedMet, updatedCourses = []] = updated[key] || [];
+
+				if (updatedMet && !originalMet) newMetKeys.push(key);
+				else if (!updatedMet && originalMet) lostKeys.push(key);
+				else if (
+					originalCourses.length < updatedCourses.length &&
+					updatedCourses.some((c) => !originalCourses.includes(c))
+				)
+					changedKeys.push(key);
+			}
+
+			setEditFulfilledKeys(newMetKeys);
+			setEditUpdatedKeys(changedKeys);
+			setEditUnfulfilledKeys(lostKeys);
+			setResults({
+				...data,
+				completed_courses: parsedCourses,
+				major: results.major,
+			});
+			setShowWhatIf(false);
+			setWhatIfResults(null);
+			setNewlyFulfilledKeys([]);
+			setUpdatedKeys([]);
+			toast.success("Courses updated!");
+			setShowCourseEditModal(false);
+		} catch (err) {
+			console.error(err);
+			toast.error("Something went wrong.");
+		}
+	};
 
 	const handleSaveResults = async (name) => {
 		try {
@@ -62,7 +121,10 @@ const Results = () => {
 						requirements: whatIfResults,
 						completed_courses: [
 							...results.completed_courses,
-							...whatIfText.split(",").map((c) => c.trim().toUpperCase()),
+							...whatIfText
+								.split(",")
+								.map((c) => c.trim().toUpperCase())
+								.filter((c) => c),
 						],
 						major: results.major,
 				  }
@@ -110,7 +172,6 @@ const Results = () => {
 		}
 
 		setIsLoading(true);
-
 		try {
 			const response = await fetch(
 				`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
@@ -124,9 +185,7 @@ const Results = () => {
 				}
 			);
 
-			const text = await response.text();
-			const data = JSON.parse(text);
-
+			const data = await response.json();
 			if (data.error) {
 				toast.error("Error updating major requirements.");
 			} else {
@@ -142,7 +201,6 @@ const Results = () => {
 			console.error("Major change failed", error);
 			toast.error("Something went wrong. Please try again.");
 		}
-
 		setIsLoading(false);
 	};
 
@@ -162,10 +220,7 @@ const Results = () => {
 			return;
 		}
 
-		const allCourses = [
-			...Object.values(results.requirements).flatMap(([_, courses]) => courses),
-			...futureCourses,
-		];
+		const allCourses = [...results.completed_courses, ...futureCourses];
 
 		const response = await fetch(
 			`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
@@ -180,6 +235,7 @@ const Results = () => {
 		);
 
 		const data = await response.json();
+		if (data.error) return toast.error("Failed to process what-if analysis.");
 
 		const original = results.requirements;
 		const updated = data.requirements;
@@ -191,14 +247,12 @@ const Results = () => {
 			const [originalMet, originalCourses = []] = original[key] || [];
 			const [updatedMet, updatedCourses = []] = updated[key] || [];
 
-			if (updatedMet && !originalMet) {
-				newMetKeys.push(key);
-			} else if (
+			if (updatedMet && !originalMet) newMetKeys.push(key);
+			else if (
 				originalCourses.length < updatedCourses.length &&
 				updatedCourses.some((c) => !originalCourses.includes(c))
-			) {
+			)
 				changedKeys.push(key);
-			}
 		}
 
 		setNewlyFulfilledKeys(newMetKeys);
@@ -207,17 +261,16 @@ const Results = () => {
 		setShowWhatIf(true);
 	};
 
-	const handleKeyDown = (e) => {
-		if (e.key === "Enter") {
-			e.preventDefault();
-			handleWhatIf();
-		}
-	};
-
-	const renderRequirements = (reqs, fulfilled = [], updated = []) =>
+	const renderRequirements = (
+		reqs,
+		fulfilled = [],
+		updated = [],
+		unfulfilled = []
+	) =>
 		Object.entries(reqs).map(([requirement, [met, courses]], i) => {
 			const isNew = fulfilled.includes(requirement);
 			const isUpdated = updated.includes(requirement);
+			const isUnfulfilled = unfulfilled.includes(requirement);
 
 			return (
 				<motion.div
@@ -242,6 +295,11 @@ const Results = () => {
 								Updated
 							</span>
 						)}
+						{isUnfulfilled && (
+							<span className="bg-gray-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+								Unfulfilled
+							</span>
+						)}
 					</h2>
 					<p className="text-sm text-gray-300">
 						{courses.length > 0 ? courses.join(", ") : "No courses found yet."}
@@ -254,164 +312,7 @@ const Results = () => {
 		<>
 			<Navbar />
 			<ParticlesBackground />
-			{/* Custom Save Modal */}
-			{showNameModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
-					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-sm w-full">
-						<h2 className="text-lg font-semibold mb-3 text-white">
-							Save Your Results
-						</h2>
-						<input
-							type="text"
-							placeholder="e.g. Fall 2024 Transcript Results"
-							className="w-full p-2 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
-							value={tempSaveName}
-							onChange={(e) => setTempSaveName(e.target.value)}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									e.preventDefault();
-									setShowNameModal(false);
-									handleSaveResults(tempSaveName);
-								}
-							}}
-						/>
 
-						<div className="mt-4 flex justify-end gap-2">
-							<button
-								onClick={() => setShowNameModal(false)}
-								className="text-gray-300 hover:text-white">
-								Cancel
-							</button>
-							<button
-								onClick={() => {
-									setShowNameModal(false);
-									handleSaveResults(tempSaveName);
-								}}
-								className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
-								Save
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
-			{showCourseEditModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
-					<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-md w-full">
-						<h2 className="text-lg font-semibold mb-3 text-white">
-							Edit Completed Courses
-						</h2>
-						<textarea
-							rows={5}
-							value={editedCoursesText}
-							onChange={(e) => setEditedCoursesText(e.target.value)}
-							onKeyDown={async (e) => {
-								if (e.key === "Enter" && !e.shiftKey) {
-									e.preventDefault();
-									const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
-									const parsedCourses = editedCoursesText
-										.split(",")
-										.map((c) => c.trim().toUpperCase())
-										.filter((c) => validCourseRegex.test(c));
-
-									if (parsedCourses.length === 0) {
-										toast.error("Please enter valid course codes.");
-										return;
-									}
-
-									try {
-										const response = await fetch(
-											`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
-											{
-												method: "POST",
-												headers: { "Content-Type": "application/json" },
-												body: JSON.stringify({
-													major: results.major,
-													completed_courses: parsedCourses,
-												}),
-											}
-										);
-
-										const data = await response.json();
-
-										if (data.error) {
-											toast.error("Failed to update results.");
-										} else {
-											setResults({
-												...data,
-												completed_courses: parsedCourses,
-												major: results.major,
-											});
-											setShowWhatIf(false);
-											toast.success("Courses updated!");
-											setShowCourseEditModal(false);
-										}
-									} catch (err) {
-										console.error(err);
-										toast.error("Something went wrong.");
-									}
-								}
-							}}
-							className="w-full p-3 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
-							placeholder="e.g. CS 136, MATH 135, STAT 231"
-						/>
-						<div className="mt-4 flex justify-end gap-2">
-							<button
-								onClick={() => setShowCourseEditModal(false)}
-								className="text-gray-300 hover:text-white">
-								Cancel
-							</button>
-							<button
-								onClick={async () => {
-									const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
-									const parsedCourses = editedCoursesText
-										.split(",")
-										.map((c) => c.trim().toUpperCase())
-										.filter((c) => validCourseRegex.test(c));
-
-									if (parsedCourses.length === 0) {
-										toast.error("Please enter valid course codes.");
-										return;
-									}
-
-									try {
-										const response = await fetch(
-											`${import.meta.env.VITE_BACKEND_URL}/check-requirements/`,
-											{
-												method: "POST",
-												headers: { "Content-Type": "application/json" },
-												body: JSON.stringify({
-													major: results.major,
-													completed_courses: parsedCourses,
-												}),
-											}
-										);
-
-										const data = await response.json();
-
-										if (data.error) {
-											toast.error("Failed to update results.");
-										} else {
-											setResults({
-												...data,
-												completed_courses: parsedCourses,
-												major: results.major,
-											});
-											setShowWhatIf(false);
-											toast.success("Courses updated!");
-											setShowCourseEditModal(false);
-										}
-									} catch (err) {
-										console.error(err);
-										toast.error("Something went wrong.");
-									}
-								}}
-								className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
-								Update
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
 			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
 				{/* Header */}
 				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
@@ -428,8 +329,7 @@ const Results = () => {
 								handleMajorChange();
 							}
 						}}
-						tabIndex={0} // Allows div to be focusable for key press
-					>
+						tabIndex={0}>
 						<MajorChangeDropDown
 							selectedMajor={newMajor}
 							setSelectedMajor={setNewMajor}
@@ -450,12 +350,46 @@ const Results = () => {
 					</div>
 				)}
 
+				{/* Scrollable checklist */}
 				<div className="max-h-[60vh] overflow-y-auto pr-2">
 					{showWhatIf
 						? renderRequirements(whatIfResults, newlyFulfilledKeys, updatedKeys)
-						: renderRequirements(results.requirements)}
+						: renderRequirements(
+								results.requirements,
+								editFulfilledKeys,
+								editUpdatedKeys,
+								editUnfulfilledKeys
+						  )}
 				</div>
 
+				{/* Messages about edits */}
+				{!showWhatIf &&
+					(editFulfilledKeys.length > 0 ||
+						editUpdatedKeys.length > 0 ||
+						editUnfulfilledKeys.length > 0) && (
+						<div className="text-sm mt-4 text-white">
+							{editFulfilledKeys.length > 0 && (
+								<p>
+									You fulfilled{" "}
+									<span className="text-[#FED34C] font-semibold">
+										{editFulfilledKeys.length}
+									</span>{" "}
+									new requirement{editFulfilledKeys.length > 1 ? "s" : ""}.
+								</p>
+							)}
+							{editUnfulfilledKeys.length > 0 && (
+								<p>
+									You no longer fulfill{" "}
+									<span className="text-gray-300 font-semibold">
+										{editUnfulfilledKeys.length}
+									</span>{" "}
+									requirement{editUnfulfilledKeys.length > 1 ? "s" : ""}.
+								</p>
+							)}
+						</div>
+					)}
+
+				{/* Buttons */}
 				<div className="mt-6 flex items-center justify-end gap-x-4">
 					<button
 						onClick={() => setShowNameModal(true)}
@@ -466,6 +400,22 @@ const Results = () => {
 						onClick={() => setShowCourseEditModal(true)}
 						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
 						Edit My Courses
+					</button>
+					<button
+						onClick={() => {
+							setResults((prev) => ({
+								...prev,
+								completed_courses: originalCourses,
+							}));
+							setEditedCoursesText(originalCourses.join(", "));
+							setEditFulfilledKeys([]);
+							setEditUpdatedKeys([]);
+							setEditUnfulfilledKeys([]);
+							setShowWhatIf(false);
+							toast.success("Reset to original courses.");
+						}}
+						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
+						Reset to Original
 					</button>
 				</div>
 
@@ -478,7 +428,12 @@ const Results = () => {
 						rows={5}
 						value={whatIfText}
 						onChange={(e) => setWhatIfText(e.target.value)}
-						onKeyDown={handleKeyDown}
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								e.preventDefault();
+								handleWhatIf();
+							}
+						}}
 					/>
 					<div className="flex items-center mt-3 gap-3">
 						<button
@@ -501,6 +456,7 @@ const Results = () => {
 					</div>
 				</div>
 
+				{/* What-if Messages */}
 				<div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
 					<div
 						className={`transition-all duration-300 ${
@@ -537,6 +493,99 @@ const Results = () => {
 						)}
 					</div>
 				</div>
+
+				{/* Save Modal */}
+				{showNameModal && (
+					<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+						<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-sm w-full">
+							<h2 className="text-lg font-semibold mb-3 text-white">
+								Save Your Results
+							</h2>
+							<input
+								type="text"
+								placeholder="e.g. Winter 2025 Plan"
+								className="w-full p-2 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
+								value={tempSaveName}
+								onChange={(e) => setTempSaveName(e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										e.preventDefault();
+										setShowNameModal(false);
+										handleSaveResults(tempSaveName);
+									}
+								}}
+							/>
+
+							<div className="mt-4 flex justify-end gap-2">
+								<button
+									onClick={() => setShowNameModal(false)}
+									className="text-gray-300 hover:text-white">
+									Cancel
+								</button>
+								<button
+									onClick={() => {
+										setShowNameModal(false);
+										handleSaveResults(tempSaveName);
+									}}
+									className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
+									Save
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Edit Modal */}
+				{showCourseEditModal && (
+					<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+						<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-md w-full">
+							<h2 className="text-lg font-semibold mb-3 text-white">
+								Edit Completed Courses
+							</h2>
+							<textarea
+								rows={5}
+								value={editedCoursesText}
+								onChange={(e) => setEditedCoursesText(e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter" && !e.shiftKey) {
+										e.preventDefault();
+										const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
+										const parsed = editedCoursesText
+											.split(",")
+											.map((c) => c.trim().toUpperCase())
+											.filter((c) => validCourseRegex.test(c));
+										if (parsed.length === 0)
+											return toast.error("Please enter valid course codes.");
+										handleCourseUpdate(parsed);
+									}
+								}}
+								className="w-full p-3 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
+								placeholder="e.g. CS 136, MATH 135, STAT 231"
+							/>
+							<div className="mt-4 flex justify-end gap-2">
+								<button
+									onClick={() => setShowCourseEditModal(false)}
+									className="text-gray-300 hover:text-white">
+									Cancel
+								</button>
+								<button
+									onClick={() => {
+										const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
+										const parsed = editedCoursesText
+											.split(",")
+											.map((c) => c.trim().toUpperCase())
+											.filter((c) => validCourseRegex.test(c));
+										if (parsed.length === 0)
+											return toast.error("Please enter valid course codes.");
+										handleCourseUpdate(parsed);
+									}}
+									className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
+									Update
+								</button>
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</>
 	);
