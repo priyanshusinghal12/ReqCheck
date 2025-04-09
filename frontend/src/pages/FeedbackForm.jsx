@@ -11,7 +11,7 @@ const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-const FeedbackForm = () => {
+const FeedbackForm = ({ openGlobalModal }) => {
 	const [rating, setRating] = useState(0);
 	const [hover, setHover] = useState(null);
 	const [message, setMessage] = useState("");
@@ -19,6 +19,10 @@ const FeedbackForm = () => {
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
+	}, []);
+
+	useEffect(() => {
+		document.title = "ReqCheck | Feedback Form";
 	}, []);
 
 	const handleRating = (value) => {
@@ -59,7 +63,7 @@ const FeedbackForm = () => {
 
 	return (
 		<>
-			<Navbar />
+			<Navbar openGlobalModal={openGlobalModal} />
 			<div className="min-h-screen bg-black text-white pt-40">
 				<ParticlesBackground />
 				<motion.div

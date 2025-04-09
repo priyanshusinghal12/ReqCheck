@@ -18,7 +18,13 @@ const scrollToHash = () => {
 	}
 };
 
-const Home = ({ shouldType, name, setName, setShouldType }) => {
+const Home = ({
+	shouldType,
+	name,
+	setName,
+	setShouldType,
+	openGlobalModal,
+}) => {
 	useEffect(() => {
 		scrollToHash();
 		window.addEventListener("hashchange", scrollToHash);
@@ -27,7 +33,11 @@ const Home = ({ shouldType, name, setName, setShouldType }) => {
 
 	return (
 		<>
-			<Navbar setName={setName} setShouldType={setShouldType} />
+			<Navbar
+				setName={setName}
+				setShouldType={setShouldType}
+				openGlobalModal={openGlobalModal} // <- pass it here
+			/>
 			<Hero shouldType={shouldType} name={name} />
 			<Features />
 			<FAQ />

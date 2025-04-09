@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import { auth } from "../firebase";
 import ParticlesBackground from "../components/ParticlesBackground";
 
-const Results = () => {
+const Results = ({ openGlobalModal }) => {
 	const location = useLocation();
 	const { results: initialResults } = location.state || {};
 	const [results, setResults] = useState(initialResults);
@@ -35,6 +35,10 @@ const Results = () => {
 
 	useEffect(() => {
 		window.scrollTo({ top: 0, behavior: "smooth" });
+	}, []);
+
+	useEffect(() => {
+		document.title = "ReqCheck | Results";
 	}, []);
 
 	useEffect(() => {
@@ -342,160 +346,165 @@ const Results = () => {
 			);
 		});
 
-	return (
-		<>
-			<Navbar />
-			<ParticlesBackground />
+	if (!results) {
+		return (
+			<>
+				<Navbar openGlobalModal={openGlobalModal} />
+				<ParticlesBackground />
 
-			<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
-				{/* Header */}
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-					<h1 className="text-3xl font-bold">
-						Requirement Checklist:{" "}
-						<span className="text-white">{results.major}</span>
-					</h1>
+				<div className="pt-20 px-6 md:px-16 bg-black text-white min-h-screen font-sans">
+					{/* Header */}
+					<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+						<h1 className="text-3xl font-bold">
+							Requirement Checklist:{" "}
+							<span className="text-white">{results.major}</span>
+						</h1>
 
-					<div
-						className="flex flex-row gap-2 items-center w-full sm:w-auto"
-						onKeyDown={(e) => {
-							if (e.key === "Enter") {
-								e.preventDefault();
-								handleMajorChange();
-							}
-						}}
-						tabIndex={0}>
-						<MajorChangeDropDown
-							selectedMajor={newMajor}
-							setSelectedMajor={setNewMajor}
-							fullWidth={false}
-						/>
-						<button
-							onClick={handleMajorChange}
-							disabled={isLoading}
-							className="bg-white text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200">
-							<FaArrowRight size={16} />
-						</button>
-					</div>
-				</div>
-
-				{allRequirementsFulfilled && (
-					<div className="mb-6 text-[#FED34C] text-lg font-semibold">
-						All Requirements Fulfilled!
-					</div>
-				)}
-
-				{/* Scrollable checklist */}
-				<div className="max-h-[60vh] overflow-y-auto pr-2">
-					{showWhatIf
-						? renderRequirements(whatIfResults, newlyFulfilledKeys, updatedKeys)
-						: renderRequirements(
-								results.requirements,
-								editFulfilledKeys,
-								editUpdatedKeys,
-								editUnfulfilledKeys
-						  )}
-				</div>
-
-				{/* Messages about edits */}
-				{!showWhatIf &&
-					(editFulfilledKeys.length > 0 ||
-						editUpdatedKeys.length > 0 ||
-						editUnfulfilledKeys.length > 0) && (
-						<div className="text-sm mt-4 text-white">
-							{editFulfilledKeys.length > 0 && (
-								<p>
-									You fulfilled{" "}
-									<span className="text-[#FED34C] font-semibold">
-										{editFulfilledKeys.length}
-									</span>{" "}
-									new requirement{editFulfilledKeys.length > 1 ? "s" : ""}.
-								</p>
-							)}
-							{editUnfulfilledKeys.length > 0 && (
-								<p>
-									You no longer fulfill{" "}
-									<span className="text-gray-300 font-semibold">
-										{editUnfulfilledKeys.length}
-									</span>{" "}
-									requirement{editUnfulfilledKeys.length > 1 ? "s" : ""}.
-								</p>
-							)}
-						</div>
-					)}
-
-				{/* Buttons */}
-				<div className="mt-6 flex items-center justify-end gap-x-4">
-					<button
-						onClick={() => setShowNameModal(true)}
-						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
-						Save My Results
-					</button>
-					<button
-						onClick={() => setShowCourseEditModal(true)}
-						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
-						Edit My Courses
-					</button>
-					<button
-						onClick={() => {
-							setResults((prev) => ({
-								...prev,
-								completed_courses: originalCourses,
-							}));
-							setEditedCoursesText(originalCourses.join(", "));
-							setEditFulfilledKeys([]);
-							setEditUpdatedKeys([]);
-							setEditUnfulfilledKeys([]);
-							setShowWhatIf(false);
-							toast.success("Reset to original courses.");
-						}}
-						className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
-						Reset to Original
-					</button>
-				</div>
-
-				{/* What-If */}
-				<div className="mt-10">
-					<div className="bg-black p-0 mt-10 rounded-lg">
-						<h2 className="text-2xl font-bold mb-3">What-If Analysis</h2>
-
-						<textarea
-							placeholder="Type in courses like ECON 301, STAT 333..."
-							className="w-full bg-[#1A1A1A] text-white rounded-lg p-4 border-none outline-none focus:ring-2 focus:ring-[#2a2a2a] placeholder:text-gray-400"
-							rows={5}
-							value={whatIfText}
-							onChange={(e) => setWhatIfText(e.target.value)}
+						<div
+							className="flex flex-row gap-2 items-center w-full sm:w-auto"
 							onKeyDown={(e) => {
 								if (e.key === "Enter") {
 									e.preventDefault();
-									handleWhatIf();
+									handleMajorChange();
 								}
 							}}
-						/>
-
-						<div className="flex items-center mt-3 gap-3 pb-8">
+							tabIndex={0}>
+							<MajorChangeDropDown
+								selectedMajor={newMajor}
+								setSelectedMajor={setNewMajor}
+								fullWidth={false}
+							/>
 							<button
-								onClick={handleWhatIf}
-								className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
-								Check What-If
+								onClick={handleMajorChange}
+								disabled={isLoading}
+								className="bg-white text-black p-3 rounded-xl transition flex items-center justify-center hover:bg-gray-200">
+								<FaArrowRight size={16} />
 							</button>
-							{showWhatIf && (
-								<button
-									onClick={() => {
-										setShowWhatIf(false);
-										setWhatIfResults(null);
-										setNewlyFulfilledKeys([]);
-										setUpdatedKeys([]);
-									}}
-									className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
-									Reset to Original
-								</button>
-							)}
 						</div>
 					</div>
-				</div>
 
-				{/* What-if Messages */}
-				{/* <div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
+					{allRequirementsFulfilled && (
+						<div className="mb-6 text-[#FED34C] text-lg font-semibold">
+							All Requirements Fulfilled!
+						</div>
+					)}
+
+					{/* Scrollable checklist */}
+					<div className="max-h-[60vh] overflow-y-auto pr-2">
+						{showWhatIf
+							? renderRequirements(
+									whatIfResults,
+									newlyFulfilledKeys,
+									updatedKeys
+							  )
+							: renderRequirements(
+									results.requirements,
+									editFulfilledKeys,
+									editUpdatedKeys,
+									editUnfulfilledKeys
+							  )}
+					</div>
+
+					{/* Messages about edits */}
+					{!showWhatIf &&
+						(editFulfilledKeys.length > 0 ||
+							editUpdatedKeys.length > 0 ||
+							editUnfulfilledKeys.length > 0) && (
+							<div className="text-sm mt-4 text-white">
+								{editFulfilledKeys.length > 0 && (
+									<p>
+										You fulfilled{" "}
+										<span className="text-[#FED34C] font-semibold">
+											{editFulfilledKeys.length}
+										</span>{" "}
+										new requirement{editFulfilledKeys.length > 1 ? "s" : ""}.
+									</p>
+								)}
+								{editUnfulfilledKeys.length > 0 && (
+									<p>
+										You no longer fulfill{" "}
+										<span className="text-gray-300 font-semibold">
+											{editUnfulfilledKeys.length}
+										</span>{" "}
+										requirement{editUnfulfilledKeys.length > 1 ? "s" : ""}.
+									</p>
+								)}
+							</div>
+						)}
+
+					{/* Buttons */}
+					<div className="mt-6 flex items-center justify-end gap-x-4">
+						<button
+							onClick={() => setShowNameModal(true)}
+							className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
+							Save My Results
+						</button>
+						<button
+							onClick={() => setShowCourseEditModal(true)}
+							className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
+							Edit My Courses
+						</button>
+						<button
+							onClick={() => {
+								setResults((prev) => ({
+									...prev,
+									completed_courses: originalCourses,
+								}));
+								setEditedCoursesText(originalCourses.join(", "));
+								setEditFulfilledKeys([]);
+								setEditUpdatedKeys([]);
+								setEditUnfulfilledKeys([]);
+								setShowWhatIf(false);
+								toast.success("Reset to original courses.");
+							}}
+							className="border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg px-5 py-2 transition-transform duration-150 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg">
+							Reset to Original
+						</button>
+					</div>
+
+					{/* What-If */}
+					<div className="mt-10">
+						<div className="bg-black p-0 mt-10 rounded-lg">
+							<h2 className="text-2xl font-bold mb-3">What-If Analysis</h2>
+
+							<textarea
+								placeholder="Type in courses like ECON 301, STAT 333..."
+								className="w-full bg-[#1A1A1A] text-white rounded-lg p-4 border-none outline-none focus:ring-2 focus:ring-[#2a2a2a] placeholder:text-gray-400"
+								rows={5}
+								value={whatIfText}
+								onChange={(e) => setWhatIfText(e.target.value)}
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										e.preventDefault();
+										handleWhatIf();
+									}
+								}}
+							/>
+
+							<div className="flex items-center mt-3 gap-3 pb-8">
+								<button
+									onClick={handleWhatIf}
+									className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
+									Check What-If
+								</button>
+								{showWhatIf && (
+									<button
+										onClick={() => {
+											setShowWhatIf(false);
+											setWhatIfResults(null);
+											setNewlyFulfilledKeys([]);
+											setUpdatedKeys([]);
+										}}
+										className="px-6 py-2 border border-[#333] bg-[#1A1A1A] text-white font-semibold rounded-lg hover:scale-105 active:scale-95 transition-transform shadow-md">
+										Reset to Original
+									</button>
+								)}
+							</div>
+						</div>
+					</div>
+
+					{/* What-if Messages */}
+					{/* <div ref={whatIfRef} className="mt-6 text-sm text-white font-medium">
 					<div
 						className={`transition-all duration-300 ${
 							showWhatIf ? "min-h-[48px] opacity-100" : "min-h-[48px] opacity-0"
@@ -532,101 +541,102 @@ const Results = () => {
 					</div>
 				</div> */}
 
-				{/* Save Modal */}
-				{showNameModal && (
-					<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
-						<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-sm w-full">
-							<h2 className="text-lg font-semibold mb-3 text-white">
-								Save Your Results
-							</h2>
-							<input
-								type="text"
-								placeholder="e.g. Winter 2025 Plan"
-								className="w-full p-2 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
-								value={tempSaveName}
-								onChange={(e) => setTempSaveName(e.target.value)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") {
-										e.preventDefault();
-										setShowNameModal(false);
-										handleSaveResults(tempSaveName);
-									}
-								}}
-							/>
-
-							<div className="mt-4 flex justify-end gap-4">
-								<button
-									onClick={() => setShowNameModal(false)}
-									className="text-gray-300 hover:text-white">
-									Cancel
-								</button>
-								<button
-									onClick={() => {
-										setShowNameModal(false);
-										handleSaveResults(tempSaveName);
+					{/* Save Modal */}
+					{showNameModal && (
+						<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+							<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-sm w-full">
+								<h2 className="text-lg font-semibold mb-3 text-white">
+									Save Your Results
+								</h2>
+								<input
+									type="text"
+									placeholder="e.g. Winter 2025 Plan"
+									className="w-full p-2 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
+									value={tempSaveName}
+									onChange={(e) => setTempSaveName(e.target.value)}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.preventDefault();
+											setShowNameModal(false);
+											handleSaveResults(tempSaveName);
+										}
 									}}
-									className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
-									Save
-								</button>
+								/>
+
+								<div className="mt-4 flex justify-end gap-4">
+									<button
+										onClick={() => setShowNameModal(false)}
+										className="text-gray-300 hover:text-white">
+										Cancel
+									</button>
+									<button
+										onClick={() => {
+											setShowNameModal(false);
+											handleSaveResults(tempSaveName);
+										}}
+										className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
+										Save
+									</button>
+								</div>
 							</div>
 						</div>
-					</div>
-				)}
+					)}
 
-				{/* Edit Modal */}
-				{showCourseEditModal && (
-					<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
-						<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-md w-full">
-							<h2 className="text-lg font-semibold mb-3 text-white">
-								Edit Completed Courses
-							</h2>
-							<textarea
-								rows={5}
-								value={editedCoursesText}
-								onChange={(e) => setEditedCoursesText(e.target.value)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" && !e.shiftKey) {
-										e.preventDefault();
-										const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
-										const parsed = editedCoursesText
-											.split(",")
-											.map((c) => c.trim().toUpperCase())
-											.filter((c) => validCourseRegex.test(c));
-										if (parsed.length === 0)
-											return toast.error("Please enter valid course codes.");
-										handleCourseUpdate(parsed);
-									}
-								}}
-								className="w-full p-3 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
-								placeholder="e.g. CS 136, MATH 135, STAT 231"
-							/>
-							<div className="mt-4 flex justify-end gap-4">
-								<button
-									onClick={() => setShowCourseEditModal(false)}
-									className="text-gray-300 hover:text-white">
-									Cancel
-								</button>
-								<button
-									onClick={() => {
-										const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
-										const parsed = editedCoursesText
-											.split(",")
-											.map((c) => c.trim().toUpperCase())
-											.filter((c) => validCourseRegex.test(c));
-										if (parsed.length === 0)
-											return toast.error("Please enter valid course codes.");
-										handleCourseUpdate(parsed);
+					{/* Edit Modal */}
+					{showCourseEditModal && (
+						<div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+							<div className="bg-[#1a1a1a] p-6 rounded-xl shadow-lg max-w-md w-full">
+								<h2 className="text-lg font-semibold mb-3 text-white">
+									Edit Completed Courses
+								</h2>
+								<textarea
+									rows={5}
+									value={editedCoursesText}
+									onChange={(e) => setEditedCoursesText(e.target.value)}
+									onKeyDown={(e) => {
+										if (e.key === "Enter" && !e.shiftKey) {
+											e.preventDefault();
+											const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
+											const parsed = editedCoursesText
+												.split(",")
+												.map((c) => c.trim().toUpperCase())
+												.filter((c) => validCourseRegex.test(c));
+											if (parsed.length === 0)
+												return toast.error("Please enter valid course codes.");
+											handleCourseUpdate(parsed);
+										}
 									}}
-									className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
-									Update
-								</button>
+									className="w-full p-3 rounded border border-gray-600 bg-black text-white placeholder-gray-400"
+									placeholder="e.g. CS 136, MATH 135, STAT 231"
+								/>
+								<div className="mt-4 flex justify-end gap-4">
+									<button
+										onClick={() => setShowCourseEditModal(false)}
+										className="text-gray-300 hover:text-white">
+										Cancel
+									</button>
+									<button
+										onClick={() => {
+											const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
+											const parsed = editedCoursesText
+												.split(",")
+												.map((c) => c.trim().toUpperCase())
+												.filter((c) => validCourseRegex.test(c));
+											if (parsed.length === 0)
+												return toast.error("Please enter valid course codes.");
+											handleCourseUpdate(parsed);
+										}}
+										className="bg-[#FED34C] text-black px-4 py-1 rounded hover:bg-yellow-400">
+										Update
+									</button>
+								</div>
 							</div>
 						</div>
-					</div>
-				)}
-			</div>
-		</>
-	);
+					)}
+				</div>
+			</>
+		);
+	}
 };
 
 export default Results;

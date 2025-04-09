@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import ParticlesBackground from "../components/ParticlesBackground";
 
-const SavedResults = () => {
+const SavedResults = ({ openGlobalModal }) => {
 	const [savedList, setSavedList] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [expandedIndexes, setExpandedIndexes] = useState([]);
@@ -48,7 +48,11 @@ const SavedResults = () => {
 
 		return () => unsubscribe();
 	}, []);
-	
+
+	useEffect(() => {
+		document.title = "ReqCheck | Saved Results";
+	}, []);
+
 	const handleEditName = (index) => {
 		setTempEditName(savedList[index]?.name || "");
 		setEditIndex(index);
@@ -145,7 +149,7 @@ const SavedResults = () => {
 
 	return (
 		<>
-			<Navbar />
+			<Navbar openGlobalModal={openGlobalModal} />
 			<ParticlesBackground />
 
 			{editIndex !== null && (

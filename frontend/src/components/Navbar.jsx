@@ -1,8 +1,7 @@
 import { HashLink } from "react-router-hash-link";
 import { auth } from "../firebase";
-import { signOut, onAuthStateChanged } from "firebase/auth";
+import { signOut, onAuthStateChanged, GoogleAuthProvider } from "firebase/auth";
 import { useState, useEffect, useRef } from "react";
-import LoginModal from "./LoginModal";
 import defaultUserIcon from "../assets/Sample_User_Icon.png";
 import { Menu, X } from "lucide-react";
 import toast from "react-hot-toast";
@@ -10,11 +9,14 @@ import {
 	reauthenticateWithPopup,
 	reauthenticateWithCredential,
 	EmailAuthProvider,
-} from "firebase/auth"; // add this at the top
+} from "firebase/auth";
 
-const Navbar = ({ setName, setShouldType }) => {
+
+const provider = new GoogleAuthProvider();
+
+
+const Navbar = ({ setName, setShouldType, openGlobalModal }) => {
 	const [user, setUser] = useState(null);
-	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const dropdownRef = useRef(null);
@@ -45,11 +47,9 @@ const Navbar = ({ setName, setShouldType }) => {
 				sessionStorage.removeItem("selectedMajor");
 				sessionStorage.removeItem("manualCourses");
 				toast.success("Logged out.");
-				window.location.reload(); // this is fine to keep
+				window.location.reload();
 			})
-			.catch(() => {
-				toast.error("Logout failed.");
-			});
+			.catch(() => toast.error("Logout failed."));
 		setShowDropdown(false);
 		setMenuOpen(false);
 	};
@@ -59,14 +59,12 @@ const Navbar = ({ setName, setShouldType }) => {
 		if (!currentUser) return toast.error("Not logged in.");
 
 		try {
-			// 1. Re-auth for Google users
 			if (currentUser.providerData[0]?.providerId === "google.com") {
 				await reauthenticateWithPopup(currentUser, provider);
 				await proceedWithDeletion(currentUser);
 				return;
 			}
 
-			// 2. Show toast with email/password inputs
 			let email = "";
 			let password = "";
 
@@ -90,10 +88,8 @@ const Navbar = ({ setName, setShouldType }) => {
 					<div className="flex justify-between text-sm">
 						<button
 							onClick={async () => {
-								if (!email || !password) {
-									toast.error("Both fields required");
-									return;
-								}
+								if (!email || !password)
+									return toast.error("Both fields required");
 								toast.dismiss(t.id);
 								try {
 									const credential = EmailAuthProvider.credential(
@@ -102,8 +98,7 @@ const Navbar = ({ setName, setShouldType }) => {
 									);
 									await reauthenticateWithCredential(currentUser, credential);
 									await proceedWithDeletion(currentUser);
-								} catch (err) {
-									console.error(err);
+								} catch {
 									toast.error("Re-authentication failed.");
 								}
 							}}
@@ -118,8 +113,7 @@ const Navbar = ({ setName, setShouldType }) => {
 					</div>
 				</div>
 			));
-		} catch (err) {
-			console.error(err);
+		} catch {
 			toast.error("Re-authentication failed.");
 		}
 	};
@@ -135,9 +129,7 @@ const Navbar = ({ setName, setShouldType }) => {
 					body: JSON.stringify({ id_token: idToken }),
 				}
 			);
-
 			const data = await res.json();
-
 			if (data.status === "success") {
 				await user.delete();
 				localStorage.removeItem("reqcheck_name");
@@ -146,8 +138,7 @@ const Navbar = ({ setName, setShouldType }) => {
 			} else {
 				toast.error(data.message || "Failed to delete account.");
 			}
-		} catch (err) {
-			console.error("Deletion error:", err);
+		} catch {
 			toast.error("Account deletion failed.");
 		}
 	};
@@ -160,23 +151,18 @@ const Navbar = ({ setName, setShouldType }) => {
 					className="text-xl sm:text-2xl font-medium tracking-wide text-white">
 					<span style={{ color: "#FED34C" }}>Req</span>Check
 				</a>
-
-				{/* Hamburger Icon */}
+				{/* Hamburger */}
 				<div className="md:hidden">
 					<button onClick={() => setMenuOpen(true)} className="text-white">
 						<Menu size={28} />
 					</button>
 				</div>
-
 				{/* Desktop Nav */}
 				<nav className="hidden md:flex items-center gap-6 text-sm sm:text-base font-medium text-white">
 					<a href="/" className="hover:text-[#FED34C]">
 						Home
 					</a>
-					<HashLink
-						smooth
-						to="/#faq"
-						className="hover:text-[#FED34C] transition">
+					<HashLink smooth to="/#faq" className="hover:text-[#FED34C]">
 						FAQ
 					</HashLink>
 					<a href="/about" className="hover:text-[#FED34C]">
@@ -201,7 +187,7 @@ const Navbar = ({ setName, setShouldType }) => {
 									<hr className="border-gray-600 my-1" />
 									<a
 										href="/saved"
-										className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-[#333] transition">
+										className="block px-4 py-2 text-sm text-white hover:bg-[#333]">
 										My Results
 									</a>
 									<hr className="border-gray-600 my-1" />
@@ -220,7 +206,7 @@ const Navbar = ({ setName, setShouldType }) => {
 						</div>
 					) : (
 						<button
-							onClick={() => setIsModalOpen(true)}
+							onClick={openGlobalModal}
 							className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
 							Login
 						</button>
@@ -262,7 +248,6 @@ const Navbar = ({ setName, setShouldType }) => {
 							My Results
 						</a>
 					)}
-
 					<HashLink
 						smooth
 						to="/#faq"
@@ -282,7 +267,7 @@ const Navbar = ({ setName, setShouldType }) => {
 						className="hover:text-[#FED34C]">
 						Feedback
 					</a>
-					{user && (
+					{user ? (
 						<>
 							<button
 								onClick={handleLogout}
@@ -295,11 +280,10 @@ const Navbar = ({ setName, setShouldType }) => {
 								Delete Account
 							</button>
 						</>
-					)}
-					{!user && (
+					) : (
 						<button
 							onClick={() => {
-								setIsModalOpen(true);
+								openGlobalModal();
 								setMenuOpen(false);
 							}}
 							className="bg-[#FED34C] text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition">
@@ -308,13 +292,6 @@ const Navbar = ({ setName, setShouldType }) => {
 					)}
 				</div>
 			</div>
-
-			<LoginModal
-				isOpen={isModalOpen}
-				onClose={() => setIsModalOpen(false)}
-				setName={setName}
-				setShouldType={setShouldType}
-			/>
 		</>
 	);
 };

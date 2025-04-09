@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaLinkedin, FaGithub, FaEnvelope } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
@@ -29,12 +29,16 @@ const teamMembers = [
 	},
 ];
 
-const AboutUs = () => {
+const AboutUs = ({ openGlobalModal }) => {
 	const [selectedMember, setSelectedMember] = React.useState(null);
+
+	useEffect(() => {
+		document.title = "ReqCheck | About Us";
+	}, []);
 
 	return (
 		<>
-			<Navbar />
+			<Navbar openGlobalModal={openGlobalModal} />
 			<ParticlesBackground />
 			<div className="min-h-screen bg-black from-[#1a1a1a] via-[#1e1e1f] to-[#111] text-white pt-24">
 				{/* About Section */}

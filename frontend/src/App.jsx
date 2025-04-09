@@ -119,6 +119,7 @@ function App() {
 				name={name}
 				setName={setName}
 				setShouldType={setShouldType}
+				openGlobalModal={() => setShowLoginModal(true)}
 			/>
 			<LoginModal
 				isOpen={showLoginModal}

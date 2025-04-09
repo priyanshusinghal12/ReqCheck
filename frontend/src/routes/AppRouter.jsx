@@ -10,6 +10,7 @@ export default function AppRouter({
 	name,
 	setName,
 	setShouldType,
+	openGlobalModal, // <- add this
 }) {
 	return (
 		<Router>
@@ -22,13 +23,26 @@ export default function AppRouter({
 							shouldType={shouldType}
 							setName={setName}
 							setShouldType={setShouldType}
+							openGlobalModal={openGlobalModal} // <- pass it here
 						/>
 					}
 				/>
-				<Route path="/about" element={<AboutUs />} />
-				<Route path="/results" element={<Results />} />
-				<Route path="/feedback" element={<FeedbackForm />} />
-				<Route path="/saved" element={<SavedResults />} />
+				<Route
+					path="/about"
+					element={<AboutUs openGlobalModal={openGlobalModal} />}
+				/>
+				<Route
+					path="/results"
+					element={<Results openGlobalModal={openGlobalModal} />}
+				/>
+				<Route
+					path="/feedback"
+					element={<FeedbackForm openGlobalModal={openGlobalModal} />}
+				/>
+				<Route
+					path="/saved"
+					element={<SavedResults openGlobalModal={openGlobalModal} />}
+				/>
 			</Routes>
 		</Router>
 	);
