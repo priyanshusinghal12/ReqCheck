@@ -1,8 +1,6 @@
 # 🎓 ReqCheck – Degree Progress Checker for UWaterloo Students
 
-[Live Demo →]
-
-(https://req-check.vercel.app/) &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;[Frontend Repo](https://github.com/priyanshusinghal12/ReqCheck/tree/main/frontend) &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;[Backend Repo](https://github.com/priyanshusinghal12/ReqCheck/tree/main/backend)
+[Live Demo →] (https://req-check.vercel.app/) &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;[Frontend Repo](https://github.com/priyanshusinghal12/ReqCheck/tree/main/frontend) &nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;[Backend Repo](https://github.com/priyanshusinghal12/ReqCheck/tree/main/backend)
 
 **ReqCheck** is a web-based academic audit platform built to help University of Waterloo students track and plan their progress toward graduation. Upload your unofficial transcript or manually enter completed courses, select your major, and instantly see which requirements you’ve completed — and what’s still pending. Then simulate future semesters with What-If Analysis, and even save your progress for later.
 
