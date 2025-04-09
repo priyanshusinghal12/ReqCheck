@@ -34,7 +34,21 @@ from course_logic.checkMathStudiesReqs import math_studies_reqs
 from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major
 from course_logic.checkCOReqs import check_co_major
-from course_logic.checkCSReqs import check_computer_science_major
+from course_logic.checkBMathCSReqs import check_bmath_computer_science_major
+
+from course_logic.checkBCSCSReqs import (
+    check_bcs_cs_major,
+    check_ai_specialization,
+    check_bioinformatics_requirements,
+    check_business_specialization,
+    check_computational_fine_art,
+    check_digital_hardware_specialization,
+    check_game_design_specialization,
+    check_software_engineering_specialization,
+    check_hci_specialization
+)
+
+
 from course_logic.checkAFMReqs import (
     check_afm_ba_reqs,
     check_afm_entrepreneurial_mindset_reqs,
@@ -98,7 +112,9 @@ def check_requirements(request: TranscriptRequest):
             case "bmath data science":
                 result = check_data_science_major(completed_courses)
             case "bcs computer science":
-                result = check_computer_science_major(completed_courses)
+                result = check_bcs_cs_major(completed_courses)
+            case "bmath computer science":
+                result = check_bmath_computer_science_major(completed_courses)
             case "computational mathematics":
                 result = check_comp_math_reqs(completed_courses)
             case "statistics":
@@ -145,6 +161,22 @@ def check_requirements(request: TranscriptRequest):
                 result = check_farm_professional_risk_management_reqs(completed_courses)
             case "farm fin analyst":
                 result = check_farm_professional_fin_analyst_reqs(completed_courses)
+            case "bcs cs ai specialization only":
+                result = check_ai_specialization(completed_courses)
+            case "bcs cs bioinformatics specialization only":
+                result = check_bioinformatics_requirements(completed_courses)
+            case "bcs cs business specialization only":
+                result = check_business_specialization(completed_courses)
+            case "bcs cs computational fine art specialization only":
+                result = check_computational_fine_art(completed_courses)
+            case "bcs cs digital hardware specialization only":
+                result = check_digital_hardware_specialization(completed_courses)
+            case "bcs cs game design specialization only":
+                result = check_game_design_specialization(completed_courses)
+            case "bcs cs software engineering specialization only":
+                result = check_software_engineering_specialization(completed_courses)
+            case "bcs cs human-computer interaction specialization only":
+                result = check_hci_specialization(completed_courses)
             case _:
                 return {"error": f"Major '{major}' not supported"}
 

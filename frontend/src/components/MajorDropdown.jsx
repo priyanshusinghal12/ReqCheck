@@ -4,6 +4,7 @@ const majors = [
 	"Math Degree Requirements",
 	"BMath Data Science",
 	"BCS Computer Science",
+	"BMath Computer Science",
 	"Computational Mathematics",
 	"Statistics",
 	"Biostatistics",
@@ -27,6 +28,14 @@ const majors = [
 	"AFM Sustainability Specialization",
 	"FARM Risk Mgmt",
 	"FARM Fin Analyst",
+	"BCS CS AI Specialization only",
+	"BCS CS Bioinformatics Specialization only",
+	"BCS CS Business Specialization only",
+	"BCS CS Computational Fine Art Specialization only",
+	"BCS CS Digital Hardware Specialization only",
+	"BCS CS Game Design Specialization only",
+	"BCS CS Software Engineering Specialization only",
+	"BCS CS Human-Computer Interaction Specialization only",
 ];
 
 export default function MajorDropdown({

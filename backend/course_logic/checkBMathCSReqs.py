@@ -1,6 +1,6 @@
 from course_logic.helper import *
 
-def check_computer_science_major(student_courses):
+def check_bmath_computer_science_major(student_courses):
     
     refine_courses(student_courses, ["CS 136L", "MATH 237", "MATH 247", "MATH 239", "MATH 249"])
 
