@@ -254,6 +254,15 @@ const Navbar = ({ setName, setShouldType }) => {
 						className="hover:text-[#FED34C]">
 						Home
 					</a>
+					{user && (
+						<a
+							href="/saved"
+							onClick={() => setMenuOpen(false)}
+							className="hover:text-[#FED34C]">
+							My Results
+						</a>
+					)}
+
 					<HashLink
 						smooth
 						to="/#faq"
@@ -275,12 +284,6 @@ const Navbar = ({ setName, setShouldType }) => {
 					</a>
 					{user && (
 						<>
-							<a
-								href="/saved"
-								onClick={() => setMenuOpen(false)}
-								className="hover:text-[#FED34C]">
-								See Your Results
-							</a>
 							<button
 								onClick={handleLogout}
 								className="text-left hover:text-[#FED34C]">

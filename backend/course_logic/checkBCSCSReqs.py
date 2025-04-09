@@ -1,7 +1,6 @@
 from course_logic.helper import *
 from collections import defaultdict
 
-
 def check_depth_requirement(student_courses, cs_reqs):
     subject_to_courses = defaultdict(list)
 
@@ -63,7 +62,7 @@ def check_breadth_requirement(student_courses, cs_reqs):
             cs_reqs[req_name][0] = True
             for c in matching_courses[:num_required]:
                 student_courses.remove(c)
-                
+               
 def check_bcs_cs_major(student_courses):
     cs_reqs = {
     "Complete all of: CS 136L, CS 341, CS 350": [False, []],
@@ -83,7 +82,7 @@ def check_bcs_cs_major(student_courses):
     "Complete one of: STAT 231, STAT 241": [False, []],
     "Complete 3 additional CS courses from CS340-CS398, CS440-CS489": [False, []],
     "Complete 2 additional CS courses from CS440-CS489": [False, []],
-    "Complete 1 of the following: (1 course from CS440-CS498, a CS course from 600/700 level) or (Complete CO 487, CS 499T, STAT 440)": [False, []],
+    "Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)": [False, []],
     "Depth Requirement (Prereq chain of length three requirement ignored)": [False, []],
     "Breadth Req - Humanities": [False, []],
     "Breadth Req - Pure Sciences": [False, []],
@@ -148,25 +147,31 @@ def check_bcs_cs_major(student_courses):
     
     #Complete 1 of the following: (1 course from CS440-CS498, a CS course from 600/700 level) 
     # or (Complete CO 487, CS 499T, STAT 440)
-    sub_req = {"Complete 1 from: CS440-CS498": [False, []],}
+    sub_req = {"Complete 1 of: CO 487, CS 499T, STAT 440": [False, []],}
                
     check_n_from_list("Complete 1 of: CO 487, CS 499T, STAT 440",
                       ["CO 487", "CS 499T", "STAT 440"], 1, student_courses, sub_req)
     
-    if (sub_req["Complete 1 of: CO 487, CS 499T, STAT 440"][0]):
-        cs_reqs["Complete 1 of the following: (1 course from CS440-CS498, a CS course from 600/700 level) or (Complete CO 487, CS 499T, STAT 440)"][0] = True
-        cs_reqs["Complete 1 of the following: (1 course from CS440-CS498, a CS course from 600/700 level) or (Complete CO 487, CS 499T, STAT 440)"][1].extend(sub_reqs["Complete 1 of: CO 487, CS 499T, STAT 440"][1])
-    elif (has_cs_440_to_498 = any(course.startswith("CS ") and 440 <= int(course.split(" ")[1]) <= 498 for course in student_courses)):
-        check_course_range("Complete 1 from: CS440-CS498",
-                       "CS", 440, 498, student_courses, student_courses, num_courses_required=1)
+    has_cs_440_to_498 = any(
+    course.startswith("CS ") and 440 <= int(course.split(" ")[1]) <= 498 for course in student_courses
+    )
+
+    if sub_req["Complete 1 of: CO 487, CS 499T, STAT 440"][0]:
+        cs_reqs["Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)"][0] = True
+        cs_reqs["Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)"][1].extend(
+            sub_req["Complete 1 of: CO 487, CS 499T, STAT 440"][1]
+        )
+    elif has_cs_440_to_498:
+        check_course_range("Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)",
+                        "CS", 440, 498, student_courses, cs_reqs, num_courses_required=1)
     else:
-        check_n_courses("Complete 1 from CS 600/700 level",
-                    eligible_levels=600,
-                    subject_codes=["CS"],
-                    n=1,
-                    student_courses=student_courses,
-                    major_reqs=sub_reqs)
-        
+        check_n_courses("Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)",
+                        eligible_levels=600,
+                        subject_codes=["CS"],
+                        n=1,
+                        student_courses=student_courses,
+                        major_reqs=cs_reqs)
+
     #Depth Reqs
     check_depth_requirement(student_courses, cs_reqs)
     

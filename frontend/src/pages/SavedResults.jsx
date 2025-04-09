@@ -48,13 +48,7 @@ const SavedResults = () => {
 
 		return () => unsubscribe();
 	}, []);
-
-	const toggleExpand = (index) => {
-		setExpandedIndexes((prev) =>
-			prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
-		);
-	};
-
+	
 	const handleEditName = (index) => {
 		setTempEditName(savedList[index]?.name || "");
 		setEditIndex(index);
