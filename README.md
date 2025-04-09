@@ -11,8 +11,6 @@
 ### 🔥 Clean, Responsive Landing Page
 
 > ![Landing Page – Desktop](https://github.com/user-attachments/assets/1337bc6d-9fb2-43fb-816d-c68b9c95a86d)
-> ![Landing Page – Mobile](https://github.com/user-attachments/assets/4a15e5e6-32c1-4aa0-be79-e3f64a6c2a57)
-> ![Mobile Hamburger Menu](https://github.com/user-attachments/assets/d8ce5d3c-45ae-4e15-bdae-4a6e1056526b)
 
 ---
 
