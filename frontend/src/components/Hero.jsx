@@ -9,6 +9,7 @@ import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import demoVideo from "../assets/demo-video.mp4";
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 

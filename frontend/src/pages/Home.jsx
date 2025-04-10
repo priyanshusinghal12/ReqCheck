@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import FAQ from "../components/FAQ";
 import Features from "../components/Features";
+import VideoTeaser from "../components/VideoTeaser";
 
 const scrollToHash = () => {
 	const hash = window.location.hash;
@@ -36,9 +37,10 @@ const Home = ({
 			<Navbar
 				setName={setName}
 				setShouldType={setShouldType}
-				openGlobalModal={openGlobalModal} // <- pass it here
+				openGlobalModal={openGlobalModal}
 			/>
 			<Hero shouldType={shouldType} name={name} />
+			<VideoTeaser />
 			<Features />
 			<FAQ />
 		</>

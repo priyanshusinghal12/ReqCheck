@@ -53,3 +53,4 @@ def check_biostats_major(student_courses):
                   3, student_courses, reqs)
 
   return reqs
+

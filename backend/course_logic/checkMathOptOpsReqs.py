@@ -22,20 +22,21 @@ def check_math_opt_ops_specialization(student_courses):
   }
 
   # Check the second last specialization req first since it is most restrictive, then check as usual in order
-  check_n_from_list(current_requirement = "Complete one of: CO 351, CO 353 or, if CO 255 is taken, one of: CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471",
-                  required_courses = ["CO 351", "CO 353"],
-                  n = 1,
-                  student_courses = student_courses,
-                  major_reqs = reqs)
-  if not (reqs["Complete one of: CO 351, CO 353 or, if CO 255 is taken, one of: CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471"][0] and "CO 255" in student_courses):
+  if "CO 255" in student_courses:
     check_n_from_list(current_requirement = "Complete one of: CO 351, CO 353 or, if CO 255 is taken, one of: CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471",
                     required_courses = ["CO 450", "CO 452", "CO 454", "CO 456", "CO 459", "CO 463", "CO 466", "CO 471"],
                     n = 1,
                     student_courses = student_courses,
                     major_reqs = reqs)
+  if not reqs["Complete one of: CO 351, CO 353 or, if CO 255 is taken, one of: CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471"][0]:
+    check_n_from_list(current_requirement = "Complete one of: CO 351, CO 353 or, if CO 255 is taken, one of: CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471",
+                  required_courses = ["CO 351", "CO 353"],
+                  n = 1,
+                  student_courses = student_courses,
+                  major_reqs = reqs)
+    
 
   # Now check remaining reqs in usual order
-
 
   # Check major (non specialization) reqs
 
@@ -98,8 +99,3 @@ def check_math_opt_ops_specialization(student_courses):
                   student_courses = student_courses, major_reqs = reqs)
   return reqs
 
-
-# moor_test1 = ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340", "CS 371", "CO 255", "CO 342", "CO 372", "CO 471", "CS 490", "MATH 247", "MATH 249", "CS 234", "STAT 331", "STAT 333", "ECON 102", "MSE 311", "STAT 435", "CO 450", "MATBUS 112W", "ACTSC 231"]
-
-
-# print(check_math_opt_ops_specialization(moor_test1))
