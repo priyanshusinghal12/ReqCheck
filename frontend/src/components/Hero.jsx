@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 
@@ -21,8 +22,16 @@ export default function Hero({ shouldType, name }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [dragCounter, setDragCounter] = useState(0);
 	const [isRetrying, setIsRetrying] = useState(false);
-	const [reuseTranscript, setReuseTranscript] = useState(null);
+	// const [reuseTranscript, setReuseTranscript] = useState(null);
+	const [user, setUser] = useState(null);
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+			setUser(firebaseUser);
+		});
+		return () => unsubscribe();
+	}, []);
 
 	useEffect(() => {
 		if (shouldType) {
@@ -38,45 +47,45 @@ export default function Hero({ shouldType, name }) {
 		fetch(`${import.meta.env.VITE_BACKEND_URL}/`).catch(() => {});
 	}, []);
 
-	useEffect(() => {
-		const fetchPreviousTranscript = async () => {
-			// Check localStorage
-			const localCourses = localStorage.getItem("parsedCourses");
-			const localMajor = localStorage.getItem("selectedMajor");
-			const localName = localStorage.getItem("transcriptFilename");
+	// useEffect(() => {
+	// 	const fetchPreviousTranscript = async () => {
+	// 		// Check localStorage
+	// 		const localCourses = localStorage.getItem("parsedCourses");
+	// 		const localMajor = localStorage.getItem("selectedMajor");
+	// 		const localName = localStorage.getItem("transcriptFilename");
 
-			if (localCourses && localMajor && localName) {
-				setReuseTranscript({
-					completed_courses: JSON.parse(localCourses),
-					major: localMajor,
-					filename: localName,
-				});
-			}
+	// 		if (localCourses && localMajor && localName) {
+	// 			setReuseTranscript({
+	// 				completed_courses: JSON.parse(localCourses),
+	// 				major: localMajor,
+	// 				filename: localName,
+	// 			});
+	// 		}
 
-			// Check Firebase (if user is logged in)
-			auth.onAuthStateChanged(async (user) => {
-				if (user) {
-					const token = await user.getIdToken();
-					const res = await fetch(
-						`${import.meta.env.VITE_BACKEND_URL}/get-last-transcript/`,
-						{
-							headers: { Authorization: `Bearer ${token}` },
-						}
-					);
-					const data = await res.json();
-					if (data.status === "success") {
-						setReuseTranscript({
-							completed_courses: data.transcript.completed_courses,
-							major: data.transcript.major,
-							filename: data.transcript.filename,
-						});
-					}
-				}
-			});
-		};
+	// 		// Check Firebase (if user is logged in)
+	// 		auth.onAuthStateChanged(async (user) => {
+	// 			if (user) {
+	// 				const token = await user.getIdToken();
+	// 				const res = await fetch(
+	// 					`${import.meta.env.VITE_BACKEND_URL}/get-last-transcript/`,
+	// 					{
+	// 						headers: { Authorization: `Bearer ${token}` },
+	// 					}
+	// 				);
+	// 				const data = await res.json();
+	// 				if (data.status === "success") {
+	// 					setReuseTranscript({
+	// 						completed_courses: data.transcript.completed_courses,
+	// 						major: data.transcript.major,
+	// 						filename: data.transcript.filename,
+	// 					});
+	// 				}
+	// 			}
+	// 		});
+	// 	};
 
-		fetchPreviousTranscript();
-	}, []);
+	// 	fetchPreviousTranscript();
+	// }, []);
 
 	useEffect(() => {
 		const savedMajor = sessionStorage.getItem("selectedMajor");
@@ -190,9 +199,9 @@ export default function Hero({ shouldType, name }) {
 			return;
 		}
 
-		if (!selectedMajor && reuseTranscript?.major) {
-			setSelectedMajor(reuseTranscript.major);
-		}
+		// if (!selectedMajor && reuseTranscript?.major) {
+		// 	setSelectedMajor(reuseTranscript.major);
+		// }
 
 		try {
 			let response;
@@ -320,12 +329,12 @@ export default function Hero({ shouldType, name }) {
 						}}>
 						Enter Courses Manually
 					</button>
-					{reuseTranscript && (
-						<button
-							className="border border-[#333] bg-[#1A1A1A] text-white px-4 py-2 rounded-lg font-semibold hover:border-yellow-400 transition"
-							onClick={() => handleGoClick(reuseTranscript.completed_courses)}>
-							Re-use "{reuseTranscript.filename}"
-						</button>
+					{user && (
+						<a
+							href="/saved"
+							className="border border-[#333] bg-[#1A1A1A] text-white px-4 py-2 rounded-lg font-semibold hover:border-yellow-400 transition">
+							View Saved Results
+						</a>
 					)}
 				</div>
 

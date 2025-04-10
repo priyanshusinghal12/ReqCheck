@@ -12,7 +12,9 @@ def check_math_degree_reqs(student_courses):
         "Complete one of the following: MATH 235, MATH 245": [False, []],
         "Complete one of the following: MATH 237, MATH 239, MATH 247, MATH 249": [False, []],
         "Complete one of the following: STAT 230, STAT 240": [False, []],
-        "Complete one of the following: STAT 231, STAT 241": [False, []]
+        "Complete one of the following: STAT 231, STAT 241": [False, []],
+        "1st Communication Skills Requirement": [False, []],
+        "2nd Communication Skills Requirement": [False, []]
     }
 
     # Req 1: First Computer Science Course
@@ -54,5 +56,19 @@ def check_math_degree_reqs(student_courses):
     # Req 10: Stats & Prob Course 2
     check_n_from_list("Complete one of the following: STAT 231, STAT 241",
                       ["STAT 231", "STAT 241"], n=1, student_courses=student_courses, major_reqs=math_degree_reqs)
+    
+    # Lists of courses for the communication skills requirement
+    list1_courses = ["SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R"]
+
+    list2_courses = ["SPCOM 225", "SPCOM 227", "SPCOM 228", "EMLS 103R", "EMLS 104R", "EMLS 110R",
+                     "ENGL 101B", "ENGL 108B", "ENGL 108D", "ENGL 119", "ENGL 208B", "ENGL 209", "ENGL 210E",
+                     "ENGL 210F", "ENGL 378", "MTHEL 300"]
+    
+    # Check for the first communication skills course (from List 1)
+    check_n_from_list("1st Communication Skills Requirement",
+                      list1_courses, n=1, student_courses=student_courses, major_reqs=math_degree_reqs)
+
+    check_n_from_list("2nd Communication Skills Requirement",
+                      list1_courses + list2_courses, n=1, student_courses=student_courses, major_reqs=math_degree_reqs)
 
     return math_degree_reqs

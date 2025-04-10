@@ -12,9 +12,9 @@ def check_co_major(student_courses):
         "Complete one of: PMATH 336, PMATH 347": [False, []],
         "Complete 3 of: CO 330, CO 331, CO 342, CO 351, CO 353, CO 367, CO 430, CO 431, CO 432, CO 434, CO 439, CO 440, CO 442, CO 444, CO 446, CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471, CO 481, CO 485, CO 486, CO 487, CS 467, PHYS 467": [False, []],
         "Complete 3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340": [False, []],
-        "Two additional 300- or 400-level math courses": [False, []],
-        "One additional 300- or 400-level math course": [False, []],
-        "Three additional math courses": [False, []]
+        "Complete 2 additional courses at the 300- or 400-level from: ACTSC, AMATH, CS, MATBUS, MATH, PMATH, STAT; excluding courses cross-listed with a CO course": [False, []],
+        "Complete 1 additional course at the 300- or 400-level from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [False, []],
+        "Complete 3 additional courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [False, []]
     }
  
     # Req 1: Combinatorics course
@@ -95,21 +95,21 @@ def check_co_major(student_courses):
                 student_courses.remove(course)
  
     # Req 8,9,10: Additional Courses
-    check_n_courses("Two additional 300- or 400-level math courses",
+    check_n_courses("Complete 2 additional courses at the 300- or 400-level from: ACTSC, AMATH, CS, MATBUS, MATH, PMATH, STAT; excluding courses cross-listed with a CO course",
                     eligible_levels=300,
                     subject_codes=["ACTSC", "AMATH", "CS", "MATBUS", "MATH", "PMATH", "STAT"],
                     n=2,
                     student_courses=student_courses,  # Use student_courses
                     major_reqs=co_reqs)
  
-    check_n_courses("One additional 300- or 400-level math course",
+    check_n_courses("Complete 1 additional course at the 300- or 400-level from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT",
                     eligible_levels=300,
                     subject_codes=["ACTSC", "AMATH", "CO", "CS", "MATBUS", "MATH", "PMATH", "STAT"],
                     n=1,
                     student_courses=student_courses,  # Use student_courses
                     major_reqs=co_reqs)
  
-    check_n_courses("Three additional math courses",
+    check_n_courses("Complete 3 additional courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT",
                     eligible_levels=100,
                     subject_codes=["ACTSC", "AMATH", "CO", "CS", "MATBUS", "MATH", "PMATH", "STAT"],
                     n=3,

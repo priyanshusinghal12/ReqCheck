@@ -158,9 +158,15 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 
 							<button
 								onClick={handleEmailAuth}
-								className="w-full bg-[#FED34C] text-black py-3 rounded-md font-semibold mb-4">
+								className="w-full bg-[#FED34C] text-black py-3 rounded-md font-semibold mb-5">
 								{isSignup ? "Sign Up" : "Login"}
 							</button>
+
+							{isSignup && (
+								<p className="text-sm text-center mb-3 text-gray-400">
+									Forgot password may not work with UWaterloo emails.
+								</p>
+							)}
 
 							{!isSignup && (
 								<p className="text-sm text-center mb-3">
