@@ -9,7 +9,6 @@ import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import demoVideo from "../assets/demo-video.mp4";
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 
@@ -274,7 +273,7 @@ export default function Hero({ shouldType, name }) {
 
 	return (
 		<section
-			className="relative z-0 min-h-[95vh] pt-24 flex items-center justify-center text-white text-center overflow-visible bg-black px-4 pb-10"
+			className="relative z-0 min-h-[95vh] pt-20 pb-10 flex items-center justify-center text-white text-center overflow-visible bg-black px-4"
 			onDragEnter={handleDragEnter}
 			onDragLeave={handleDragLeave}
 			onDragOver={handleDragOver}

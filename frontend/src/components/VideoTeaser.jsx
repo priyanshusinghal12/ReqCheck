@@ -13,8 +13,7 @@ const VideoTeaser = () => {
 				playsInline
 				className="w-full max-w-4xl mx-auto rounded-xl opacity-80 shadow-xl"
 				style={{
-					marginTop: "-100px",
-					// filter: "brightness(0.85)",
+					paddingTop: "1px", // gentle nudge down instead of marginTop
 				}}
 			/>
 		</div>
