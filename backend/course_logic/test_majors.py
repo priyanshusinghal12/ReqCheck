@@ -2,20 +2,319 @@ from course_logic.checkStatisticsReqs import check_stats_major  # done?
 from course_logic.checkActSciReqs import check_actsci_major # done
 from course_logic.checkAMathReqs import check_amath_major # done
 from course_logic.checkBioStatsReqs import check_biostats_major
-from course_logic.checkCompMathReqs import check_comp_math_reqs
+from course_logic.checkCompMathReqs import check_comp_math_reqs # done
 from course_logic.checkCSReqs import check_computer_science_major
-from course_logic.checkDataScienceReqs import check_data_science_major
-from course_logic.checkMathDegreeReqs import check_math_degree_reqs
+from course_logic.checkDataScienceReqs import check_data_science_major # done
+from course_logic.checkMathDegreeReqs import check_math_degree_reqs # done
 from course_logic.checkMathEconReqs import check_math_econ_reqs
 from course_logic.checkMathFinanceReqs import check_math_finance_reqs
-from course_logic.checkMathOptBusReqs import check_math_opt_bus_specialization
-from course_logic.checkMathOptOpsReqs import check_math_opt_ops_specialization
-from course_logic.checkMathPhysicsReqs import check_math_physics_reqs
-from course_logic.checkMathStudiesBusReqs import math_studies_business_reqs
-from course_logic.checkMathStudiesReqs import math_studies_reqs
+from course_logic.checkMathOptBusReqs import check_math_opt_bus_specialization # done
+from course_logic.checkMathOptOpsReqs import check_math_opt_ops_specialization # done
+from course_logic.checkMathPhysicsReqs import check_math_physics_reqs # done
+from course_logic.checkMathStudiesBusReqs import math_studies_business_reqs #done 
+from course_logic.checkMathStudiesReqs import math_studies_reqs # done
 from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major # done
-from course_logic.checkCOReqs import check_co_major
+from course_logic.checkCOReqs import check_co_major # done
+
+####################################################################
+# COMPUTER SCIENCE
+
+# Test Group A: Checking core reqs
+
+# Case 1: All reqs met, 1 comms course from list 1 and second from list 2
+cs_test_1 = ["CS 136L", "CS 341", "CO 350", "CS 135", "CS 136",
+             "CS 240", "CS 241", "CS 245", "CS 246", "CS 251", "MATH 127",
+             "MATH 128", "MATH 135", "MATH 136", "MATH 239", "STAT 230", "STAT 231",
+             "CS 348", "CS 343", "CS 346", "CS 451", "CS 456", "CS 446",
+             "COMMST 100", "ENGL 108D", # comms req - ENGL 108D being a list 2 course should also count in humanities breadth as per uni rules
+             "CLAS 104", # One humanities breadth course left after ENGL 108 D
+             "SCI 206", "PHYS 121", # pure & applied science
+             "ECON 101", "ECON 102", # social sciences
+             "ECON 351", # completes depth req
+             "PSYCH 101", "CLAS 201" # 2 non math courses left
+             ]
+
+# Case 2: All reqs met, both comms courses from list 1, missing depth req
+cs_test_2 = ["CS 136L", "CS 341", "CO 350", "CS 135", "CS 136",
+             "CS 240", "CS 241", "CS 245", "CS 246", "CS 251", "MATH 127",
+             "MATH 128", "MATH 135", "MATH 136", "MATH 239", "STAT 230", "STAT 231",
+             "CS 348", "CS 343", "CS 346", "CS 451", "CS 456", "CS 446",
+             "COMMST 100", "ENGL 108D", # comms req - ENGL 108D being a list 2 course should also count in humanities breadth as per uni rules
+             "CLAS 104", # One humanities breadth course left after ENGL 108 D
+             "SCI 206", "PHYS 121", # pure & applied science
+             "ECON 101", "ECON 102", # social sciences
+             "ECON 351", # completes depth req
+             "PSYCH 101", "CLAS 201" # 2 non math courses left
+             ]
+
+
+# Needs two courses either both from list 1 or one each from lists 1,2
+# test to check these 2 pass and that others don't pass
+
+# Check that - Undergraduate Communication Requirement's List 1 courses do not satisfy the Humanities breadth requirement.
+#  Courses found only in the Undergraduate Communication Requirement's List 2 can satisfy both the breadth requirement and the Undergraduate Communication Requirement.
+
+####################################################################
+# COMBINATORICS AND OPTIMIZATION
+
+# All reqs met, all 3 courses in last option taken from first list 
+co_test1 = [
+    "CO 250", "CO 330", "CO 351", "MATH 239", "PMATH 336", 
+    "CO 330", "CO 342", "CO 351", "CS 462", "CS 466", "CS 487",
+    # Additional required courses
+    "STAT 341", "STAT 441",
+    "CO 481",
+    "CS 230", "CS 231", "CS 234"
+]
+
+co_test1_expected = {
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    "Complete one of: CO 250, CO 255": [True, ["CO 250"]],
+    "Complete one of: CO 330, CO 342": [True, ["CO 330"]],
+    "Complete one of: CO 351, CO 353, CO 367, or if CO 255 is taken, one of CO 450-471": [True, ["CO 351"]],
+    "Complete one of: PMATH 336, PMATH 347": [True, ["PMATH 336"]],
+    "Complete 3 of: CO 330, CO 331, CO 342, CO 351, CO 353, CO 367, CO 430, CO 431, CO 432, CO 434, CO 439, CO 440, CO 442, CO 444, CO 446, CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471, CO 481, CO 485, CO 486, CO 487, CS 467, PHYS 467": [True, ["CO 330", "CO 342", "CO 351"]],
+    "Complete 3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340": [True, ["CS 462", "CS 466", "CS 487"]],
+    "Complete 2 additional courses at the 300- or 400-level from: ACTSC, AMATH, CS, MATBUS, MATH, PMATH, STAT; excluding courses cross-listed with a CO course": [True, ["STAT 341", "STAT 441"]],
+    "Complete 1 additional course at the 300- or 400-level from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["CO 481"]],
+    "Complete 3 additional courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["CS 230", "CS 231", "CS 234"]]
+}
+
+# Case 2: CO 255 taken and last req is split across first list, MATH 237 and one more list
+co_test2 = [
+    "CO 255", "CO 330", "CO 446", "MATH 239", "PMATH 336", 
+    "CO 330", "CO 342", "CO 466", "CS 487", "MATH 237", "PMATH 332",
+    # Additional required courses
+    "STAT 341", "STAT 441",
+    "CO 481",
+    "CS 230", "CS 231", "CS 234"
+]
+
+co_test2_expected = {
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    "Complete one of: CO 250, CO 255": [True, ["CO 255"]],
+    "Complete one of: CO 330, CO 342": [True, ["CO 330"]],
+    "Complete one of: CO 351, CO 353, CO 367, or if CO 255 is taken, one of CO 450-471": [True, ["CO 466"]],
+    "Complete one of: PMATH 336, PMATH 347": [True, ["PMATH 336"]],
+    "Complete 3 of: CO 330, CO 331, CO 342, CO 351, CO 353, CO 367, CO 430, CO 431, CO 432, CO 434, CO 439, CO 440, CO 442, CO 444, CO 446, CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471, CO 481, CO 485, CO 486, CO 487, CS 467, PHYS 467": [True, ["CO 330", "CO 342", "CO 446"]],
+    "Complete 3 of: MATH 237/247, AMATH 331/PMATH 331/PMATH 333, AMATH 332/PMATH 332, CS 462, CS 466, CS 487, PMATH 334/348, PMATH 340": [True, ["MATH 237", "AMATH 332", "CS 487"]],
+    "Complete 2 additional courses at the 300- or 400-level from: ACTSC, AMATH, CS, MATBUS, MATH, PMATH, STAT; excluding courses cross-listed with a CO course": [True, ["STAT 341", "STAT 441"]],
+    "Complete 1 additional course at the 300- or 400-level from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["CO 481"]],
+    "Complete 3 additional courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["CS 230", "CS 231", "CS 234"]]
+}
+
+# Asserts
+def test_co_1():
+    assert check_co_major(co_test1) == co_test1_expected
+
+def test_co_2():
+    assert check_co_major(co_test2) == co_test2_expected
+
+#######################################################################
+# Math Degree Requirements
+
+# Case 1: All reqs met, one comms course from list1, other from list 2
+math_test1 = ["CS 115", "CS 116", "MATH 106", "MATH 127", "MATH 128", 
+              "MATH 135", "MATH 235", "MATH 237", "STAT 230", "STAT 231",
+              "SPCOM 100", "ENGL 378"]
+
+math_test1_expected = {
+    "Complete one of the following: CS 115, CS 135, CS 145": [True, ["CS 115"]],
+    "Complete one of the following: CS 116, CS 136, CS 146": [True, ["CS 116"]],
+    "Complete one of the following: MATH 106, MATH 136, MATH 146": [True, ["MATH 106"]],
+    "Complete one of the following: MATH 127, MATH 137, MATH 147": [True, ["MATH 127"]],
+    "Complete one of the following: MATH 128, MATH 138, MATH 148": [True, ["MATH 128"]],
+    "Complete one of the following: MATH 135, MATH 145": [True, ["MATH 135"]],
+    "Complete one of the following: MATH 235, MATH 245": [True, ["MATH 235"]],
+    "Complete one of the following: MATH 237, MATH 239, MATH 247, MATH 249": [True, ["MATH 237"]],
+    "Complete one of the following: STAT 230, STAT 240": [True, ["STAT 230"]],
+    "Complete one of the following: STAT 231, STAT 241": [True, ["STAT 231"]],
+    "1st Communication Skills Requirement": [True, ["SPCOM 100"]],
+    "2nd Communication Skills Requirement": [True, ["ENGL 378"]]
+}
+
+
+# Case 2: All reqs met, both comms courses from list 1
+math_test2 = ["CS 115", "CS 116", "MATH 106", "MATH 127", "MATH 128", 
+              "MATH 135", "MATH 235", "MATH 237", "STAT 230", "STAT 231",
+              "SPCOM 100", "ENGL 109"]
+
+math_test2_expected = {
+    "Complete one of the following: CS 115, CS 135, CS 145": [True, ["CS 115"]],
+    "Complete one of the following: CS 116, CS 136, CS 146": [True, ["CS 116"]],
+    "Complete one of the following: MATH 106, MATH 136, MATH 146": [True, ["MATH 106"]],
+    "Complete one of the following: MATH 127, MATH 137, MATH 147": [True, ["MATH 127"]],
+    "Complete one of the following: MATH 128, MATH 138, MATH 148": [True, ["MATH 128"]],
+    "Complete one of the following: MATH 135, MATH 145": [True, ["MATH 135"]],
+    "Complete one of the following: MATH 235, MATH 245": [True, ["MATH 235"]],
+    "Complete one of the following: MATH 237, MATH 239, MATH 247, MATH 249": [True, ["MATH 237"]],
+    "Complete one of the following: STAT 230, STAT 240": [True, ["STAT 230"]],
+    "Complete one of the following: STAT 231, STAT 241": [True, ["STAT 231"]],
+    "1st Communication Skills Requirement": [True, ["SPCOM 100"]],
+    "2nd Communication Skills Requirement": [True, ["ENGL 109"]]
+}
+
+# Asserts
+def test_math_1():
+    assert check_math_degree_reqs(math_test1) == math_test1_expected
+
+def test_math_2():
+    assert check_math_degree_reqs(math_test2) == math_test2_expected
+
+####################################################################
+# Math Optimization - Business specialization
+
+# Case 1: All reqs met
+mo_bus_test1 = ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340", "AMATH 242", "CO 250", 
+                     "CO 342", "CO 452", "CO 463", "CS 330", "MATH 237", "MATH 239",
+                     # specialization courses
+                     "ACTSC 231", "AFM 102", "BUS 111W", "BUS 121W", "BUS 252W", "BUS 381W",
+                     "CS 338", "ECON 102", "MSE 432", "STAT 371", "STAT 372",
+                     "BUS 435W", "STAT 442"  # any 2 from the elective list
+                     ]
+ 
+mo_bus_test1_expected = {
+    "Complete all of: AFM 101, CO 370, ECON 101, MSE 211, STAT 340": [True, ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340"]],
+    "Complete one of: AMATH 242, CS 370, CS 371": [True, ["AMATH 242"]],
+    "Complete one of: CO 250, CO 255": [True, ["CO 250"]],
+    "Complete 3 of: CO 342, CO 351, CO 353, CO 367, CO 372, CO 450, CO 452, CO 454, CO 456, CO 463, CO 466, CO 471": [True, ["CO 342", "CO 452", "CO 463"]],
+    "Complete one of: CS 330, CS 490": [True, ["CS 330"]],
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 237"]],
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    "Complete all of: ACTSC 231, AFM 102, BUS 111W, BUS 121W, BUS 252W, BUS 381W, CS 338, ECON 102, MSE 432, STAT 371, STAT 372": [True, ["ACTSC 231", "AFM 102", "BUS 111W", "BUS 121W", "BUS 252W", "BUS 381W", "CS 338", "ECON 102", "MSE 432", "STAT 371", "STAT 372"]],
+    "Complete 2 of: AMATH 350, BUS 435W, BUS 445W, BUS 455W, BUS 485W, CS 230, CS 234, MSE 311, MSE 436, STAT 440, STAT 442, STAT 444": [True, ["BUS 435W", "STAT 442"]]
+}
+
+def test_mo_bus_1():
+    assert check_math_opt_bus_specialization(mo_bus_test1) == mo_bus_test1_expected
+
+# Math optimization - Operations Research Specialization
+
+# Case 1: All reqs met
+mo_or_test1 = ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340", "AMATH 242", "CO 250", 
+                     "CO 342", "CO 452", "CO 463", "CS 330", "MATH 237", "MATH 239",
+                     # specialization courses
+                    "CS 234", "STAT 331", "STAT 333",
+                    "ECON 102", "MSE 432",  # any 2 from that group
+                    "STAT 443",             # any 1 from that group
+                    "CO 351",               # or CO 353
+                    "PMATH 330", "STAT 341"]
+
+mo_or_test1_expected = {
+    "Complete all of: AFM 101, CO 370, ECON 101, MSE 211, STAT 340": [True, ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340"]],
+    "Complete one of: AMATH 242, CS 370, CS 371": [True, ["AMATH 242"]],
+    "Complete one of: CO 250, CO 255": [True, ["CO 250"]],
+    "Complete 3 of: CO 342, CO 351, CO 353, CO 367, CO 372, CO 450, CO 452, CO 454, CO 456, CO 463, CO 466, CO 471": [True, ["CO 342", "CO 452", "CO 463"]],
+    "Complete one of: CS 330, CS 490": [True, ["CS 330"]],
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 237"]],
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    # Specialization reqs
+    "Complete all of: CS 234, STAT 331, STAT 333": [True, ["CS 234", "STAT 331", "STAT 333"]],
+    "Complete 2 of: AFM 102, ECON 102, MSE 311, MSE 432": [True, ["ECON 102", "MSE 432"]],
+    "Complete one of: AMATH 250, AMATH 251, CO 487, CS 338, CS 430, STAT 332, STAT 433, STAT 435, STAT 443": [True, ["STAT 443"]],
+    "Complete one of: CO 351, CO 353 or, if CO 255 is taken, one of: CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471": [True, ["CO 351"]],
+    "Complete 2 additional math courses from the following subject codes: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["PMATH 330", "STAT 341"]],
+}
+
+# Case 2: CO 255 taken
+
+mo_or_test2 = ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340", "AMATH 242", "CO 255", 
+                     "CO 342", "CO 351", "CO 463", "CS 330", "MATH 237", "MATH 239",
+                     # specialization courses
+                    "CS 234", "STAT 331", "STAT 333",
+                    "ECON 102", "MSE 432",  # any 2 from that group
+                    "STAT 443",             # any 1 from that group
+                    "CO 459",               # or CO 353
+                    "PMATH 330", "STAT 341"]
+
+mo_or_test2_expected = {
+    "Complete all of: AFM 101, CO 370, ECON 101, MSE 211, STAT 340": [True, ["AFM 101", "CO 370", "ECON 101", "MSE 211", "STAT 340"]],
+    "Complete one of: AMATH 242, CS 370, CS 371": [True, ["AMATH 242"]],
+    "Complete one of: CO 250, CO 255": [True, ["CO 255"]],
+    "Complete 3 of: CO 342, CO 351, CO 353, CO 367, CO 372, CO 450, CO 452, CO 454, CO 456, CO 463, CO 466, CO 471": [True, ["CO 342", "CO 351", "CO 463"]],
+    "Complete one of: CS 330, CS 490": [True, ["CS 330"]],
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 237"]],
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    # Specialization reqs
+    "Complete all of: CS 234, STAT 331, STAT 333": [True, ["CS 234", "STAT 331", "STAT 333"]],
+    "Complete 2 of: AFM 102, ECON 102, MSE 311, MSE 432": [True, ["ECON 102", "MSE 432"]],
+    "Complete one of: AMATH 250, AMATH 251, CO 487, CS 338, CS 430, STAT 332, STAT 433, STAT 435, STAT 443": [True, ["STAT 443"]],
+    "Complete one of: CO 351, CO 353 or, if CO 255 is taken, one of: CO 450, CO 452, CO 454, CO 456, CO 459, CO 463, CO 466, CO 471": [True, ["CO 459"]],
+    "Complete 2 additional math courses from the following subject codes: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["PMATH 330", "STAT 341"]],
+}
+
+def test_mo_or_1():
+    assert check_math_opt_ops_specialization(mo_or_test1) == mo_or_test1_expected
+
+def test_mo_or_2():
+    assert check_math_opt_ops_specialization(mo_or_test2) == mo_or_test2_expected
+
+####################################################################
+# BMath data science
+
+bmath_ds_test0 = ["CS 136L", "CS 341", "CS 348", "CS 431", "ENGL 378", "STAT 330", "STAT 331", "STAT 332", "STAT 333", "STAT 341",
+           "CS 136", "CS 240", "CS 241", "CS 245", "CS 246", "CS 251", "CS 480", "MATH 237", "MATH 239", "STAT 431", "STAT 442", "PMATH 330"]
+
+bmath_ds_test0_expected = {
+    "Complete all of the following: CS 136L, CS 341, CS 348, CS 431, STAT 330, STAT 331, STAT 332, STAT 333, STAT 341": [True, ["CS 136L", "CS 341", "CS 348", "CS 431", "STAT 330", "STAT 331", "STAT 332", "STAT 333", "STAT 341"]],
+    "Complete 1 of the following: CS 136, CS 146": [True, ["CS 136"]],
+    "Complete 1 of the following: CS 240, CS 240E": [True, ["CS 240"]],
+    "Complete 1 of the following: CS 241, CS 241E": [True, ["CS 241"]],
+    "Complete 1 of the following: CS 245, CS 245E": [True, ["CS 245"]],
+    "Complete 1 of the following: CS 246, CS 246E": [True, ["CS 246"]],
+    "Complete 1 of the following: CS 251, CS 251E": [True, ["CS 251"]],
+    "Complete 1 of the following: CS 480, CS 484, CS 485, CS 486, STAT 441": [True, ["CS 480"]],
+    "Complete 2 of the following: STAT 431, STAT 440, STAT 441, STAT 442, STAT 443, STAT 444": [True, ["STAT 431", "STAT 442"]],
+    "Complete 1 of the following: ENGL 378, MTHEL 300": [True, ["ENGL 378"]],
+    "Complete 1 of the following: MATH 237, MATH 247": [True, ["MATH 237"]],
+    "Complete 1 of the following: MATH 239, MATH 249": [True, ["MATH 239"]],
+    "Complete 1 additional course at the 300- or 400-level from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["PMATH 330"]]
+}
+
+
+def test_ds_0():
+    assert check_data_science_major(bmath_ds_test0) == bmath_ds_test0_expected
+
+####################################################################
+# Math phys
+
+mathphys_test0 = ["AMATH 231", "AMATH 271", "AMATH 353", "AMATH 361", "PHYS 121", "PHYS 122", "PHYS 242",
+                  "AMATH 242",
+                 "AMATH 345", "AMATH 250", "PMATH 331", "AMATH 332", "AMATH 373", "PHYS 454", "PHYS 476", "AMATH 333", "PHYS 359", "PHYS 358", "MATH 237",
+                 "AMATH 240", "PHYS 240", "AMATH 340", "PHYS 340", "AMATH 341", "PHYS 200",
+                 ]
+
+mathphys_test0_expected = {'Complete all the following: AMATH 231, AMATH 271, AMATH 353, AMATH 361, PHYS 121, PHYS 122, PHYS 242': [True,
+  ['AMATH 231',
+   'AMATH 271',
+   'AMATH 353',
+   'AMATH 361',
+   'PHYS 121',
+   'PHYS 122',
+   'PHYS 242']],
+ 'Complete one of the following: AMATH 242, AMATH 345, AMATH 391, AMATH 445, CS 371': [True,
+  ['AMATH 242']],
+ 'Complete one of the following: AMATH 250, AMATH 251': [True, ['AMATH 250']],
+ 'Complete one of the following: AMATH 331, PMATH 331, PMATH 333, PMATH 351': [True,
+  ['PMATH 331']],
+ 'Complete one of the following: AMATH 332, PMATH 332, PMATH 352': [True,
+  ['AMATH 332']],
+ 'Complete either AMATH 373, or both of PHYS 234 and PHYS 334': [True,
+  ['AMATH 373']],
+ 'Complete one of the following: AMATH 473, PHYS 454': [True, ['PHYS 454']],
+ 'Complete one of the following: AMATH 475, PHYS 476': [True, ['PHYS 476']],
+ 'Complete 2 of the following: AMATH 333, AMATH 474, PHYS 359, PHYS 484': [True,
+  ['AMATH 333', 'PHYS 359']],
+ 'Complete one of the following: ECE 403, PHYS 358': [True, ['PHYS 358']],
+ 'Complete one of the following: MATH 237, MATH 247': [True, ['MATH 237']],
+ 'Complete 1.5 additional units from AMATH or PHYS at the 300 or 400 level': [True,
+  ['AMATH 345', 'AMATH 340', 'PHYS 340']],
+ 'Complete 1.5 additional units from AMATH or PHYS at any level': [True,
+  ['AMATH 240', 'PHYS 240', 'AMATH 341']]}
+
+def test_mathphys():
+    assert check_math_physics_reqs(mathphys_test0) == mathphys_test0_expected
 
 ####################################################################
 
@@ -426,33 +725,171 @@ def test_amath_4():
 # COMPUTATIONAL MATH 
 
 # Case 0: All reqs met and taken both 
+# Computational math
+
+# Case 1: All reqs met
+cm_test_1 = ["CS 230", "CS 234", "CS 371", "MATH 247", "MATH 239",
+             "ECON 101", "ECON 102", "ECON 212", "AMATH 250", "CO 250",
+             "AMATH 342", "STAT 341", "CS 431", "CS 479", "AMATH 382", "AMATH 383"
+             ]
+
+cm_test1_expected = {
+    "Complete all of: CS 230, CS 234": [True, ["CS 230", "CS 234"]],
+    
+    "Complete one of: AMATH 242, CS 371": [True, ["CS 371"]],
+    
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 247"]],
+    
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    
+    "Complete 3 non-math courses from the same subject code (AE, BIOL, BME, CHE, CHEM, CIVE, EARTH, ECE, ECON, ENVE, GEOE, ME, MNS, MSE, MTE, NE, PHYS, SYDE)": 
+        [True, ["ECON 212", "ECON 101", "ECON 102"]],
+    
+    "List 1 Requirement - Complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E": 
+        [True, ["AMATH 250", "CO 250"]],
+    
+    "List 2 requirement - Complete 2 courses from these options: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341": 
+        [True, ["AMATH 342", "STAT 341"]],
+    
+    "Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level": 
+        [True, ["CS 431", "CS 479", "AMATH 382", "AMATH 383"]],
+}
 
 
-# # Case 1: only partially completed concentration.
-# cm_test1 = ['CS 230', 'CS 234', # reqd
-#             'CS 371', 'MATH 237', 'MATH 249',
-#             'ECON 212',
-#             ]
+# Case 2: Test that in list 1, the two courses are in different subject codes - should fail list 1 req
+cm_test2 = ["CS 230", "CS 234", "CS 371", "MATH 247", "MATH 239",
+            "ECON 101", "ECON 102", "ECON 212",
+            "CS 245E", "CS 246", # only one course should be applied since list 1 requires the two courses to be in different subject codes
+            "AMATH 342", "STAT 341", "CS 431", "CS 479", "STAT 441", "STAT 444"]
 
-# # Case 2: Both ECON and BIO courses present, but BIO closer to completed concentration.
-# cm_test1 = ['CS 230', 'CS 234', # reqd
-#             'CS 371', 'MATH 237', 'MATH 249',
-#             'ECON 212',
-#             ]
+cm_test2_expected = {
+    "Complete all of: CS 230, CS 234": [True, ["CS 230", "CS 234"]],
+    
+    "Complete one of: AMATH 242, CS 371": [True, ["CS 371"]],
+    
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 247"]],
+    
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    
+    "Complete 3 non-math courses from the same subject code (AE, BIOL, BME, CHE, CHEM, CIVE, EARTH, ECE, ECON, ENVE, GEOE, ME, MNS, MSE, MTE, NE, PHYS, SYDE)": 
+        [True, ["ECON 212", "ECON 101", "ECON 102"]],  # 3 ECONs
+    
+    "List 1 Requirement - Complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E": 
+        [False, ["CS 245E"]],
+    
+    "List 2 requirement - Complete 2 courses from these options: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341": 
+        [True, ["AMATH 342", "STAT 341"]],
+    
+    "Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level": 
+        [True, ["CS 431", "CS 479", "STAT 441", "STAT 444"]],
+}
 
-# Case 3: Testing that "In List 1, the two courses must be in different subject codes.
-# In List 3, only one of CS431 or CS451 may be taken.
+# Case 3: In List 3, only one of CS431 or CS451 may be taken.
+cm_test3 = ["CS 230", "CS 234", "CS 371", "MATH 247", "MATH 239",
+            "ECON 101", "ECON 102", "ECON 212",
+            "CS 245E", "CS 246",
+            "AMATH 342", "STAT 341", "CS 431", "CS 451", # should be incomplete as only CS 431 will be used
+            "STAT 441", "STAT 444"]
 
+cm_test3_expected = {
+    "Complete all of: CS 230, CS 234": [True, ["CS 230", "CS 234"]],
+    
+    "Complete one of: AMATH 242, CS 371": [True, ["CS 371"]],
+    
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 247"]],
+    
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    
+    "Complete 3 non-math courses from the same subject code (AE, BIOL, BME, CHE, CHEM, CIVE, EARTH, ECE, ECON, ENVE, GEOE, ME, MNS, MSE, MTE, NE, PHYS, SYDE)": 
+        [True, ["ECON 212", "ECON 101", "ECON 102"]],  # 3 ECONs
+    
+    "List 1 Requirement - Complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E": 
+        [False, ["CS 245E"]],
+    
+    "List 2 requirement - Complete 2 courses from these options: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341": 
+        [True, ["AMATH 342", "STAT 341"]],
+    
+    "Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level": 
+        [False, ["CS 431", "STAT 441", "STAT 444"]],
+}
 
 # Checking that the courses are in at least 2 diff subject codes in "Complete 4 additional courses, taken from List 2 or List 3; choices must be in at least two different subject codes (AMATH, CO, CS, PMATH, STAT), and 2 courses must be at the 400-level
+cm_test4 = ["CS 230", "CS 234", "CS 371", "MATH 247", "MATH 239",
+            "ECON 101", "ECON 102", "ECON 212",
+            "CS 245E", "CS 246",
+            "AMATH 342", "STAT 341",
+            "CO 450", "CO 452", "CO 454", "C0 456"] # should not be accepted as same subject code
 
-# Testing that 2 courses are at 400 in level in the req above
+cm_test4_expected = {
+    "Complete all of: CS 230, CS 234": [True, ["CS 230", "CS 234"]],
+    
+    "Complete one of: AMATH 242, CS 371": [True, ["CS 371"]],
+    
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 247"]],
+    
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    
+    "Complete 3 non-math courses from the same subject code (AE, BIOL, BME, CHE, CHEM, CIVE, EARTH, ECE, ECON, ENVE, GEOE, ME, MNS, MSE, MTE, NE, PHYS, SYDE)": 
+        [True, ["ECON 212", "ECON 101", "ECON 102"]],  # 3 ECONs
+    
+    "List 1 Requirement - Complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E": 
+        [False, ["CS 245E"]],
+    
+    "List 2 requirement - Complete 2 courses from these options: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341": 
+        [True, ["AMATH 342", "STAT 341"]],
+    
+    "Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level": 
+        [False, ["CO 450", "CO 452", "CO 454"]],
+}
+
+# Checking that for last req at least 2 courses need to be at the 400 level
+cm_test5 = ["CS 230", "CS 234", "CS 371", "MATH 247", "MATH 239",
+            "ECON 101", "ECON 102", "ECON 212",
+            "CS 245E", "CS 246",
+            "AMATH 342", "STAT 341", "STAT 431", "CS 351",
+            "CS 231", "CS 200",
+            "CO 450", "CO 351", "AMATH 343", "CS 341"] # should not be accepted as only 1 is 400 level
+
+cm_test5_expected = {
+    "Complete all of: CS 230, CS 234": [True, ["CS 230", "CS 234"]],
+    
+    "Complete one of: AMATH 242, CS 371": [True, ["CS 371"]],
+    
+    "Complete one of: MATH 237, MATH 247": [True, ["MATH 247"]],
+    
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    
+    "Complete 3 non-math courses from the same subject code (AE, BIOL, BME, CHE, CHEM, CIVE, EARTH, ECE, ECON, ENVE, GEOE, ME, MNS, MSE, MTE, NE, PHYS, SYDE)": 
+        [True, ["ECON 212", "ECON 101", "ECON 102"]],  # 3 ECONs
+    
+    "List 1 Requirement - Complete 2 courses from these options: AMATH 250/251/350, CO 250/255, CS 245/CS 245E/PMATH 330/PMATH 432, CS 246/246E": 
+        [False, ["CS 245E"]],
+    
+    "List 2 requirement - Complete 2 courses from these options: AMATH 342, CS 475, PMATH 370, CO 367/CO 353, STAT 340/341": 
+        [True, ["AMATH 342", "STAT 341"]],
+    
+    "Complete 4 additional courses in at least 2 different subject codes, at least 2 of which are 400 level": 
+        [False, ["CO 450", "CO 351", "AMATH 343", 'CS 341']],
+}
 
 # For list 2: one test case where both courses are from the "any option", then test cases to make
 # sure that STAT 340/341 and CO 353/367 are not counted as separate.
 # Students who take CO255 may take CO450 or CO466 instead of CO353 or CO367.
-# In List 3, BIOL382 counts as an AMATH course for the purpose of the "at least two different subject codes" requirement.
 
+def test_cm_1():
+    assert check_comp_math_reqs(cm_test_1) == cm_test1_expected
+
+def test_cm_2():
+    assert check_comp_math_reqs(cm_test2) == cm_test2_expected
+
+def test_cm_3():
+    assert check_comp_math_reqs(cm_test3) == cm_test3_expected
+
+def test_cm_4():
+    assert check_comp_math_reqs(cm_test4) == cm_test4_expected
+
+def test_cm_5():
+    assert check_comp_math_reqs(cm_test5) == cm_test5_expected
 
 ####################################################################
 
@@ -492,3 +929,106 @@ def test_pmath_0():
     
 def test_pmath_1():
     assert check_pmath_major(pmath_test1) == pmath_test1_expected
+
+
+####################################################################
+# Math studies
+
+# Case 1: All reqs met
+mst_test1 = ["MATH 136", "MATH 137", "MATH 138", "MATH 135", "MATH 225", "MATH 237",
+            "STAT 220", "STAT 221", "CS 115", "CS 116",
+            "SPCOM 100", "ENGL 108D",
+            "PMATH 330", "PMATH 340", "CS 330", "CS 338", "CS 436", "CS 371",
+            "MATBUS 371", "STAT 341", "CS 479", "CS 431",
+            "CS 230", "CS 231", "CS 234", "CS 200",
+            "ECON 101", "ECON 102", "ECON 201", "CLAS 104", "PSYCH 101", "BET 100", "BET 210", "ECON 212",
+            "AMATH 250", "ACTSC 231",
+            "HIST 101", "ENGL 109", "BET 456", "FR 101"]
+
+mst_test1_expected = {
+    "Complete one of the following: MATH 106, MATH 136, MATH 146": [True, ["MATH 136"]],
+    "Complete one of the following: MATH 127, MATH 137, MATH 147": [True, ["MATH 137"]],
+    "Complete one of the following: MATH 128, MATH 138, MATH 148": [True, ["MATH 138"]],
+    "Complete one of the following: MATH 135, MATH 145": [True, ["MATH 135"]],
+    "Complete one of the following: MATH 225, MATH 235, MATH 245": [True, ["MATH 225"]],
+    "Complete one of the following: MATH 207, MATH 237, MATH 247, MATH 229, MATH 239, MATH 249": [True, ["MATH 237"]],
+    "Complete one of the following: STAT 220, STAT 230, STAT 240": [True, ["STAT 220"]],
+    "Complete one of the following: STAT 221, STAT 231, STAT 241": [True, ["STAT 221"]],
+    "Complete one of the following: CS 115, CS 135, CS 145": [True, ["CS 115"]],
+    "Complete one of the following: CS 116, CS 136, CS 146": [True, ["CS 116"]],
+    "1st Communication Skills Requirement": [True, ["SPCOM 100"]],
+    "2nd Communication Skills Requirement": [True, ["ENGL 109"]],
+    "Ten mathematics 3XX and/or 4XX courses": [
+        True,
+        ["PMATH 330", "PMATH 340", "CS 330", "CS 338", "CS 436", "CS 371",
+            "MATBUS 371", "STAT 341", "CS 479", "CS 431"]
+    ],
+    "Four additional mathematics courses": [
+        True,
+        ["CS 230", "CS 231", "CS 234", "CS 200"]
+    ],
+    "Eight additional non-math courses": [
+        True,
+        ["ENGL 108D", "ECON 101", "ECON 102", "ECON 201", "CLAS 104", "PSYCH 101", "BET 100", "BET 210"]
+    ],
+    "Two additional math courses or two courses that contribute to a minor outside of Mathematics": [
+        True,
+        ["AMATH 250", "ACTSC 231"]
+    ],
+    "Four free-choice electives": [
+        True,
+        ["ECON 212", "HIST 101", "BET 456", "FR 101"]
+    ]
+}
+
+# Asserts
+def test_ms_1():
+    assert math_studies_reqs(mst_test1) == mst_test1_expected
+
+# Math studies: business specialization
+
+# Case: All reqs met
+
+
+ms_bus_test1 = ['MATH 136', 'MATH 137', 'MATH 138', 'MATH 135', 'MATH 235', 'MATH 237',
+                'STAT 230', 'STAT 231', 'CS 135', 'CS 116',
+                'SPCOM 100', 'SPCOM 223',
+                "AFM 101", "AFM 102", "BUS 121W", "CS 330", "ECON 101", "ECON 102", "ACTSC 231", "AFM 131", 
+                "MGMT 244", "CO 255", "CO 370", "CS 338", "STAT 340", "STAT 332",
+                "STAT 341", "STAT 444", "STAT 441", "AMATH 250", "AMATH 353",
+                "CS 100", "PMATH 330",
+                "LS 271", "LS 319", "HRM 101"]
+
+ms_bus_test1_expected = {
+    "Complete one of the following: MATH 106, MATH 136, MATH 146": [True, ["MATH 136"]],
+    "Complete one of the following: MATH 127, MATH 137, MATH 147": [True, ["MATH 137"]],
+    "Complete one of the following: MATH 128, MATH 138, MATH 148": [True, ["MATH 138"]],
+    "Complete one of the following: MATH 135, MATH 145": [True, ["MATH 135"]],
+    "Complete one of the following: MATH 225, MATH 235, MATH 245": [True, ["MATH 235"]],
+    "Complete one of the following: MATH 207, MATH 237, MATH 247, MATH 229, MATH 239, MATH 249": [True, ["MATH 237"]],
+    "Complete one of the following: STAT 220, STAT 230, STAT 240": [True, ["STAT 230"]],
+    "Complete one of the following: STAT 221, STAT 231, STAT 241": [True, ["STAT 231"]],
+    "Complete one of the following: CS 115, CS 135, CS 145": [True, ["CS 135"]],
+    "Complete one of the following: CS 116, CS 136, CS 146": [True, ["CS 116"]],
+    "1st Communication Skills Requirement": [True, ["SPCOM 100"]],
+    "2nd Communication Skills Requirement": [True, ["SPCOM 223"]],
+    "Complete one of the following: STAT 321, STAT 322, STAT 331, STAT 332": [True, ["STAT 332"]],
+    "Complete one of the following: CO 227, CO 250, CO 255": [True, ["CO 255"]],
+    "Complete one of the following: CO 327, CO 370": [True, ["CO 370"]],
+    "Complete one of the following: AFM 272, ACTSC 291, ACTSC 221, ACTSC 231": [True, ["ACTSC 231"]],
+    "Complete two of the following: CS 200, CS 338, CS 430, STAT 340": [True, ["CS 338", "STAT 340"]],
+    "Complete all of: CS 330, AFM 101, AFM 102, BUS 121W, ECON 101, ECON 102": [True, ["CS 330", "AFM 101", "AFM 102", "BUS 121W", "ECON 101", "ECON 102"]],
+    "Complete one of: AFM 131, ARBUS 101, BUS 111W": [True, ["AFM 131"]],
+    "Complete one of: ARBUS 302, BUS 252W, MGMT 244": [True, ["MGMT 244"]],
+    "Complete 7 additional math courses from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ["STAT 341", "STAT 444", "STAT 441", "AMATH 250", "AMATH 353", "CS 100", "PMATH 330"]],
+    "Complete 10 math courses at the 300 or 400-level (including any taken above) from: ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT": [True, ['CS 330', 'CO 370', 'CS 338', 'STAT 340', 'STAT 332', "STAT 341", "STAT 444", "STAT 441", "AMATH 353", "PMATH 330"]],
+    "Complete one of: LS 271, PACS 202": [True, ["LS 271"]],
+    "Complete one of: LS 319, PACS 323": [True, ["LS 319"]],
+    "Complete one course from AFM, BUS, COMM, ECON, HRM, MSE, STV": [True, ["HRM 101"]]
+}
+
+# Asserts    
+def test_mb_1():
+    assert math_studies_business_reqs(ms_bus_test1) == ms_bus_test1_expected
+
+
