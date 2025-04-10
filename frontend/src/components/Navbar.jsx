@@ -11,9 +11,7 @@ import {
 	EmailAuthProvider,
 } from "firebase/auth";
 
-
 const provider = new GoogleAuthProvider();
-
 
 const Navbar = ({ setName, setShouldType, openGlobalModal }) => {
 	const [user, setUser] = useState(null);
@@ -171,6 +169,9 @@ const Navbar = ({ setName, setShouldType, openGlobalModal }) => {
 					<a href="/feedback" className="hover:text-[#FED34C]">
 						Feedback
 					</a>
+					<HashLink smooth to="/#demo" className="hover:text-[#FED34C]">
+						Demo Video
+					</HashLink>
 					{user ? (
 						<div className="relative" ref={dropdownRef}>
 							<img
@@ -267,6 +268,13 @@ const Navbar = ({ setName, setShouldType, openGlobalModal }) => {
 						className="hover:text-[#FED34C]">
 						Feedback
 					</a>
+					<HashLink
+						smooth
+						to="/#demo"
+						onClick={() => setMenuOpen(false)}
+						className="hover:text-[#FED34C]">
+						Demo Video
+					</HashLink>
 					{user ? (
 						<>
 							<button

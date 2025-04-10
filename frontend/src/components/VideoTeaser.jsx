@@ -4,8 +4,9 @@ import demoVideo from "../assets/demo-video.mp4";
 
 const VideoTeaser = () => {
 	return (
-		<div className="relative w-full overflow-hidden bg-black">
+		<div className="relative w-full overflow-hidden bg-black pb-30">
 			<video
+				id="demo"
 				src={demoVideo}
 				autoPlay
 				loop
