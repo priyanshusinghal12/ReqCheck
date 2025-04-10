@@ -7,6 +7,7 @@ import MajorDropdown from "./MajorDropdown";
 import { useNavigate } from "react-router-dom";
 import { FaUpload, FaArrowRight, FaTimes } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import { auth } from "../firebase";
 
 const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 
@@ -20,6 +21,7 @@ export default function Hero({ shouldType, name }) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [dragCounter, setDragCounter] = useState(0);
 	const [isRetrying, setIsRetrying] = useState(false);
+	const [reuseTranscript, setReuseTranscript] = useState(null);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -34,6 +36,46 @@ export default function Hero({ shouldType, name }) {
 
 	useEffect(() => {
 		fetch(`${import.meta.env.VITE_BACKEND_URL}/`).catch(() => {});
+	}, []);
+
+	useEffect(() => {
+		const fetchPreviousTranscript = async () => {
+			// Check localStorage
+			const localCourses = localStorage.getItem("parsedCourses");
+			const localMajor = localStorage.getItem("selectedMajor");
+			const localName = localStorage.getItem("transcriptFilename");
+
+			if (localCourses && localMajor && localName) {
+				setReuseTranscript({
+					completed_courses: JSON.parse(localCourses),
+					major: localMajor,
+					filename: localName,
+				});
+			}
+
+			// Check Firebase (if user is logged in)
+			auth.onAuthStateChanged(async (user) => {
+				if (user) {
+					const token = await user.getIdToken();
+					const res = await fetch(
+						`${import.meta.env.VITE_BACKEND_URL}/get-last-transcript/`,
+						{
+							headers: { Authorization: `Bearer ${token}` },
+						}
+					);
+					const data = await res.json();
+					if (data.status === "success") {
+						setReuseTranscript({
+							completed_courses: data.transcript.completed_courses,
+							major: data.transcript.major,
+							filename: data.transcript.filename,
+						});
+					}
+				}
+			});
+		};
+
+		fetchPreviousTranscript();
 	}, []);
 
 	useEffect(() => {
@@ -146,6 +188,10 @@ export default function Hero({ shouldType, name }) {
 			toast.error("Please select a major and/or provide courses.");
 			setIsLoading(false);
 			return;
+		}
+
+		if (!selectedMajor && reuseTranscript?.major) {
+			setSelectedMajor(reuseTranscript.major);
 		}
 
 		try {
@@ -267,13 +313,20 @@ export default function Hero({ shouldType, name }) {
 					<button
 						className={`px-4 py-2 rounded-lg font-semibold ${
 							showModal ? "border border-[#FED34C]" : "border border-[#333]"
-						} bg-[#1A1A1A] text-white`}
+						} bg-[#1A1A1A] text-white hover:border-yellow-400 transition`}
 						onClick={() => {
 							setShowModal(true);
 							sessionStorage.setItem("selectedMajor", selectedMajor);
 						}}>
 						Enter Courses Manually
 					</button>
+					{reuseTranscript && (
+						<button
+							className="border border-[#333] bg-[#1A1A1A] text-white px-4 py-2 rounded-lg font-semibold hover:border-yellow-400 transition"
+							onClick={() => handleGoClick(reuseTranscript.completed_courses)}>
+							Re-use "{reuseTranscript.filename}"
+						</button>
+					)}
 				</div>
 
 				{!showModal && (

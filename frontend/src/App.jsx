@@ -35,12 +35,16 @@ function App() {
 		const alreadyVisited = localStorage.getItem("reqcheck_has_visited");
 		const isGuestSession = sessionStorage.getItem("reqcheck_guest_session");
 
-		if (!alreadyVisited && !isGuestSession) {
-			setShowLoginModal(true);
-		} else {
-			setNameFromLocalStorage();
-			setShouldType(true);
-		}
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
+			if (!user && !alreadyVisited && !isGuestSession) {
+				setShowLoginModal(true);
+			} else {
+				setNameFromLocalStorage();
+				setShouldType(true);
+			}
+		});
+
+		return () => unsubscribe();
 	}, []);
 
 	// Log visit ONCE per session — exclude specific UIDs

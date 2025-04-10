@@ -152,3 +152,31 @@ async def delete_account(req: DeleteAccountRequest):
         return {"status": "success"}
     except Exception as e:
         return JSONResponse(status_code=400, content={"status": "error", "message": str(e)})
+
+@router.get("/get-last-transcript/")
+async def get_last_transcript(Authorization: str = Header(...)):
+    try:
+        id_token = Authorization.split("Bearer ")[-1]
+        decoded = auth.verify_id_token(id_token)
+        uid = decoded["uid"]
+
+        doc = db.collection("users").document(uid).get()
+        if not doc.exists:
+            return {"status": "error", "message": "User not found"}
+
+        results = doc.to_dict().get("results", [])
+        if not results:
+            return {"status": "error", "message": "No results found"}
+
+        # Return the most recent result
+        latest = sorted(results, key=lambda x: x["timestamp"], reverse=True)[0]
+        return {
+            "status": "success",
+            "transcript": {
+                "major": latest.get("major"),
+                "completed_courses": latest.get("completed_courses", []),
+                "filename": latest.get("name", "Saved Transcript")
+            }
+        }
+    except Exception as e:
+        return JSONResponse(status_code=401, content={"status": "error", "message": str(e)})
