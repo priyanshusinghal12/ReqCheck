@@ -10,7 +10,8 @@
 
 ### 🔥 Clean, Responsive Landing Page
 
-> ![Landing Page – Desktop](https://github.com/user-attachments/assets/1337bc6d-9fb2-43fb-816d-c68b9c95a86d)
+<img width="1459" alt="Screen Shot 2025-04-09 at 9 46 37 PM" src="https://github.com/user-attachments/assets/46ca0fc8-04f2-4099-8136-8d6aa1674746" />
+
 
 ---
 
