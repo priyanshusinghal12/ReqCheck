@@ -314,21 +314,22 @@ export default function Hero({ shouldType, name }) {
 					completed courses manually, select your major and hit go.
 				</motion.p>
 
-				<div className="flex items-center gap-3 mb-6">
+				<div className="flex items-center gap-2 sm:gap-3 mb-6 flex-wrap justify-center">
 					<button
-						className={`px-4 py-2 rounded-lg font-semibold ${
+						className={`px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-lg font-semibold ${
 							!showModal ? "border border-[#FED34C]" : "border border-[#333]"
-						} bg-[#1A1A1A] text-white`}
-						onClick={() => setShowModal(false)}>
+						} bg-[#1A1A1A] text-white`}>
 						Upload Transcript
 					</button>
+
 					<button
 						id="upload-enter-trigger"
 						onClick={() => handleGoClick(fileContent)}
 						className="hidden"
 					/>
+
 					<button
-						className={`px-4 py-2 rounded-lg font-semibold ${
+						className={`px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-lg font-semibold ${
 							showModal ? "border border-[#FED34C]" : "border border-[#333]"
 						} bg-[#1A1A1A] text-white hover:border-yellow-400 transition`}
 						onClick={() => {
@@ -337,10 +338,11 @@ export default function Hero({ shouldType, name }) {
 						}}>
 						Enter Courses Manually
 					</button>
+
 					{user && (
 						<a
 							href="/saved"
-							className="border border-[#333] bg-[#1A1A1A] text-white px-4 py-2 rounded-lg font-semibold hover:border-yellow-400 transition">
+							className="border border-[#333] bg-[#1A1A1A] text-white px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-lg font-semibold hover:border-yellow-400 transition">
 							View Saved Results
 						</a>
 					)}
