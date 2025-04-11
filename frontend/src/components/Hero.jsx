@@ -289,7 +289,7 @@ export default function Hero({ shouldType, name }) {
 			<ParticlesBackground />
 			<motion.div className="relative z-10 w-full max-w-2xl flex flex-col items-center">
 				{shouldType && (
-					<motion.h1 className="text-5xl sm:text-6xl font-medium mb-4">
+					<motion.h1 className="text-3xl sm:text-5xl md:text-6xl font-medium mb-4">
 						<span className="text-[#FED34C]">Wel</span>
 						<span className="text-white">
 							<Typewriter
@@ -350,7 +350,7 @@ export default function Hero({ shouldType, name }) {
 
 				{!showModal && (
 					<div
-						className="relative flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto mt-2"
+						className="relative flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto mt-2"
 						tabIndex={0}
 						onKeyDown={(e) => {
 							if (e.key === "Enter") {
@@ -362,9 +362,10 @@ export default function Hero({ shouldType, name }) {
 								}
 							}
 						}}>
-						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-4 py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md sm:w-auto w-full">
-							<FaUpload />
-							Upload/Drop Transcript
+						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-4 py-2 sm:px-4 sm:py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md sm:w-auto w-full text-sm sm:text-base">
+							<FaUpload className="text-sm sm:text-base" />
+							<span className="sm:inline hidden">Upload/Drop Transcript</span>
+							<span className="inline sm:hidden">Upload</span>
 							<input
 								type="file"
 								accept=".pdf"
