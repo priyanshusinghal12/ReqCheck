@@ -34,6 +34,14 @@ export default function Hero({ shouldType, name }) {
 	}, []);
 
 	useEffect(() => {
+		if (!showModal && window.innerWidth < 640) {
+			setTimeout(() => {
+				window.scrollTo({ top: 120, behavior: "smooth" });
+			}, 300);
+		}
+	}, [showModal]);
+
+	useEffect(() => {
 		if (shouldType) {
 			// Reset handled by key prop
 		}
