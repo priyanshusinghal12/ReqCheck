@@ -314,11 +314,13 @@ export default function Hero({ shouldType, name }) {
 					completed courses manually, select your major and hit go.
 				</motion.p>
 
-				<div className="flex items-center gap-2 sm:gap-3 mb-6 flex-wrap justify-center">
+				{/* Button group (top) */}
+				<div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
 					<button
 						className={`px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-lg font-semibold ${
 							!showModal ? "border border-[#FED34C]" : "border border-[#333]"
-						} bg-[#1A1A1A] text-white`}>
+						} bg-[#1A1A1A] text-white`}
+						onClick={() => setShowModal(false)}>
 						Upload Transcript
 					</button>
 
@@ -348,6 +350,7 @@ export default function Hero({ shouldType, name }) {
 					)}
 				</div>
 
+				{/* Upload/Select/Go row */}
 				{!showModal && (
 					<div
 						className="relative flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 sm:gap-3 w-full sm:w-auto mt-2"
@@ -362,10 +365,10 @@ export default function Hero({ shouldType, name }) {
 								}
 							}
 						}}>
-						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-4 py-2 sm:px-4 sm:py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md sm:w-auto w-full text-sm sm:text-base">
+						<motion.label className="flex items-center justify-center gap-2 bg-[#FED34C] hover:scale-105 active:scale-95 transition-transform px-3 py-2 sm:px-4 sm:py-3 rounded-xl text-black font-semibold cursor-pointer shadow-md w-full sm:w-auto text-sm sm:text-base">
 							<FaUpload className="text-sm sm:text-base" />
-							<span className="sm:inline hidden">Upload/Drop Transcript</span>
-							<span className="inline sm:hidden">Upload</span>
+							<span className="block sm:hidden">Upload</span>
+							<span className="hidden sm:block">Upload/Drop Transcript</span>
 							<input
 								type="file"
 								accept=".pdf"
