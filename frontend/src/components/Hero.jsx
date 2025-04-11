@@ -273,7 +273,7 @@ export default function Hero({ shouldType, name }) {
 
 	return (
 		<section
-			className="relative z-0 min-h-[95vh] pt-20 pb-10 flex items-center justify-center text-white text-center overflow-visible bg-black px-4"
+			className="relative z-0 min-h-[95vh] pt-20 pb-10 sm:pb-10 pb-4 flex items-center justify-center text-white text-center overflow-visible bg-black px-4"
 			onDragEnter={handleDragEnter}
 			onDragLeave={handleDragLeave}
 			onDragOver={handleDragOver}
