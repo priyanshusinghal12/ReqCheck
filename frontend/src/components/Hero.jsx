@@ -10,7 +10,7 @@ import { toast } from "react-hot-toast";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
-const courseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
+const courseRegex = /^[A-Z]{2,8}\s?\d{3}[A-Z]?$/i;
 
 export default function Hero({ shouldType, name }) {
 	const [selectedFile, setSelectedFile] = useState(null);
@@ -261,22 +261,34 @@ export default function Hero({ shouldType, name }) {
 	};
 
 	const handleManualSubmit = () => {
-		const entries = manualCourses
-			.split(/[,;\n]/)
-			.map((c) => c.trim().toUpperCase())
-			.filter(Boolean);
+		// Extract all potential course codes from messy input
+		const matches =
+			manualCourses.toUpperCase().match(/[A-Z]{2,8}\s?\d{3}[A-Z]?/g) || [];
 
-		const valid = entries.filter((c) => courseRegex.test(c));
-		const invalid = entries.filter((c) => !courseRegex.test(c));
+		// Normalize format: add space if missing
+		const valid = matches.map((c) =>
+			c.replace(/([A-Z]{2,8})\s?(\d{3}[A-Z]?)/, "$1 $2")
+		);
+
+		// Remove duplicates
+		const uniqueValid = Array.from(new Set(valid));
+
+		// Show invalid bits (anything not part of matches)
+		const cleanedInput = manualCourses.toUpperCase();
+		const allWords = cleanedInput.split(/[,;\n\s]+/).filter(Boolean);
+		const matchedWords = new Set(matches.map((m) => m.trim()));
+		const invalid = allWords.filter((word) => {
+			return !Array.from(matchedWords).some((m) => m.includes(word));
+		});
 
 		setBadCourses(invalid);
 
-		if (!valid.length) {
+		if (!uniqueValid.length) {
 			toast.error("Please enter at least one valid course (e.g. CS 136L)");
 			return;
 		}
 
-		handleGoClick(valid);
+		handleGoClick(uniqueValid);
 	};
 
 	return (
