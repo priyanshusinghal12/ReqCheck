@@ -273,7 +273,7 @@ export default function Hero({ shouldType, name }) {
 
 	return (
 		<section
-			className="relative z-0 min-h-[95vh] pt-20 pb-10 flex items-center justify-center text-white text-center overflow-visible bg-black px-4"
+			className="relative z-0 min-h-[95vh] pt-10 pb-10 flex items-center justify-center text-white text-center overflow-visible bg-black px-4"
 			onDragEnter={handleDragEnter}
 			onDragLeave={handleDragLeave}
 			onDragOver={handleDragOver}
@@ -281,7 +281,7 @@ export default function Hero({ shouldType, name }) {
 			<ParticlesBackground />
 			<motion.div className="relative z-10 w-full max-w-2xl flex flex-col items-center">
 				{shouldType && (
-					<motion.h1 className="text-5xl sm:text-6xl font-medium mb-4">
+					<motion.h1 className="text-3xl sm:text-5xl md:text-6xl font-medium mb-3 leading-tight">
 						<span className="text-[#FED34C]">Wel</span>
 						<span className="text-white">
 							<Typewriter
@@ -296,12 +296,12 @@ export default function Hero({ shouldType, name }) {
 					</motion.h1>
 				)}
 
-				<motion.p className="text-base text-gray-100 sm:text-lg font-medium mb-2">
+				<motion.p className="text-sm sm:text-base md:text-lg text-gray-100 font-medium mb-1 leading-snug">
 					This is ReqCheck, the one-click tool to check your progress on your
 					major's requirements and simulate how your future courses will affect
 					your progress.
 				</motion.p>
-				<motion.p className="text-gray-400 mb-6 text-sm sm:text-base">
+				<motion.p className="text-gray-400 mb-4 text-xs sm:text-sm md:text-base leading-snug">
 					To get started, upload your unofficial transcript or enter your
 					completed courses manually, select your major and hit go.
 				</motion.p>
