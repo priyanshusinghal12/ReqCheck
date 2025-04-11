@@ -101,7 +101,7 @@ const LoginModal = ({ isOpen, onClose, setName, setShouldType }) => {
 		<AnimatePresence>
 			{isOpen && (
 				<div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-md">
-					<div className="w-full min-h-screen flex items-center justify-center mt-8">
+					<div className="w-full min-h-screen flex items-start sm:items-center justify-center mt-12 sm:mt-8">
 						<motion.div
 							className="bg-[#1A1A1A] p-8 sm:p-10 rounded-2xl w-[90%] sm:w-[500px] shadow-xl border border-[#2A2A2A] relative"
 							initial={{ opacity: 0, scale: 0.95 }}
