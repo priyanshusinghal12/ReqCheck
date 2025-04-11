@@ -4,7 +4,7 @@ import demoVideo from "../assets/demo-video.mp4";
 
 const VideoTeaser = () => {
 	return (
-		<div className="relative w-full overflow-hidden bg-black pb-30">
+		<div className="relative w-full overflow-hidden bg-black pb-20 pt-10 sm:pt-16">
 			<video
 				id="demo"
 				src={demoVideo}
@@ -12,9 +12,11 @@ const VideoTeaser = () => {
 				loop
 				muted
 				playsInline
-				className="w-full max-w-4xl mx-auto rounded-xl opacity-80 shadow-xl"
+				className="w-full max-w-4xl mx-auto rounded-xl opacity-80 shadow-xl block"
 				style={{
-					paddingTop: "1px", // gentle nudge down instead of marginTop
+					display: "block",
+					objectFit: "cover",
+					minHeight: "200px", // 👈 forces some height on mobile
 				}}
 			/>
 		</div>
