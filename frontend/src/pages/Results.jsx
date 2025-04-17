@@ -8,6 +8,15 @@ import { toast } from "react-hot-toast";
 import { auth } from "../firebase";
 import ParticlesBackground from "../components/ParticlesBackground";
 
+const formatCourseCode = (course) => {
+	const match = course
+		.trim()
+		.toUpperCase()
+		.replace(/\s+/g, "") // remove all spaces
+		.match(/^([A-Z]{2,8})(\d{3}[A-Z]?)$/);
+	return match ? `${match[1]} ${match[2]}` : null;
+};
+
 const Results = ({ openGlobalModal }) => {
 	const location = useLocation();
 	const { results: initialResults } = location.state || {};
@@ -228,11 +237,10 @@ const Results = ({ openGlobalModal }) => {
 	const handleWhatIf = async () => {
 		if (!whatIfText.trim()) return;
 
-		const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 		const futureCourses = whatIfText
 			.split(",")
-			.map((course) => course.trim().toUpperCase())
-			.filter((course) => validCourseRegex.test(course));
+			.map((course) => formatCourseCode(course))
+			.filter((course) => course);
 
 		if (futureCourses.length === 0) {
 			toast.error(
@@ -591,11 +599,11 @@ const Results = ({ openGlobalModal }) => {
 								onKeyDown={(e) => {
 									if (e.key === "Enter" && !e.shiftKey) {
 										e.preventDefault();
-										const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 										const parsed = editedCoursesText
 											.split(",")
-											.map((c) => c.trim().toUpperCase())
-											.filter((c) => validCourseRegex.test(c));
+											.map((c) => formatCourseCode(c))
+											.filter((c) => c);
+
 										if (parsed.length === 0)
 											return toast.error("Please enter valid course codes.");
 										handleCourseUpdate(parsed);
@@ -612,11 +620,11 @@ const Results = ({ openGlobalModal }) => {
 								</button>
 								<button
 									onClick={() => {
-										const validCourseRegex = /^[A-Z]{2,8} \d{3}[A-Z]?$/;
 										const parsed = editedCoursesText
 											.split(",")
-											.map((c) => c.trim().toUpperCase())
-											.filter((c) => validCourseRegex.test(c));
+											.map((c) => formatCourseCode(c))
+											.filter((c) => c);
+
 										if (parsed.length === 0)
 											return toast.error("Please enter valid course codes.");
 										handleCourseUpdate(parsed);
