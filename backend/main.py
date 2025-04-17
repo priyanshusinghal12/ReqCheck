@@ -217,4 +217,7 @@ def parse_transcript(upload: TranscriptUpload):
                         f.write(text + "\n\n")
 
     courses = extract_courses_from_file(transcript_txt_path)
-    return {"courses": courses}
+    filtered_courses = [c for c in courses if not (c.startswith("COOP") or c.startswith("PD"))]
+
+    
+    return {"courses": filtered_courses}
