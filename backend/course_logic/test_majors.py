@@ -134,7 +134,6 @@ math_test1_expected = {
     "2nd Communication Skills Requirement": [True, ["ENGL 378"]]
 }
 
-
 # Case 2: All reqs met, both comms courses from list 1
 math_test2 = ["CS 115", "CS 116", "MATH 106", "MATH 127", "MATH 128", 
               "MATH 135", "MATH 235", "MATH 237", "STAT 230", "STAT 231",
