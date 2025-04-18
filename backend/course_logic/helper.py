@@ -108,6 +108,30 @@ def check_complete_all(current_requirement, core_courses, student_courses, major
         if course in student_courses:
             student_courses.remove(course)
 
+def check_n_from_list_without_removing(current_requirement, required_courses, n, student_courses, major_reqs):
+    """
+    Checks if a student has completed n courses from a specified list.
+
+    Args:
+        current_requirement: The requirement key to update in major_reqs.
+        required_courses: A list of courses required for the requirement.
+        n: The minimum number of courses required to fulfill the requirement.
+        student_courses: A list of student's completed courses.
+        major_reqs: A dictionary of PMATH program requirements.
+
+    Returns:
+        None. Modifies major_reqs and student_courses in-place.
+    """
+    # Find completed courses from the required list
+    completed_courses = [course for course in required_courses if course in student_courses]
+
+    # Check if enough courses are completed
+    if len(completed_courses) >= n:
+        # Update major_reqs
+        major_reqs[current_requirement][0] = True
+        major_reqs[current_requirement][1].extend(completed_courses[:n])  # Add up to n courses
+
+
 
 # Complete n courses from given list
 def check_n_from_list(current_requirement, required_courses, n, student_courses, major_reqs):

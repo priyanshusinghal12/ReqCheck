@@ -148,7 +148,7 @@ def check_bcs_cs_major(student_courses):
     check_n_from_list("Complete one course from List 1 (Communication Requirement 1)",
                       list1, 1, student_courses, cs_reqs)
     
-    check_n_from_list("Complete one course from List 1 + List 2 (Communication Requirement 2)",
+    check_n_from_list_without_removing("Complete one course from List 1 + List 2 (Communication Requirement 2)",
                       list1and2, 1, student_courses, cs_reqs)
 
     # Check ranges
