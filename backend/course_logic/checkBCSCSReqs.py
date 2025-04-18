@@ -73,6 +73,8 @@ def check_bcs_cs_major(student_courses):
     "Complete one of: CS 245, CS 245E": [False, []],
     "Complete one of: CS 246, CS 246E": [False, []],
     "Complete one of: CS 251, CS 251E": [False, []],
+    "Complete one course from List 1 (Communication Requirement 1)" [False, []],
+    "Complete one course from List 1 + List 2 (Communication Requirement 2)" [False, []],
     "Complete one of: MATH 127, MATH 137, MATH 147": [False, []],
     "Complete one of: MATH 128, MATH 138, MATH 148": [False, []],
     "Complete one of: MATH 135, MATH 145": [False, []],
@@ -83,12 +85,18 @@ def check_bcs_cs_major(student_courses):
     "Complete 3 additional CS courses from CS340-CS398, CS440-CS489": [False, []],
     "Complete 2 additional CS courses from CS440-CS489": [False, []],
     "Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)": [False, []],
-    "Depth Requirement (Prereq chain of length three requirement ignored)": [False, []],
+    "Depth Requirement (does not check prereq chain of length three)": [False, []],
     "Breadth Req - Humanities": [False, []],
     "Breadth Req - Pure Sciences": [False, []],
     "Breadth Req - Pure and Applied Sciences": [False, []],
     "Breadth Req - Social Sciences": [False, []],
     }
+    
+    list1 = ["COMMST 100", "COMMST 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R"]
+    
+    list1and2 = ["COMMST 100", "COMMST 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R",
+             "COMMST 225", "COMMST 227", "COMMST 228", "EMLS 103R", "EMLS 104R", "EMLS 110R", "ENGL 101B",
+             "ENGL 108B", "ENGL 108D", "ENGL 119", "ENGL 208B", "ENGL 209", "ENGL 210E", "ENGL 210F", "ENGL 378"]
 
     # Core group
     check_complete_all("Complete all of: CS 136L, CS 341, CS 350",
@@ -136,6 +144,12 @@ def check_bcs_cs_major(student_courses):
 
     check_n_from_list("Complete one of: STAT 231, STAT 241",
                       ["STAT 231", "STAT 241"], 1, student_courses, cs_reqs)
+    
+    check_n_from_list("Complete one course from List 1 (Communication Requirement 1)",
+                      list1, 1, student_courses, cs_reqs)
+    
+    check_n_from_list("Complete one course from List 1 + List 2 (Communication Requirement 2)",
+                      list1and2, 1, student_courses, cs_reqs)
 
     # Check ranges
     check_course_range("Complete 3 additional CS courses from CS340-CS398, CS440-CS489",
@@ -171,6 +185,8 @@ def check_bcs_cs_major(student_courses):
                         n=1,
                         student_courses=student_courses,
                         major_reqs=cs_reqs)
+        
+    student_courses = [course for course in student_courses if course not in list1]
 
     #Depth Reqs
     check_depth_requirement(student_courses, cs_reqs)
