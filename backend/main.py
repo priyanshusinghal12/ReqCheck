@@ -105,6 +105,7 @@ def check_requirements(request: TranscriptRequest):
     try:
         major = request.major.strip().lower()
         completed_courses = request.completed_courses
+        completed_courses = [c for c in courses if not (c.startswith("COOP") or c.startswith("PD"))]
 
         match major:
             case "math degree requirements":
