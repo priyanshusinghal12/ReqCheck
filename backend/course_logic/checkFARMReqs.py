@@ -172,6 +172,8 @@ def check_farm_professional_risk_management_reqs(student_courses):
 
     return farm_risk_reqs
 
+
+
 def check_farm_professional_fin_analyst_reqs(student_courses):
     """
     Checks if a student has completed the requirements for the FARM Professional Risk Management Specialization.
