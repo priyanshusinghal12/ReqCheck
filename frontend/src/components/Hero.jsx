@@ -477,14 +477,7 @@ export default function Hero({ shouldType, name }) {
 				<div className="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50">
 					<div
 						className="bg-[#121212] rounded-lg p-6 w-[90%] max-w-lg shadow-2xl relative"
-						onKeyDown={(e) => {
-							if (e.key === "Enter" && !e.shiftKey) {
-								e.preventDefault();
-								handleManualSubmit();
-							}
-						}}
-						tabIndex={0} // makes it focusable for key presses
-					>
+						tabIndex={0}>
 						<button
 							onClick={() => setShowModal(false)}
 							className="absolute top-3 right-3 text-gray-400 hover:text-white">
