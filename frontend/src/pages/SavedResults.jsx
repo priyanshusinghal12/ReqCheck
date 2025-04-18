@@ -251,7 +251,7 @@ const SavedResults = ({ openGlobalModal }) => {
 											</button>
 											<button
 												onClick={() => setShowDeleteModal(index)}
-												className="bg-gray-800 border border-gray-600 px-3 py-1 rounded text-white hover:bg-gray-700">
+												className="bg-gray-800 border border-gray-600 px-3 py-1 rounded text-white hover:bg-red-500">
 												<FaTrash />
 											</button>
 										</div>

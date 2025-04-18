@@ -141,6 +141,13 @@ const Navbar = ({ setName, setShouldType, openGlobalModal }) => {
 		}
 	};
 
+	// Custom scroll offset logic
+	const scrollWithOffset = (el) => {
+		const yOffset = -100; // adjust as needed
+		const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+		window.scrollTo({ top: y, behavior: "smooth" });
+	};
+
 	return (
 		<>
 			<header className="fixed top-0 w-full z-50 px-6 py-5 flex justify-between items-center backdrop-blur-sm bg-transparent">
@@ -169,7 +176,10 @@ const Navbar = ({ setName, setShouldType, openGlobalModal }) => {
 					<a href="/feedback" className="hover:text-[#FED34C]">
 						Feedback
 					</a>
-					<HashLink smooth to="/#demo" className="hover:text-[#FED34C]">
+					<HashLink
+						to="/#demo"
+						scroll={scrollWithOffset}
+						className="hover:text-[#FED34C]">
 						Demo Video
 					</HashLink>
 					{user ? (
@@ -269,8 +279,13 @@ const Navbar = ({ setName, setShouldType, openGlobalModal }) => {
 						Feedback
 					</a>
 					<HashLink
-						smooth
 						to="/#demo"
+						scroll={(el) => {
+							const yOffset = -100;
+							const y =
+								el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+							window.scrollTo({ top: y, behavior: "smooth" });
+						}}
 						onClick={() => setMenuOpen(false)}
 						className="hover:text-[#FED34C]">
 						Demo Video
