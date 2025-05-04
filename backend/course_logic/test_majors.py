@@ -3,7 +3,7 @@ from course_logic.checkActSciReqs import check_actsci_major # done
 from course_logic.checkAMathReqs import check_amath_major # done
 from course_logic.checkBioStatsReqs import check_biostats_major
 from course_logic.checkCompMathReqs import check_comp_math_reqs # done
-from course_logic.checkCSReqs import check_computer_science_major
+from course_logic.checkBCSCSReqs import check_bcs_cs_major
 from course_logic.checkDataScienceReqs import check_data_science_major # done
 from course_logic.checkMathDegreeReqs import check_math_degree_reqs # done
 from course_logic.checkMathEconReqs import check_math_econ_reqs
@@ -16,6 +16,312 @@ from course_logic.checkMathStudiesReqs import math_studies_reqs # done
 from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major # done
 from course_logic.checkCOReqs import check_co_major # done
+from course_logic.checkAFMReqs import check_afm_ba_reqs
+from course_logic.checkAFMReqs import check_afm_entrepreneurial_mindset_reqs
+from course_logic.checkAFMReqs import check_afm_enterprise_performance_risk_reqs
+from course_logic.checkAFMReqs import check_afm_financial_markets_reqs
+from course_logic.checkAFMReqs import check_afm_professional_accountant_reqs
+from course_logic.checkAFMReqs import check_afm_sustainability_reqs
+from course_logic.checkFARMReqs import check_farm_professional_risk_management_reqs
+from course_logic.checkFARMReqs import check_farm_professional_fin_analyst_reqs
+
+####################################################################
+# FARM risk mgmt
+
+farm_rm_test1 = ["ACTSC 231", "ACTSC 372", "AFM 101", "AFM 102", "AFM 131", "AMATH 350", "CO 372",
+                 "COMM 101", "CS 330", "ECON 101", "ECON 102", "MATBUS 371", "STAT 371",
+                 "MATBUS 470", "LS 283", "CO 250", "CS 335", "MATH 237", "STAT 334", "PMATH 330", "PMATH 333",
+                 # specialization
+                 "CS 338", "ACTSC 445", "PMATH 333", "STAT 341", "BUS 121W", "PSYCH 101", "CLAS 104", "BET 100"]
+
+farm_rm_test1_expected = {
+    "Complete all of the following: ACTSC 231, ACTSC 372, AFM 101, AFM 102, AFM 131, AMATH 350, CO 372, COMM 101, CS 330, ECON 101, ECON 102, MATBUS 371, STAT 371":
+        [True, ["ACTSC 231", "ACTSC 372", "AFM 101", "AFM 102", "AFM 131", "AMATH 350", "CO 372", "COMM 101", "CS 330", "ECON 101", "ECON 102", "MATBUS 371", "STAT 371"]],
+    
+    "Complete 1 of the following: ACTSC 446, MATBUS 470":
+        [True, ["MATBUS 470"]],
+    
+    "Complete 1 of the following: AFM 231, LS 283":
+        [True, ["LS 283"]],
+    
+    "Complete 1 of the following: CO 250, CO 255":
+        [True, ["CO 250"]],
+    
+    "Complete 1 of the following: CS 335, CS 476":
+        [True, ["CS 335"]],
+    
+    "Complete 1 of the following: MATH 237, MATH 247":
+        [True, ["MATH 237"]],
+    
+    "Complete one of the following: all of (STAT 330, STAT 333, additional ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT) or (STAT 334, 2 additional courses from ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT)":
+        [True, ["STAT 334", "PMATH 330", "PMATH 333"]],  # Now CS 338 is used here, not again below
+    
+    "Complete all of the following: CS 338":
+        [True, ["CS 338"]],  # CS 338 already used
+    
+    "Complete 1 of the following: ACTSC 445, MATBUS 472":
+        [True, ["ACTSC 445"]],
+    
+    "Complete 1 of the following: AMATH 331, PMATH 331, PMATH 333, PMATH 351":
+        [True, ["PMATH 333"]],
+    
+    "Complete 1 of the following: STAT 340, STAT 341":
+        [True, ["STAT 341"]],
+    
+    "Complete 1 course from BUS, COMM, ECON, HRM, MSE":
+        [True, ["BUS 121W"]],
+    
+    "Complete 3 additional courses":
+        [True, ["PSYCH 101", "CLAS 104", "BET 100"]]
+}
+
+
+# Asserts
+def test_farm_rm_1():
+    assert check_farm_professional_risk_management_reqs(farm_rm_test1) == farm_rm_test1_expected
+
+# FARM CFA specialization
+farm_cfa_test1 = ["ACTSC 231", "ACTSC 372", "AFM 101", "AFM 102", "AFM 131", "AMATH 350", "CO 372",
+                 "COMM 101", "CS 330", "ECON 101", "ECON 102", "MATBUS 371", "STAT 371",
+                 "MATBUS 470", "LS 283", "CO 250", "CS 335", "MATH 237", "STAT 334", "PMATH 330", "PMATH 333",
+                 # specialization
+                 "COMM 321", "COMM 421", "COMM 433", "ARBUS 302", "ECON 206", "HRM 200", "PSYCH 101", "BET 100"]
+
+farm_cfa_test1_expected = {
+        "Complete all of the following: ACTSC 231, ACTSC 372, AFM 101, AFM 102, AFM 131, AMATH 350, CO 372, COMM 101, CS 330, ECON 101, ECON 102, MATBUS 471, STAT 371":
+        [True, ["ACTSC 231", "ACTSC 372", "AFM 101", "AFM 102", "AFM 131", "AMATH 350", "CO 372", "COMM 101", "CS 330", "ECON 101", "ECON 102", "MATBUS 371", "STAT 371"]],
+    
+    "Complete 1 of the following: ACTSC 446, MATBUS 470":
+        [True, ["MATBUS 470"]],
+    
+    "Complete 1 of the following: AFM 231, LS 283":
+        [True, ["LS 283"]],
+    
+    "Complete 1 of the following: CO 250, CO 255":
+        [True, ["CO 250"]],
+    
+    "Complete 1 of the following: CS 335, CS 476":
+        [True, ["CS 335"]],
+    
+    "Complete 1 of the following: MATH 237, MATH 247":
+        [True, ["MATH 237"]],
+    
+    "Complete one of the following: all of (STAT 330, STAT 333, additional ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT) or (STAT 334, 2 additional courses from ACTSC, AMATH, CO, CS, MATBUS, MATH, PMATH, STAT)":
+        [True, ["STAT 334", "PMATH 330", "PMATH 333"]],
+
+    # Specialization Requirements (Chartered Financial Analyst)
+    "Complete all of the following: COMM 321, COMM 421, COMM 433": [True, ["COMM 321", "COMM 421", "COMM 433"]],
+    "Complete 1 of the following: ARBUS 302, MGMT 244": [True, ["ARBUS 302"]],
+    "Complete 1 of the following: ECON 206, ECON 207, ECON 290": [True, ["ECON 206"]],
+    "Complete 1 of the following: HRM 200, MSE 211, PSYCH 238": [True, ["HRM 200"]],
+    "Complete 2 additional courses": [True, ["PSYCH 101", "BET 100"]]
+    }
+
+# Asserts
+def test_farm_cfa_1():
+    assert check_farm_professional_fin_analyst_reqs(farm_cfa_test1) == farm_cfa_test1_expected
+
+####################################################################
+# AFM
+
+# Business analytics specialization
+afm_ba_test_1 = ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102",
+                "AFM 121", "AFM 272", "AFM 311", "AFM 345",
+                # specialization reqs
+                "AFM 346", "AFM 444", "AFM 445", "STAT 374"]
+
+afm_ba_test_1_expected = {
+    "Complete all of: AFM 111, AFM 112, AFM 113, AFM 132, AFM 182, AFM 191, AFM 205, AFM 206, AFM 207, AFM 208, AFM 241, AFM 244, AFM 274, AFM 285, AFM 291, AFM 321, AFM 335, AFM 373, AFM 391, AFM 433, AFM 480, BET 100, COMMST 111, ECON 101, ECON 102":
+        [True, ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102"]],
+    "Complete 1 of the following: ACTSC 127, AFM 121, AFM 127":
+        [True, ["AFM 121"]],
+    "Complete 1 of the following: ACTSC 291, AFM 272, AFM 273":
+        [True, ["AFM 272"]],
+    "Complete 1 of the following: AFM 311, SFM 309":
+        [True, ["AFM 311"]],
+    "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374":
+        [True, ["AFM 345"]],
+    "Complete 1 of the following AFM 345, AFM 346":
+        [True, ["AFM 345"]],
+    "Complete 4 of the following (or 3 if both AFM 345, 346 taken): ACTSC 423, AFM 323, AFM 341, AFM 345, AFM 346, AFM 347, AFM 423, AFM 444, AFM 445, AFM 446, AFM 447, AFM 448, STAT 374":
+        [True, ["AFM 346", "AFM 444", "AFM 445", "STAT 374"]],
+}
+
+# Asserts
+def test_afm_ba_1():
+    assert check_afm_ba_reqs(afm_ba_test_1) == afm_ba_test_1_expected
+
+# Entrepreneurial mindset specialization
+test_afm_em = ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102",
+                "AFM 121", "AFM 272", "AFM 311", "AFM 345",
+                # specialization reqs
+                "BET 320", "BET 340", "AFM 326", "BET 350", "AFM 377"]
+
+
+test_afm_em_expected = {
+        "Complete all of: AFM 111, AFM 112, AFM 113, AFM 132, AFM 182, AFM 191, AFM 205, AFM 206, AFM 207, AFM 208, AFM 241, AFM 244, AFM 274, AFM 285, AFM 291, AFM 321, AFM 335, AFM 373, AFM 391, AFM 433, AFM 480, BET 100, COMMST 111, ECON 101, ECON 102":
+        [True, ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102"]],
+    "Complete 1 of the following: ACTSC 127, AFM 121, AFM 127":
+        [True, ["AFM 121"]],
+    "Complete 1 of the following: ACTSC 291, AFM 272, AFM 273":
+        [True, ["AFM 272"]],
+    "Complete 1 of the following: AFM 311, SFM 309":
+        [True, ["AFM 311"]],
+    "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374":
+        [True, ["AFM 345"]],
+        "Complete all of the following: BET 320, BET 340": [True, ["BET 320", "BET 340"]],
+        "Complete 3 courses from the following: AFM 326, AFM 377, AFM 426, AFM 470, BET 350, BET 400, BET 420, BET 430, BET 450, BET 460, BET 470, BET 580, ENBUS 203, MGMT 220": [True, ["AFM 326", "AFM 377", "BET 350"]]
+    }
+
+# Asserts
+def test_afm_em_1():
+    assert check_afm_entrepreneurial_mindset_reqs(test_afm_em) == test_afm_em_expected
+
+# Enterprise performance specialization
+test_afm_erp = ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102",
+                "AFM 121", "AFM 272", "AFM 311", "AFM 345",
+                # specialization reqs
+                "AFM 434", "AFM 452", "AFM 482",
+                "AFM 346", "AFM 347" # should work as AFM 345 will double count here
+                ]
+
+test_afm_erp_expected = {
+        # Base AFM requirements
+        "Complete all of: AFM 111, AFM 112, AFM 113, AFM 132, AFM 182, AFM 191, AFM 205, AFM 206, AFM 207, AFM 208, AFM 241, AFM 244, AFM 274, AFM 285, AFM 291, AFM 321, AFM 335, AFM 373, AFM 391, AFM 433, AFM 480, BET 100, COMMST 111, ECON 101, ECON 102":
+        [True, ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102"]],
+    "Complete 1 of the following: ACTSC 127, AFM 121, AFM 127":
+        [True, ["AFM 121"]],
+    "Complete 1 of the following: ACTSC 291, AFM 272, AFM 273":
+        [True, ["AFM 272"]],
+    "Complete 1 of the following: AFM 311, SFM 309":
+        [True, ["AFM 311"]],
+    "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374":
+        [True, ["AFM 345"]],
+
+        # Specialization requirements
+        "Complete all of the following: AFM 434, AFM 452, AFM 482": [True, ["AFM 434", "AFM 452", "AFM 482"]],
+        "Complete 3 of the following: AFM 276, AFM 322, AFM 345, AFM 346, AFM 347, AFM 445, AFM 451, AFM 470, AFM 477, AFM 485, SFM 301, SFM 310, SFM 311": [True, ["AFM 345", "AFM 346", "AFM 347"]]
+    }
+
+# Asserts
+def test_afm_erp_1():
+    assert check_afm_enterprise_performance_risk_reqs(test_afm_erp) == test_afm_erp_expected
+
+
+# Financial markets specialization
+test_afm_fm = ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102",
+                "AFM 121", "AFM 272", "AFM 311", "AFM 345",
+                # specialization reqs
+                "AFM 276", "AFM 322", "AFM 324",
+                "AFM 423", "AFM 470", "AFM 478" # should work as AFM 345 will double count here
+                ]
+
+test_afm_fm_expected = {
+        # Base AFM requirements
+        "Complete all of: AFM 111, AFM 112, AFM 113, AFM 132, AFM 182, AFM 191, AFM 205, AFM 206, AFM 207, AFM 208, AFM 241, AFM 244, AFM 274, AFM 285, AFM 291, AFM 321, AFM 335, AFM 373, AFM 391, AFM 433, AFM 480, BET 100, COMMST 111, ECON 101, ECON 102":
+        [True, ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102"]],
+    "Complete 1 of the following: ACTSC 127, AFM 121, AFM 127":
+        [True, ["AFM 121"]],
+    "Complete 1 of the following: ACTSC 291, AFM 272, AFM 273":
+        [True, ["AFM 272"]],
+    "Complete 1 of the following: AFM 311, SFM 309":
+        [True, ["AFM 311"]],
+    "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374":
+        [True, ["AFM 345"]],
+
+        # Specialization requirements
+    "Complete 3.0 units from the following: ACTSC 423, AFM 276, AFM 322, AFM 324, AFM 326, AFM 328, AFM 329, AFM 377, AFM 422, AFM 423, AFM 425, AFM 426, AFM 427, AFM 428, AFM 429, AFM 434, AFM 470, AFM 477, AFM 478, SFM 310, SFM 412": [True, ["AFM 276", "AFM 322", "AFM 324",
+                "AFM 423", "AFM 470", "AFM 478"]]
+    }
+
+# Asserts
+def test_afm_fm_1():
+    assert check_afm_financial_markets_reqs(test_afm_fm) == test_afm_fm_expected
+
+
+# Prof accounting specialization
+afm_pro_acct_test = ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102",
+                "AFM 121", "AFM 272", "AFM 311", "AFM 345",
+                # specialization reqs
+                "AFM 362", "AFM 382", "AFM 451",
+                "AFM 462", "AFM 482", "AFM 491" # should work as AFM 345 will double count here
+                ]
+
+afm_pro_acct_test_expected = {
+        # Base AFM requirements
+        "Complete all of: AFM 111, AFM 112, AFM 113, AFM 132, AFM 182, AFM 191, AFM 205, AFM 206, AFM 207, AFM 208, AFM 241, AFM 244, AFM 274, AFM 285, AFM 291, AFM 321, AFM 335, AFM 373, AFM 391, AFM 433, AFM 480, BET 100, COMMST 111, ECON 101, ECON 102":
+        [True, ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102"]],
+    "Complete 1 of the following: ACTSC 127, AFM 121, AFM 127":
+        [True, ["AFM 121"]],
+    "Complete 1 of the following: ACTSC 291, AFM 272, AFM 273":
+        [True, ["AFM 272"]],
+    "Complete 1 of the following: AFM 311, SFM 309":
+        [True, ["AFM 311"]],
+    "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374":
+        [True, ["AFM 345"]],
+
+        # Specialization requirements
+    "Complete all of the following: AFM 362, AFM 382, AFM 451, AFM 462, AFM 482, AFM 491": [True, ["AFM 362", "AFM 382", "AFM 451",
+                "AFM 462", "AFM 482", "AFM 491"]]
+    }
+
+# Asserts
+def test_afm_prof_acct():
+    assert check_afm_professional_accountant_reqs(afm_pro_acct_test) == afm_pro_acct_test_expected
+
+# Sustainability specialization
+afm_sust_test = ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102",
+                "AFM 121", "AFM 272", "AFM 311", "AFM 345",
+                # specialization reqs
+                "ENBUS 102", "ENVS 200", "ENVS 205", "AFM 485", "ENBUS 202", "ENBUS 407" # should work as AFM 345 will double count here
+                ]
+
+afm_sust_test_expected = {
+        # Base AFM requirements
+        "Complete all of: AFM 111, AFM 112, AFM 113, AFM 132, AFM 182, AFM 191, AFM 205, AFM 206, AFM 207, AFM 208, AFM 241, AFM 244, AFM 274, AFM 285, AFM 291, AFM 321, AFM 335, AFM 373, AFM 391, AFM 433, AFM 480, BET 100, COMMST 111, ECON 101, ECON 102":
+        [True, ["AFM 111", "AFM 112", "AFM 113", "AFM 132", "AFM 182", "AFM 191", "AFM 205", "AFM 206", "AFM 207",
+                "AFM 208", "AFM 241", "AFM 244", "AFM 274", "AFM 285", "AFM 291", "AFM 321", "AFM 335", "AFM 373",
+                "AFM 391", "AFM 433", "AFM 480", "BET 100", "COMMST 111", "ECON 101", "ECON 102"]],
+    "Complete 1 of the following: ACTSC 127, AFM 121, AFM 127":
+        [True, ["AFM 121"]],
+    "Complete 1 of the following: ACTSC 291, AFM 272, AFM 273":
+        [True, ["AFM 272"]],
+    "Complete 1 of the following: AFM 311, SFM 309":
+        [True, ["AFM 311"]],
+    "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374":
+        [True, ["AFM 345"]],
+
+    # Sustainability specialization requirements
+    "Complete 1 of the following: ENBUS 102, ENVS 195, ENVS 220, INDEV 100": [True, ["ENBUS 102"]],
+    "Complete 2 of the following: ENVS 200, ENVS 205, ENVS 220, INDEV 200": [True, ["ENVS 200", "ENVS 205"]],
+    "Complete all of the following either (AFM 485, ENBUS 202, ENBUS 407) or (ENBUS 310, ENBUS 408, ENBUS 410)": [True, ["AFM 485", "ENBUS 202", "ENBUS 407"]]
+    }
+
+# Asserts
+def test_afm_sust():
+    assert check_afm_sustainability_reqs(afm_sust_test) == afm_sust_test_expected
 
 ####################################################################
 # COMPUTER SCIENCE
@@ -23,31 +329,94 @@ from course_logic.checkCOReqs import check_co_major # done
 # Test Group A: Checking core reqs
 
 # Case 1: All reqs met, 1 comms course from list 1 and second from list 2
-cs_test_1 = ["CS 136L", "CS 341", "CO 350", "CS 135", "CS 136",
+cs_test_1 = ["CS 136L", "CS 341", "CS 350", "CS 135", "CS 136",
              "CS 240", "CS 241", "CS 245", "CS 246", "CS 251", "MATH 127",
              "MATH 128", "MATH 135", "MATH 136", "MATH 239", "STAT 230", "STAT 231",
              "CS 348", "CS 343", "CS 346", "CS 451", "CS 456", "CS 446",
-             "COMMST 100", "ENGL 108D", # comms req - ENGL 108D being a list 2 course should also count in humanities breadth as per uni rules
+             "COMMST 100",
+             "ENGL 108D", # comms req - ENGL 108D being a list 2 course should also count in humanities breadth as per uni rules
              "CLAS 104", # One humanities breadth course left after ENGL 108 D
-             "SCI 206", "PHYS 121", # pure & applied science
+             "KIN 101", "PHYS 121", # pure & applied science
              "ECON 101", "ECON 102", # social sciences
              "ECON 351", # completes depth req
-             "PSYCH 101", "CLAS 201" # 2 non math courses left
              ]
+
+
+cs_test_1_expected = {
+    "Complete all of: CS 136L, CS 341, CS 350": [True, ["CS 136L", "CS 341", "CS 350"]],
+    "Complete one of: CS 115, CS 135, CS 145": [True, ["CS 135"]],
+    "Complete one of: CS 136, CS 146": [True, ["CS 136"]],
+    "Complete one of: CS 240, CS 240E": [True, ["CS 240"]],
+    "Complete one of: CS 241, CS 241E": [True, ["CS 241"]],
+    "Complete one of: CS 245, CS 245E": [True, ["CS 245"]],
+    "Complete one of: CS 246, CS 246E": [True, ["CS 246"]],
+    "Complete one of: CS 251, CS 251E": [True, ["CS 251"]],
+    "Complete one course from List 1 (Communication Requirement 1)": [True, ["COMMST 100"]],
+    "Complete one course from List 1 + List 2 (Communication Requirement 2)": [True, ["ENGL 108D"]],
+    "Complete one of: MATH 127, MATH 137, MATH 147": [True, ["MATH 127"]],
+    "Complete one of: MATH 128, MATH 138, MATH 148": [True, ["MATH 128"]],
+    "Complete one of: MATH 135, MATH 145": [True, ["MATH 135"]],
+    "Complete one of: MATH 136, MATH 146": [True, ["MATH 136"]],
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    "Complete one of: STAT 230, STAT 240": [True, ["STAT 230"]],
+    "Complete one of: STAT 231, STAT 241": [True, ["STAT 231"]],
+    "Complete 3 additional CS courses from CS340-CS398, CS440-CS489": [True, ["CS 348", "CS 343", "CS 346"]],
+    "Complete 2 additional CS courses from CS440-CS489": [True, ["CS 451", "CS 456"]],
+    "Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)": [True, ["CS 446"]],
+    "Depth Requirement (does not check the prerequisite chain option)": [True, ["ECON 101", "ECON 102", "ECON 351"]],
+    "Breadth Req - Humanities": [True, ["ENGL 108D", "CLAS 104"]],
+    "Breadth Req - Pure Sciences": [True, ["PHYS 121"]],
+    "Breadth Req - Pure and Applied Sciences": [True, ["KIN 101"]],
+    "Breadth Req - Social Sciences": [True, ["ECON 101", "ECON 102"]],
+}
 
 # Case 2: All reqs met, both comms courses from list 1, missing depth req
-cs_test_2 = ["CS 136L", "CS 341", "CO 350", "CS 135", "CS 136",
+cs_test_2 = ["CS 136L", "CS 341", "CS 350", "CS 135", "CS 136",
              "CS 240", "CS 241", "CS 245", "CS 246", "CS 251", "MATH 127",
              "MATH 128", "MATH 135", "MATH 136", "MATH 239", "STAT 230", "STAT 231",
-             "CS 348", "CS 343", "CS 346", "CS 451", "CS 456", "CS 446",
-             "COMMST 100", "ENGL 108D", # comms req - ENGL 108D being a list 2 course should also count in humanities breadth as per uni rules
-             "CLAS 104", # One humanities breadth course left after ENGL 108 D
-             "SCI 206", "PHYS 121", # pure & applied science
+             "CS 348", "CS 343", "CS 346", "CS 451", "CS 456", "CS 499T",
+             "COMMST 100",
+             "COMMST 223", # comms req - from list 1 so shouldn't count for humanities depth
+             "CLAS 104", # One humanities breadth course
+             "KIN 101", "PHYS 121", # pure & applied science
              "ECON 101", "ECON 102", # social sciences
-             "ECON 351", # completes depth req
-             "PSYCH 101", "CLAS 201" # 2 non math courses left
+             # missing depth
              ]
 
+cs_test_2_expected = {
+    "Complete all of: CS 136L, CS 341, CS 350": [True, ["CS 136L", "CS 341", "CS 350"]],
+    "Complete one of: CS 115, CS 135, CS 145": [True, ["CS 135"]],
+    "Complete one of: CS 136, CS 146": [True, ["CS 136"]],
+    "Complete one of: CS 240, CS 240E": [True, ["CS 240"]],
+    "Complete one of: CS 241, CS 241E": [True, ["CS 241"]],
+    "Complete one of: CS 245, CS 245E": [True, ["CS 245"]],
+    "Complete one of: CS 246, CS 246E": [True, ["CS 246"]],
+    "Complete one of: CS 251, CS 251E": [True, ["CS 251"]],
+    "Complete one course from List 1 (Communication Requirement 1)": [True, ["COMMST 100"]],
+    "Complete one course from List 1 + List 2 (Communication Requirement 2)": [True, ["COMMST 223"]],
+    "Complete one of: MATH 127, MATH 137, MATH 147": [True, ["MATH 127"]],
+    "Complete one of: MATH 128, MATH 138, MATH 148": [True, ["MATH 128"]],
+    "Complete one of: MATH 135, MATH 145": [True, ["MATH 135"]],
+    "Complete one of: MATH 136, MATH 146": [True, ["MATH 136"]],
+    "Complete one of: MATH 239, MATH 249": [True, ["MATH 239"]],
+    "Complete one of: STAT 230, STAT 240": [True, ["STAT 230"]],
+    "Complete one of: STAT 231, STAT 241": [True, ["STAT 231"]],
+    "Complete 3 additional CS courses from CS340-CS398, CS440-CS489": [True, ["CS 348", "CS 343", "CS 346"]],
+    "Complete 2 additional CS courses from CS440-CS489": [True, ["CS 451", "CS 456"]],
+    "Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)": [True, ["CS 499T"]],
+    "Depth Requirement (does not check the prerequisite chain option)": [False, ["ECON 101", "ECON 102"]],
+    "Breadth Req - Humanities": [False, ["CLAS 104"]],
+    "Breadth Req - Pure Sciences": [True, ["PHYS 121"]],
+    "Breadth Req - Pure and Applied Sciences": [True, ["KIN 101"]],
+    "Breadth Req - Social Sciences": [True, ["ECON 101", "ECON 102"]],
+}
+
+# Asserts
+def test_bcs_1():
+    assert check_bcs_cs_major(cs_test_1) == cs_test_1_expected
+
+def test_bcs_2():
+    assert check_bcs_cs_major(cs_test_2) == cs_test_2_expected
 
 # Needs two courses either both from list 1 or one each from lists 1,2
 # test to check these 2 pass and that others don't pass
@@ -133,6 +502,7 @@ math_test1_expected = {
     "1st Communication Skills Requirement": [True, ["SPCOM 100"]],
     "2nd Communication Skills Requirement": [True, ["ENGL 378"]]
 }
+
 
 # Case 2: All reqs met, both comms courses from list 1
 math_test2 = ["CS 115", "CS 116", "MATH 106", "MATH 127", "MATH 128", 
