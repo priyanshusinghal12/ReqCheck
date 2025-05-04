@@ -18,7 +18,7 @@ def check_afm_ba_reqs(student_courses):
         "Complete 1 of the following: AFM 311, SFM 309": [False, []],
         "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374": [False, []],
         "Complete 1 of the following AFM 345, AFM 346": [False, []],
-        "Complete 2 of the following: ACTSC 423, AFM 323, AFM 341, AFM 345, AFM 346, AFM 347, AFM 423, AFM 444, AFM 445, AFM 446, AFM 447, AFM 448, STAT 374": [False, []],
+        "Complete 4 of the following (or 3 if both AFM 345, 346 taken): ACTSC 423, AFM 323, AFM 341, AFM 345, AFM 346, AFM 347, AFM 423, AFM 444, AFM 445, AFM 446, AFM 447, AFM 448, STAT 374": [False, []],
     }
 
     # Req 1: Core AFM, BET, COMMST, ECON courses
@@ -55,15 +55,19 @@ def check_afm_ba_reqs(student_courses):
         ["AFM 323", "AFM 341", "AFM 345", "AFM 346", "STAT 374"], n=1,
         student_courses=student_courses, major_reqs=afm_ba_reqs
     )
+
+    if afm_ba_reqs["Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374"][0]:
+        student_courses.extend(afm_ba_reqs["Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374"][1])
+
     check_n_from_list(
         "Complete 1 of the following AFM 345, AFM 346",
         ["AFM 345", "AFM 346"], n=1,
         student_courses=student_courses, major_reqs=afm_ba_reqs
     )
     check_n_from_list(
-        "Complete 2 of the following: ACTSC 423, AFM 323, AFM 341, AFM 345, AFM 346, AFM 347, AFM 423, AFM 444, AFM 445, AFM 446, AFM 447, AFM 448, STAT 374",
+        "Complete 4 of the following (or 3 if both AFM 345, 346 taken): ACTSC 423, AFM 323, AFM 341, AFM 345, AFM 346, AFM 347, AFM 423, AFM 444, AFM 445, AFM 446, AFM 447, AFM 448, STAT 374",
         ["ACTSC 423", "AFM 323", "AFM 341", "AFM 345", "AFM 346", "AFM 347", "AFM 423", "AFM 444", "AFM 445", "AFM 446", "AFM 447", "AFM 448", "STAT 374"], 
-        n=2, student_courses=student_courses, major_reqs=afm_ba_reqs
+        n=4, student_courses=student_courses, major_reqs=afm_ba_reqs
     )
 
     return afm_ba_reqs
@@ -199,6 +203,9 @@ def check_afm_enterprise_performance_risk_reqs(student_courses):
         student_courses=student_courses, major_reqs=afm_enterprise_performance_risk_reqs
     )
 
+    if afm_enterprise_performance_risk_reqs["Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374"][0]:
+        student_courses.extend(afm_enterprise_performance_risk_reqs["Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374"][1])
+
     # Specialization checks
     check_complete_all(
         "Complete all of the following: AFM 434, AFM 452, AFM 482",
@@ -236,7 +243,7 @@ def check_afm_financial_markets_reqs(student_courses):
         "Complete 1 of the following: AFM 323, AFM 341, AFM 345, AFM 346, STAT 374": [False, []],
 
         # Specialization requirement
-        "Complete 1 of the following: ACTSC 423, AFM 276, AFM 322, AFM 324, AFM 326, AFM 328, AFM 329, AFM 377, AFM 422, AFM 423, AFM 425, AFM 426, AFM 427, AFM 428, AFM 429, AFM 434, AFM 470, AFM 477, AFM 478, SFM 310, SFM 412": [False, []]
+        "Complete 3.0 units from the following: ACTSC 423, AFM 276, AFM 322, AFM 324, AFM 326, AFM 328, AFM 329, AFM 377, AFM 422, AFM 423, AFM 425, AFM 426, AFM 427, AFM 428, AFM 429, AFM 434, AFM 470, AFM 477, AFM 478, SFM 310, SFM 412": [False, []]
     }
 
     # Base checks
@@ -278,14 +285,14 @@ def check_afm_financial_markets_reqs(student_courses):
 
     # Specialization requirement: 1 course from financial markets list
     check_n_from_list(
-        "Complete 1 of the following: ACTSC 423, AFM 276, AFM 322, AFM 324, AFM 326, AFM 328, AFM 329, AFM 377, AFM 422, AFM 423, AFM 425, AFM 426, AFM 427, AFM 428, AFM 429, AFM 434, AFM 470, AFM 477, AFM 478, SFM 310, SFM 412",
+        "Complete 3.0 units from the following: ACTSC 423, AFM 276, AFM 322, AFM 324, AFM 326, AFM 328, AFM 329, AFM 377, AFM 422, AFM 423, AFM 425, AFM 426, AFM 427, AFM 428, AFM 429, AFM 434, AFM 470, AFM 477, AFM 478, SFM 310, SFM 412",
         [
             "ACTSC 423", "AFM 276", "AFM 322", "AFM 324", "AFM 326", "AFM 328",
             "AFM 329", "AFM 377", "AFM 422", "AFM 423", "AFM 425", "AFM 426",
             "AFM 427", "AFM 428", "AFM 429", "AFM 434", "AFM 470", "AFM 477",
             "AFM 478", "SFM 310", "SFM 412"
         ],
-        n=1, student_courses=student_courses, major_reqs=afm_financial_markets_reqs
+        n=6, student_courses=student_courses, major_reqs=afm_financial_markets_reqs
     )
 
     return afm_financial_markets_reqs

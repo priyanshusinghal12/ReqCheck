@@ -158,7 +158,7 @@ def check_farm_professional_risk_management_reqs(student_courses):
     # Additional electives
     check_n_courses(
         "Complete 1 course from BUS, COMM, ECON, HRM, MSE",
-        eligible_levels=300,
+        eligible_levels=100,
         subject_codes=["BUS", "COMM", "ECON", "HRM", "MSE"],
         n=1,
         student_courses=student_courses,
@@ -168,7 +168,7 @@ def check_farm_professional_risk_management_reqs(student_courses):
     if len(student_courses)>=3:
         farm_risk_reqs["Complete 3 additional courses"][0] = True
         
-    farm_risk_reqs["Complete 3 additional courses"][1].append(student_courses[:3])
+    farm_risk_reqs["Complete 3 additional courses"][1].extend(student_courses[:3])
 
     return farm_risk_reqs
 
@@ -206,7 +206,7 @@ def check_farm_professional_fin_analyst_reqs(student_courses):
 
     # Base course requirements
     check_complete_all(
-        "Complete all of the following: ACTSC 231, ACTSC 372, AFM 101, AFM 102, AFM 131, AMATH 350, CO 372, COMM 101, CS 330, ECON 101, ECON 102, MATBUS 371, STAT 371",
+        "Complete all of the following: ACTSC 231, ACTSC 372, AFM 101, AFM 102, AFM 131, AMATH 350, CO 372, COMM 101, CS 330, ECON 101, ECON 102, MATBUS 471, STAT 371",
         [
             "ACTSC 231", "ACTSC 372", "AFM 101", "AFM 102", "AFM 131", "AMATH 350",
             "CO 372", "COMM 101", "CS 330", "ECON 101", "ECON 102", "MATBUS 371", "STAT 371"

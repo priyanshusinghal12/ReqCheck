@@ -18,7 +18,7 @@ def check_depth_requirement(student_courses, cs_reqs):
         if len(entries) >= 3:
             has_300_plus = any(level >= 300 for (_, level) in entries)
             if has_300_plus:
-                cs_reqs["Depth Requirement"] = [True, [course for (course, _) in entries[:3]]]
+                cs_reqs["Depth Requirement (does not check the prerequisite chain option)"] = [True, [course for (course, _) in entries[:3]]]
                 return
 
     # If no subject satisfies full depth requirement, include partial progress
@@ -27,7 +27,7 @@ def check_depth_requirement(student_courses, cs_reqs):
         if len(entries) > len(best_partial):
             best_partial = entries[:2]
 
-    cs_reqs["Depth Requirement"] = [False, [course for (course, _) in best_partial]]         
+    cs_reqs["Depth Requirement (does not check the prerequisite chain option)"] = [False, [course for (course, _) in best_partial]]         
             
 def check_breadth_requirement(student_courses, cs_reqs):
     breadth_areas = {
@@ -85,7 +85,7 @@ def check_bcs_cs_major(student_courses):
     "Complete 3 additional CS courses from CS340-CS398, CS440-CS489": [False, []],
     "Complete 2 additional CS courses from CS440-CS489": [False, []],
     "Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)": [False, []],
-    "Depth Requirement (does not check prereq chain of length three)": [False, []],
+    "Depth Requirement (does not check the prerequisite chain option)": [False, []],
     "Breadth Req - Humanities": [False, []],
     "Breadth Req - Pure Sciences": [False, []],
     "Breadth Req - Pure and Applied Sciences": [False, []],
@@ -167,7 +167,7 @@ def check_bcs_cs_major(student_courses):
                       ["CO 487", "CS 499T", "STAT 440"], 1, student_courses, sub_req)
     
     has_cs_440_to_498 = any(
-    course.startswith("CS ") and 440 <= int(course.split(" ")[1]) <= 498 for course in student_courses
+    course.startswith("CS ") and 440 <= int(course.split(" ")[1][:3]) <= 498 for course in student_courses
     )
 
     if sub_req["Complete 1 of: CO 487, CS 499T, STAT 440"][0]:
