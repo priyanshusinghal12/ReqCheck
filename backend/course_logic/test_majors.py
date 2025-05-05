@@ -24,6 +24,247 @@ from course_logic.checkAFMReqs import check_afm_professional_accountant_reqs
 from course_logic.checkAFMReqs import check_afm_sustainability_reqs
 from course_logic.checkFARMReqs import check_farm_professional_risk_management_reqs
 from course_logic.checkFARMReqs import check_farm_professional_fin_analyst_reqs
+from course_logic.checkBCSCSReqs import check_ai_specialization
+from course_logic.checkBCSCSReqs import check_bioinformatics_requirements
+from course_logic.checkBCSCSReqs import check_business_specialization
+from course_logic.checkBCSCSReqs import check_computational_fine_art
+from course_logic.checkBCSCSReqs import check_digital_hardware_specialization
+from course_logic.checkBCSCSReqs import check_game_design_specialization
+from course_logic.checkBCSCSReqs import check_software_engineering_specialization
+from course_logic.checkBCSCSReqs import check_hci_specialization
+from course_logic.checkComputingMinor import check_computing_minor
+from course_logic.checkEconMinor import check_econ_minor
+
+####################################################################
+# Econ Minor
+# Test 1: All reqs met
+
+econ_minor_test_1 = ["ECON 206", "ECON 207",
+                     "ECON 101", "ECON 102", "ECON 201",
+                     "ECON 212", "ECON 371", "ECON 256"]
+
+econ_minor_test_1_expected = {
+        "Complete all of: ECON 101, ECON 102, ECON 201": [True, ["ECON 101", "ECON 102", "ECON 201"]],
+        "Complete 1 of: ECON 206, ECON 207": [True, ["ECON 206"]],
+        "Complete 2.0 additional units of ECON courses at the 200-level or above": [True, ["ECON 207", "ECON 212", "ECON 371", "ECON 256"]],
+    }
+
+# Test 2: Missing a core course and one for last req, and both ECON 206, 207 done
+
+econ_minor_test_2 = ["ECON 206", "ECON 207",
+                     "ECON 101", "ECON 201",
+                     "ECON 212", "ECON 256"]
+
+econ_minor_test_2_expected = {
+        "Complete all of: ECON 101, ECON 102, ECON 201": [False, ["ECON 101", "ECON 201"]],
+        "Complete 1 of: ECON 206, ECON 207": [True, ["ECON 206"]],
+        "Complete 2.0 additional units of ECON courses at the 200-level or above": [False, ["ECON 207", "ECON 212", "ECON 256"]],
+    }
+
+# Asserts
+def test_econ_minor_1():
+    assert check_econ_minor(econ_minor_test_1) == econ_minor_test_1_expected
+
+def test_econ_minor_2():
+    assert check_econ_minor(econ_minor_test_2) == econ_minor_test_2_expected
+
+# ####################################################################
+# Computing Minor
+# Test 1: CS 116 and COMM 432 taken 
+comp_minor_test1 = ["CS 115", "CS 116",
+                    "COMM 432", "CS 100", "CS 230", "CS 231", "CS 234", "CS 330"]
+
+comp_minor_test1_expected = {
+        "Complete 1 of: CS 115, CS 135, CS 145": [True, ["CS 115"]],
+        "Complete 1 of: CS 114, CS 116, CS 136 and CS 136L, CS 146 and CS 136L": [True, ["CS 116"]],
+        "Complete either 1 CS course at the 200-, 300-, or 400-level or COMM 432": [True, ["COMM 432"]],
+        "Complete 1 additional CS course at the 100-, 200-, 300-, or 400-level": [True, ["CS 100"]],
+        "Complete 3 additional CS courses at the 200-, 300-, or 400-level": [True, ["CS 230", "CS 231", "CS 234"]],
+        "Complete 1 additional CS course at the 300- or 400-level": [True, ["CS 330"]],
+    }
+
+# Test 2: CS 136 and 136L taken
+comp_minor_test2 = ["CS 135", "CS 136", "CS 136L", "CS 230", "CS 231", "CS 330", "CS 431", "CS 100", "CS 200"]
+
+comp_minor_test2_expected = {
+        "Complete 1 of: CS 115, CS 135, CS 145": [True, ["CS 135"]],
+        "Complete 1 of: CS 114, CS 116, CS 136 and CS 136L, CS 146 and CS 136L": [True, ["CS 136", "CS 136L"]],
+        "Complete either 1 CS course at the 200-, 300-, or 400-level or COMM 432": [True, ["CS 200"]],
+        "Complete 1 additional CS course at the 100-, 200-, 300-, or 400-level": [True, ["CS 100"]],
+        "Complete 3 additional CS courses at the 200-, 300-, or 400-level": [True, ["CS 230", "CS 231", "CS 431"]],
+        "Complete 1 additional CS course at the 300- or 400-level": [True, ["CS 330"]],
+    }
+
+# Test 3: CS 136 taken but CS 136L not taken
+comp_minor_test3 = ["CS 135", "CS 136", "CS 230", "CS 231", "CS 330", "CS 431", "CS 200"]
+
+comp_minor_test3_expected = {
+        "Complete 1 of: CS 115, CS 135, CS 145": [True, ["CS 135"]],
+        "Complete 1 of: CS 114, CS 116, CS 136 and CS 136L, CS 146 and CS 136L": [False, ["CS 136"]],
+        "Complete either 1 CS course at the 200-, 300-, or 400-level or COMM 432": [True, ["CS 200"]],
+        "Complete 1 additional CS course at the 100-, 200-, 300-, or 400-level": [False, []],
+        "Complete 3 additional CS courses at the 200-, 300-, or 400-level": [True, ["CS 230", "CS 231", "CS 431"]],
+        "Complete 1 additional CS course at the 300- or 400-level": [True, ["CS 330"]],
+    }
+
+
+# Test 3: CS 136 taken but 136L not taken
+# Asserts
+def test_comp_minor_1():
+    assert check_computing_minor(comp_minor_test1) == comp_minor_test1_expected
+
+def test_comp_minor_2():
+    assert check_computing_minor(comp_minor_test2) == comp_minor_test2_expected
+
+def test_comp_minor_3():
+    assert check_computing_minor(comp_minor_test3) == comp_minor_test3_expected
+
+####################################################################
+# BCS CS Specializations
+
+# AI Test 1: should not pass as all courses for last req are Faculty of Math
+bcs_ai_test1 = ["STAT 341", "STAT 440", "STAT 441", "STAT 444", "CS 486", "CS 492", "CS 480"]
+
+bcs_ai_test1_expected = {
+        "Complete all of: CS 486, CS 492": [True, ["CS 486", "CS 492"]],
+        "Complete one of: CS 480, CS 485": [True, ["CS 480"]],
+        "Complete 4 from given list - one Faculty of Math course": [True, ["STAT 341"]],
+        "Complete 4 from given list - one Faculty of Engineering course": [False, []],
+        "Complete 4 from given list - remaining two courses": [True, ["STAT 440", "STAT 441"]]
+    }
+
+# Test 2: All should pass
+bcs_ai_test2 = ["ECE 457C", "STAT 341", "STAT 440", "STAT 441", "CS 486", "CS 492", "CS 480"]
+
+bcs_ai_test2_expected = {
+        "Complete all of: CS 486, CS 492": [True, ["CS 486", "CS 492"]],
+        "Complete one of: CS 480, CS 485": [True, ["CS 480"]],
+        "Complete 4 from given list - one Faculty of Math course": [True, ["STAT 341"]],
+        "Complete 4 from given list - one Faculty of Engineering course": [True, ["ECE 457C"]],
+        "Complete 4 from given list - remaining two courses": [True, ["STAT 440", "STAT 441"]]
+    }
+
+# Asserts
+def test_cs_ai_1():
+    assert check_ai_specialization(bcs_ai_test1) == bcs_ai_test1_expected
+
+def test_cs_ai_2():
+    assert check_ai_specialization(bcs_ai_test2) == bcs_ai_test2_expected
+
+# Bioinformatics specialization
+bcs_bioinfo_test1 = ["BIOL 130", "BIOL 130L", "BIOL 239", "BIOL 240", "BIOL 240L", "BIOL 308", "BIOL 365", "BIOL 465", 
+                    "CHEM 120", "CHEM 120L", "CHEM 123", "CHEM 123L", "CS 482"]
+
+bcs_bioinfo_test1_expected = {
+        "Complete all of the following bioinformatics core courses": [True, ["BIOL 130", "BIOL 130L", "BIOL 239", "BIOL 240", "BIOL 240L", "BIOL 308", "BIOL 365", "BIOL 465", "CHEM 120", "CHEM 120L", "CHEM 123", "CHEM 123L", "CS 482"]]
+    }
+
+# Asserts
+def test_cs_bio():
+    assert check_bioinformatics_requirements(bcs_bioinfo_test1) == bcs_bioinfo_test1_expected
+
+# CS Business specialization
+
+# Test 1: should not pass as does not meet "from the list of approved courses, where at least two courses must be at the 200-, 300-, or 400-level"
+bcs_business_test1 = ["CS 348", "CS 476", "AFM 131", "PSYCH 238",
+                      "ECON 101", "ECON 102", "AFM 101"]
+
+bcs_business_test1_expected = {
+        "Complete 2 of: ACTSC 447, CS 348, CS 476, CS 490": [True, ["CS 348", "CS 476"]],
+        "Complete 5 approved courses (min 2 at 200-level or higher)": [False, ["AFM 131", "PSYCH 238",
+                      "ECON 101", "ECON 102", "AFM 101"]]
+    }
+
+# Test2: Should pass
+bcs_business_test2 = ["CS 348", "CS 476", "AFM 131", "MSE 311",
+                      "ECON 101", "ECON 102", "HRM 200"]
+
+bcs_business_test2_expected = {
+        "Complete 2 of: ACTSC 447, CS 348, CS 476, CS 490": [True, ["CS 348", "CS 476"]],
+        "Complete 5 approved courses (min 2 at 200-level or higher)": [True, ["AFM 131", "MSE 311",
+                      "ECON 101", "ECON 102", "HRM 200"]]
+    }
+
+# Asserts
+def test_cs_bus_1():
+    assert check_business_specialization(bcs_business_test1) == bcs_business_test1_expected
+def test_cs_bus_2():
+    assert check_business_specialization(bcs_business_test2) == bcs_business_test2_expected
+
+# BCS Computational Fine Arts Specialization
+bcs_cfa_test1 = ["CS 349", "CS 488", "FINE 383", "FINE 100", "FINE 228", "VCULT 200"] 
+bcs_cfa_test1_expected = {
+        "Complete all of: CS 349, CS 488": [True, ["CS 349", "CS 488"]],
+        "Complete 1 of: CS 383 or FINE 383": [True, ["FINE 383"]],
+        "Complete 1 of: FINE 100 or FINE 130": [True, ["FINE 100"]],
+        "Complete 1 of: FINE 228 or FINE 247": [True, ["FINE 228"]],
+        "Complete 1 of: VCULT 200 or VCULT 257": [True, ["VCULT 200"]],
+    }
+# Asserts
+def test_cs_bus_1():
+    assert check_computational_fine_art(bcs_cfa_test1) == bcs_cfa_test1_expected
+
+# BCS Digital Hardware specialization
+
+bcs_dh_test1 = ["ECE 124", "ECE 222", "ECE 327", "ECE 423", "CS 450", "CS 454", "CS 456",
+                "ECE 224", "GENE 123"]
+
+bcs_dh_test1_expected = {
+        "Complete all of: ECE 124, ECE 222, ECE 327, ECE 423": [True, ["ECE 124", "ECE 222", "ECE 327", "ECE 423"]],
+        "Complete 1 of: CS 450 or ECE 320": [True, ["CS 450"]],
+        "Complete 2 of: CS 452, CS 454, CS 456, CS 457": [True, ["CS 454", "CS 456"]],
+        "Complete 1 of: ECE 224 or MTE 325": [True, ["ECE 224"]],
+        "Complete 1 of: GENE 123 or MTE 120": [True, ["GENE 123"]],
+    }
+
+# Asserts
+def test_cs_dh():
+    assert check_digital_hardware_specialization(bcs_dh_test1) == bcs_dh_test1_expected
+
+# BCS Game design specialization
+
+bcs_gd_test1 = ["DAC 204", "DAC 305", "ENGL 392A", "COMMST 339", "COMMST 235", "CS 449", "CS 454"]
+
+bcs_gd_test1_expected = {
+        "Complete all of: DAC 204, DAC 305": [True, ["DAC 204", "DAC 305"]],
+        "Complete 1 of: COMMST 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149": [True, ["ENGL 392A"]],
+        "Complete 1 of: COMMST 210, COMMST 339, COMMST 430, COMMST 435, ENGL 293, GSJ 205, SOC 324": [True, ["COMMST 339"]],
+        "Complete 1 of: COMMST 235 or ENGL 294": [True, ["COMMST 235"]],
+        "Complete 2 of: CS 449, CS 454, CS 488": [True, ["CS 449", "CS 454"]],
+    }
+
+# Asserts
+def test_cs_gd():
+    assert check_game_design_specialization(bcs_gd_test1) == bcs_gd_test1_expected
+
+# BCS HCI Specialization
+bcs_hci_test1 = ["CS 349", "CS 449", "BET 360", "ENGL 108D", "PSYCH 207", "CS 454", "CS 480"]
+
+bcs_hci_test1_expected = {
+        "Complete all of: CS 349, CS 449": [True, ["CS 349", "CS 449"]],
+        "Complete 1 of: BET 360, CS 492, GSJ 205, MSE 442, PACS 315, SOC 232, STV 202, STV 205, STV 208, STV 210, STV 302, STV 304, STV 305, STV 306": [True, ["BET 360"]],
+        "Complete 2 of: ENGL 108D, ENGL 293, ENGL 295, FINE 100, FINE 150, INTEG 121, INTEG 251, KIN 320, PSYCH 207, PSYCH 261, STAT 332, STAT 430, VCULT 257": [True, ["ENGL 108D", "PSYCH 207"]],
+        "Complete 2 of: CS 454, CS 480, CS 484, CS 486, CS 488, (1 of CS 445/ECE 451/SE 463), (1 of CS 446/ECE 452/SE 464), (1 of CS 447/ECE 453/SE 465), (1 of CS 453/CS 459)": [True, ["CS 454", "CS 480"]],
+    }
+# Asserts
+def test_bcs_hci():
+    assert check_hci_specialization(bcs_hci_test1) == bcs_hci_test1_expected
+
+# BCS SWE specialization
+bcs_swe_1 = ["BET 360", "CS 348", "CS 349", "CS 449", "CS 451",
+             "CS 445", "CS 446", "CS 447"]
+
+bcs_swe_1_expected = {
+        "Complete 1 of: BET 360, BET 420, CS 492, ENVS 205, GEOG 207, GEOG 306, GSJ 205, MSE 422, MSE 442, PACS 315, SOC 232, SOC 324, STV 202, STV 205, STV 306": [True, ["BET 360"]],
+        "Complete 2 of: CS 343, CS 346, CS 348, CS 349": [True, ["CS 348", "CS 349"]],
+        "Complete 2 of: CS 442, CS 444, CS 448, CS 449, CS 450, CS 451, CS 452, CS 453, CS 454, CS 456, CS 457, CS 459, CS 480, CS 484, CS 486, CS 488": [True, ["CS 449", "CS 451"]],
+        "Complete 1 of: CS 445, ECE 451": [True, ["CS 445"]],
+        "Complete 1 of: CS 446, ECE 452": [True, ["CS 446"]],
+        "Complete 1 of: CS 447, ECE 453": [True, ["CS 447"]]
+    }
+# Asserts
+def test_bcs_swe_1():
+    assert check_software_engineering_specialization(bcs_swe_1) == bcs_swe_1_expected
 
 ####################################################################
 # FARM risk mgmt
