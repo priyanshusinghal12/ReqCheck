@@ -35,6 +35,8 @@ from course_logic.checkMathTeachReqs import check_math_teaching_major
 from course_logic.checkPMathReqs import check_pmath_major
 from course_logic.checkCOReqs import check_co_major
 from course_logic.checkBMathCSReqs import check_bmath_computer_science_major
+from course_logic.checkComputingMinor import check_computing_minor
+from course_logic.checkEconMinor import check_econ_minor
 
 from course_logic.checkBCSCSReqs import (
     check_bcs_cs_major,
@@ -178,6 +180,11 @@ def check_requirements(request: TranscriptRequest):
                 result = check_software_engineering_specialization(completed_courses)
             case "bcs cs human-computer interaction specialization only":
                 result = check_hci_specialization(completed_courses)
+            case "computing minor":
+                result = check_computing_minor(completed_courses)
+            case "economics minor":
+                result = check_econ_minor(completed_courses)
+            
             case _:
                 return {"error": f"Major '{major}' not supported"}
 

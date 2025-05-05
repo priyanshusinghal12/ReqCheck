@@ -7,6 +7,8 @@ const majors = [
 	"BMath Computer Science",
 	"Computational Mathematics",
 	"Statistics",
+	"Computing Minor",
+	"Economics Minor",
 	"Biostatistics",
 	"Mathematical Economics",
 	"Mathematical Finance",
