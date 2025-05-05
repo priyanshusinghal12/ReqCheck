@@ -201,7 +201,9 @@ def check_ai_specialization(student_courses):
     ai_reqs = {
         "Complete all of: CS 486, CS 492": [False, []],
         "Complete one of: CS 480, CS 485": [False, []],
-        "Complete 4 of the AI elective list": [False, []],
+        "Complete 4 from given list - one Faculty of Math course": [False, []],
+        "Complete 4 from given list - one Faculty of Engineering course": [False, []],
+        "Complete 4 from given list - remaining two courses": [False, []]
     }
 
     # Req 1: CS486 and CS492
@@ -214,15 +216,28 @@ def check_ai_specialization(student_courses):
                       student_courses=student_courses, major_reqs=ai_reqs)
 
     # Req 3: 4 electives
-    ai_electives = [
+    
+    math_faculty_ai_electives = [
         "AMATH 449", "BIOL 487", "CO 367", "CO 456", "CO 463", "CO 466", "CS 452", "CS 479",
-        "CS 480", "CS 484", "CS 485", "ECE 380", "ECE 423", "ECE 457C", "ECE 481", "ECE 486",
-        "ECE 488", "ECE 495", "MTE 544", "SE 380", "STAT 341", "STAT 440", "STAT 441", "STAT 444",
-        "SYDE 552", "SYDE 556", "SYDE 572"
+        "CS 480", "CS 484", "CS 485", "STAT 341", "STAT 440", "STAT 441", "STAT 444",
     ]
 
-    check_n_from_list("Complete 4 of the AI elective list",
-                      ai_electives, n=4, student_courses=student_courses, major_reqs=ai_reqs)
+    check_n_from_list("Complete 4 from given list - one Faculty of Math course",
+                      math_faculty_ai_electives, n=1,
+                      student_courses=student_courses, major_reqs=ai_reqs)
+
+    engg_faculty_ai_electives = ["ECE 380", "ECE 423", "ECE 457C", "ECE 481", "ECE 486",
+        "ECE 488", "ECE 495", "MTE 544", "SE 380",
+        "SYDE 552", "SYDE 556", "SYDE 572"]
+    
+    check_n_from_list("Complete 4 from given list - one Faculty of Engineering course",
+                      engg_faculty_ai_electives, n=1,
+                      student_courses=student_courses, major_reqs=ai_reqs)
+    
+    check_n_from_list("Complete 4 from given list - remaining two courses",
+                      math_faculty_ai_electives + engg_faculty_ai_electives,
+                      n=2,
+                      student_courses=student_courses, major_reqs=ai_reqs)
 
     return ai_reqs
 
@@ -245,23 +260,23 @@ def check_bioinformatics_requirements(student_courses):
 
 def check_business_specialization(student_courses):
     reqs = {
-        "Complete 2 of: ACTSC447, CS348, CS476, CS490": [False, []],
+        "Complete 2 of: ACTSC 447, CS 348, CS 476, CS 490": [False, []],
         "Complete 5 approved courses (min 2 at 200-level or higher)": [False, []]
     }
 
-    core_options = ["ACTSC447", "CS348", "CS476", "CS490"]
+    core_options = ["ACTSC 447", "CS 348", "CS 476", "CS 490"]
     approved_courses = [
-        "ACTSC231", "ACTSC372",
-        "AFM101", "AFM102",
-        "BUS121W", "BUS362W", "BUS381W", "BUS491W",
-        "COMM101", "COMM400", "COMM432",
-        "ECON101", "ECON102",
-        "HRM200", "MGMT220", "MSE311"
+        "ACTSC 231", "ACTSC 372",
+        "AFM 101", "AFM 102",
+        "BUS 121W", "BUS 362W", "BUS 381W", "BUS 491W",
+        "COMM 101", "COMM 400", "COMM 432",
+        "ECON 101", "ECON 102",
+        "HRM 200", "MGMT 220", "MSE 311"
     ]
     
     one_of_each_group_allowed = [
-        ["AFM131", "ARBUS101", "BUS111W"],
-        ["MSE211", "PSYCH238"]
+        ["AFM 131", "ARBUS 101", "BUS 111W"],
+        ["MSE 211", "PSYCH 238"]
     ]
 
     all_approved = approved_courses + [item for group in one_of_each_group_allowed for item in group]
@@ -269,8 +284,8 @@ def check_business_specialization(student_courses):
     # Step 1: Core Options
     completed_core = [c for c in core_options if c in student_courses]
     if len(completed_core) >= 2:
-        reqs["Complete 2 of: ACTSC447, CS348, CS476, CS490"][0] = True
-        reqs["Complete 2 of: ACTSC447, CS348, CS476, CS490"][1].extend(completed_core[:2])
+        reqs["Complete 2 of: ACTSC 447, CS 348, CS 476, CS 490"][0] = True
+        reqs["Complete 2 of: ACTSC 447, CS 348, CS 476, CS 490"][1].extend(completed_core[:2])
         for c in completed_core[:2]:
             student_courses.remove(c)
 
@@ -313,27 +328,27 @@ def check_business_specialization(student_courses):
 
 def check_computational_fine_art(student_courses):
     reqs = {
-        "Complete all of: CS349, CS488": [False, []],
-        "Complete 1 of: CS383 or FINE383": [False, []],
-        "Complete 1 of: FINE100 or FINE130": [False, []],
-        "Complete 1 of: FINE228 or FINE247": [False, []],
-        "Complete 1 of: VCULT200 or VCULT257": [False, []],
+        "Complete all of: CS 349, CS 488": [False, []],
+        "Complete 1 of: CS 383 or FINE 383": [False, []],
+        "Complete 1 of: FINE 100 or FINE 130": [False, []],
+        "Complete 1 of: FINE 228 or FINE 247": [False, []],
+        "Complete 1 of: VCULT 200 or VCULT 257": [False, []],
     }
 
-    # Check all of CS349 and CS488
-    mandatory = ["CS349", "CS488"]
+    # Check all of CS 349 and CS 488
+    mandatory = ["CS 349", "CS 488"]
     if all(course in student_courses for course in mandatory):
-        reqs["Complete all of: CS349, CS488"][0] = True
-        reqs["Complete all of: CS349, CS488"][1].extend(mandatory)
+        reqs["Complete all of: CS 349, CS 488"][0] = True
+        reqs["Complete all of: CS 349, CS 488"][1].extend(mandatory)
         for c in mandatory:
             student_courses.remove(c)
 
     # Pairs to check for one-of requirements
     one_of_pairs = [
-        ("Complete 1 of: CS383 or FINE383", ["CS383", "FINE383"]),
-        ("Complete 1 of: FINE100 or FINE130", ["FINE100", "FINE130"]),
-        ("Complete 1 of: FINE228 or FINE247", ["FINE228", "FINE247"]),
-        ("Complete 1 of: VCULT200 or VCULT257", ["VCULT200", "VCULT257"]),
+        ("Complete 1 of: CS 383 or FINE 383", ["CS 383", "FINE 383"]),
+        ("Complete 1 of: FINE 100 or FINE 130", ["FINE 100", "FINE 130"]),
+        ("Complete 1 of: FINE 228 or FINE 247", ["FINE 228", "FINE 247"]),
+        ("Complete 1 of: VCULT 200 or VCULT 257", ["VCULT 200", "VCULT 257"]),
     ]
 
     for req_name, options in one_of_pairs:
@@ -348,52 +363,47 @@ def check_computational_fine_art(student_courses):
 
 def check_digital_hardware_specialization(student_courses):
     specialization_reqs = {
-        "Complete all of: ECE124, ECE222, ECE327, ECE423": [False, []],
-        "Complete 1 of: CS450 or ECE320": [False, []],
-        "Complete 2 of: CS452, CS454, CS456, CS457": [False, []],
-        "Complete 1 of: ECE224 or MTE325": [False, []],
-        "Complete 1 of: GENE123 or MTE120": [False, []],
+        "Complete all of: ECE 124, ECE 222, ECE 327, ECE 423": [False, []],
+        "Complete 1 of: CS 450 or ECE 320": [False, []],
+        "Complete 2 of: CS 452, CS 454, CS 456, CS 457": [False, []],
+        "Complete 1 of: ECE 224 or MTE 325": [False, []],
+        "Complete 1 of: GENE 123 or MTE 120": [False, []],
     }
 
-    # 1. Required core courses
     check_complete_all(
-        "Complete all of: ECE124, ECE222, ECE327, ECE423",
-        ["ECE124", "ECE222", "ECE327", "ECE423"],
+        "Complete all of: ECE 124, ECE 222, ECE 327, ECE 423",
+        ["ECE 124", "ECE 222", "ECE 327", "ECE 423"],
         student_courses,
         specialization_reqs
     )
 
-    # 2. 1 of CS450 or ECE320
     check_n_from_list(
-        "Complete 1 of: CS450 or ECE320",
-        ["CS450", "ECE320"],
+        "Complete 1 of: CS 450 or ECE 320",
+        ["CS 450", "ECE 320"],
         1,
         student_courses,
         specialization_reqs
     )
 
-    # 3. 2 of CS452, CS454, CS456, CS457
     check_n_from_list(
-        "Complete 2 of: CS452, CS454, CS456, CS457",
-        ["CS452", "CS454", "CS456", "CS457"],
+        "Complete 2 of: CS 452, CS 454, CS 456, CS 457",
+        ["CS 452", "CS 454", "CS 456", "CS 457"],
         2,
         student_courses,
         specialization_reqs
     )
 
-    # 4. 1 of ECE224 or MTE325
     check_n_from_list(
-        "Complete 1 of: ECE224 or MTE325",
-        ["ECE224", "MTE325"],
+        "Complete 1 of: ECE 224 or MTE 325",
+        ["ECE 224", "MTE 325"],
         1,
         student_courses,
         specialization_reqs
     )
 
-    # 5. 1 of GENE123 or MTE120
     check_n_from_list(
-        "Complete 1 of: GENE123 or MTE120",
-        ["GENE123", "MTE120"],
+        "Complete 1 of: GENE 123 or MTE 120",
+        ["GENE 123", "MTE 120"],
         1,
         student_courses,
         specialization_reqs
@@ -401,54 +411,50 @@ def check_digital_hardware_specialization(student_courses):
 
     return specialization_reqs
 
+
 def check_game_design_specialization(student_courses):
     game_reqs = {
-        "Complete all of: DAC204, DAC305": [False, []],
-        "Complete 1 of: COMMST149, DAC209, DAC302, DAC309, ENGL392A, ENGL392B, ENGL408C, FINE247, THPERF149": [False, []],
-        "Complete 1 of: COMMST210, COMMST339, COMMST430, COMMST435, ENGL293, GSJ205, SOC324": [False, []],
-        "Complete 1 of: COMMST235 or ENGL294": [False, []],
-        "Complete 2 of: CS449, CS454, CS488": [False, []],
+        "Complete all of: DAC 204, DAC 305": [False, []],
+        "Complete 1 of: COMMST 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149": [False, []],
+        "Complete 1 of: COMMST 210, COMMST 339, COMMST 430, COMMST 435, ENGL 293, GSJ 205, SOC 324": [False, []],
+        "Complete 1 of: COMMST 235 or ENGL 294": [False, []],
+        "Complete 2 of: CS 449, CS 454, CS 488": [False, []],
     }
 
-    # Required core
     check_complete_all(
-        "Complete all of: DAC204, DAC305",
-        ["DAC204", "DAC305"],
+        "Complete all of: DAC 204, DAC 305",
+        ["DAC 204", "DAC 305"],
         student_courses,
         game_reqs
     )
 
-    # Design & Rhetoric options
     check_n_from_list(
-        "Complete 1 of: COMMST149, DAC209, DAC302, DAC309, ENGL392A, ENGL392B, ENGL408C, FINE247, THPERF149",
-        ["COMMST149", "DAC209", "DAC302", "DAC309", "ENGL392A", "ENGL392B", "ENGL408C", "FINE247", "THPERF149"],
+        "Complete 1 of: COMMST 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149",
+        ["COMMST 149", "DAC 209", "DAC 302", "DAC 309", "ENGL 392A", "ENGL 392B", "ENGL 408C", "FINE 247", "THPERF 149"],
         1,
         student_courses,
         game_reqs
     )
 
-    # Digital Culture options
     check_n_from_list(
-        "Complete 1 of: COMMST210, COMMST339, COMMST430, COMMST435, ENGL293, GSJ205, SOC324",
-        ["COMMST210", "COMMST339", "COMMST430", "COMMST435", "ENGL293", "GSJ205", "SOC324"],
+        "Complete 1 of: COMMST 210, COMMST 339, COMMST 430, COMMST 435, ENGL 293, GSJ 205, SOC 324",
+        ["COMMST 210", "COMMST 339", "COMMST 430", "COMMST 435", "ENGL 293", "GSJ 205", "SOC 324"],
         1,
         student_courses,
         game_reqs
     )
 
-    # Game Studies core
     check_n_from_list(
-        "Complete 1 of: COMMST235 or ENGL294",
-        ["COMMST235", "ENGL294"],
+        "Complete 1 of: COMMST 235 or ENGL 294",
+        ["COMMST 235", "ENGL 294"],
         1,
         student_courses,
         game_reqs
     )
 
-    # Technical electives
     check_n_from_list(
-        "Complete 2 of: CS449, CS454, CS488",
-        ["CS449", "CS454", "CS488"],
+        "Complete 2 of: CS 449, CS 454, CS 488",
+        ["CS 449", "CS 454", "CS 488"],
         2,
         student_courses,
         game_reqs
@@ -456,77 +462,72 @@ def check_game_design_specialization(student_courses):
 
     return game_reqs
 
+
 def check_software_engineering_specialization(student_courses):
     software_eng_reqs = {
-        "Complete 1 of: BET360, BET420, CS492, ENVS205, GEOG207, GEOG306, GSJ205, MSE422, MSE442, PACS315, SOC232, SOC324, STV202, STV205, STV306": [False, []],
-        "Complete 2 of: CS343, CS346, CS348, CS349": [False, []],
-        "Complete 2 of: CS442, CS444, CS448, CS449, CS450, CS451, CS452, CS453, CS454, CS456, CS457, CS459, CS480, CS484, CS486, CS488": [False, []],
-        "Complete 1 of: CS445, ECE451": [False, []],
-        "Complete 1 of: CS446, ECE452": [False, []],
-        "Complete 1 of: CS447, ECE453": [False, []]
+        "Complete 1 of: BET 360, BET 420, CS 492, ENVS 205, GEOG 207, GEOG 306, GSJ 205, MSE 422, MSE 442, PACS 315, SOC 232, SOC 324, STV 202, STV 205, STV 306": [False, []],
+        "Complete 2 of: CS 343, CS 346, CS 348, CS 349": [False, []],
+        "Complete 2 of: CS 442, CS 444, CS 448, CS 449, CS 450, CS 451, CS 452, CS 453, CS 454, CS 456, CS 457, CS 459, CS 480, CS 484, CS 486, CS 488": [False, []],
+        "Complete 1 of: CS 445, ECE 451": [False, []],
+        "Complete 1 of: CS 446, ECE 452": [False, []],
+        "Complete 1 of: CS 447, ECE 453": [False, []]
     }
 
-    # Handle CS453/CS459 constraint: use only one of the two if both are present
-    if "CS453" in student_courses and "CS459" in student_courses:
-        # Remove one arbitrarily (you can tweak the logic if needed)
-        student_courses.remove("CS459")
+    if "CS 453" in student_courses and "CS 459" in student_courses:
+        student_courses.remove("CS 459")
 
-    check_n_from_list("Complete 1 of: BET360, BET420, CS492, ENVS205, GEOG207, GEOG306, GSJ205, MSE422, MSE442, PACS315, SOC232, SOC324, STV202, STV205, STV306",
-                      ["BET360", "BET420", "CS492", "ENVS205", "GEOG207", "GEOG306", "GSJ205", "MSE422", "MSE442", "PACS315", "SOC232", "SOC324", "STV202", "STV205", "STV306"],
+    check_n_from_list("Complete 1 of: BET 360, BET 420, CS 492, ENVS 205, GEOG 207, GEOG 306, GSJ 205, MSE 422, MSE 442, PACS 315, SOC 232, SOC 324, STV 202, STV 205, STV 306",
+                      ["BET 360", "BET 420", "CS 492", "ENVS 205", "GEOG 207", "GEOG 306", "GSJ 205", "MSE 422", "MSE 442", "PACS 315", "SOC 232", "SOC 324", "STV 202", "STV 205", "STV 306"],
                       1, student_courses, software_eng_reqs)
 
-    check_n_from_list("Complete 2 of: CS343, CS346, CS348, CS349",
-                      ["CS343", "CS346", "CS348", "CS349"],
+    check_n_from_list("Complete 2 of: CS 343, CS 346, CS 348, CS 349",
+                      ["CS 343", "CS 346", "CS 348", "CS 349"],
                       2, student_courses, software_eng_reqs)
 
-    check_n_from_list("Complete 2 of: CS442, CS444, CS448, CS449, CS450, CS451, CS452, CS453, CS454, CS456, CS457, CS459, CS480, CS484, CS486, CS488",
-                      ["CS442", "CS444", "CS448", "CS449", "CS450", "CS451", "CS452", "CS453", "CS454", "CS456", "CS457", "CS459", "CS480", "CS484", "CS486", "CS488"],
+    check_n_from_list("Complete 2 of: CS 442, CS 444, CS 448, CS 449, CS 450, CS 451, CS 452, CS 453, CS 454, CS 456, CS 457, CS 459, CS 480, CS 484, CS 486, CS 488",
+                      ["CS 442", "CS 444", "CS 448", "CS 449", "CS 450", "CS 451", "CS 452", "CS 453", "CS 454", "CS 456", "CS 457", "CS 459", "CS 480", "CS 484", "CS 486", "CS 488"],
                       2, student_courses, software_eng_reqs)
 
-    check_n_from_list("Complete 1 of: CS445, ECE451",
-                      ["CS445", "ECE451"],
+    check_n_from_list("Complete 1 of: CS 445, ECE 451",
+                      ["CS 445", "ECE 451"],
                       1, student_courses, software_eng_reqs)
 
-    check_n_from_list("Complete 1 of: CS446, ECE452",
-                      ["CS446", "ECE452"],
+    check_n_from_list("Complete 1 of: CS 446, ECE 452",
+                      ["CS 446", "ECE 452"],
                       1, student_courses, software_eng_reqs)
 
-    check_n_from_list("Complete 1 of: CS447, ECE453",
-                      ["CS447", "ECE453"],
+    check_n_from_list("Complete 1 of: CS 447, ECE 453",
+                      ["CS 447", "ECE 453"],
                       1, student_courses, software_eng_reqs)
 
     return software_eng_reqs
 
+
 def check_hci_specialization(student_courses):
     hci_reqs = {
-        "Complete all of: CS349, CS449": [False, []],
-        "Complete 1 of: BET360, CS492, GSJ205, MSE442, PACS315, SOC232, STV202, STV205, STV208, STV210, STV302, STV304, STV305, STV306": [False, []],
-        "Complete 2 of: ENGL108D, ENGL293, ENGL295, FINE100, FINE150, INTEG121, INTEG251, KIN320, PSYCH207, PSYCH261, STAT332, STAT430, VCULT257": [False, []],
-        "Complete 2 of: CS454, CS480, CS484, CS486, CS488, (1 of CS445/ECE451/SE463), (1 of CS446/ECE452/SE464), (1 of CS447/ECE453/SE465), (1 of CS453/CS459)": [False, []],
+        "Complete all of: CS 349, CS 449": [False, []],
+        "Complete 1 of: BET 360, CS 492, GSJ 205, MSE 442, PACS 315, SOC 232, STV 202, STV 205, STV 208, STV 210, STV 302, STV 304, STV 305, STV 306": [False, []],
+        "Complete 2 of: ENGL 108D, ENGL 293, ENGL 295, FINE 100, FINE 150, INTEG 121, INTEG 251, KIN 320, PSYCH 207, PSYCH 261, STAT 332, STAT 430, VCULT 257": [False, []],
+        "Complete 2 of: CS 454, CS 480, CS 484, CS 486, CS 488, (1 of CS 445/ECE 451/SE 463), (1 of CS 446/ECE 452/SE 464), (1 of CS 447/ECE 453/SE 465), (1 of CS 453/CS 459)": [False, []],
     }
 
-    # 1️⃣ Required core courses
-    check_complete_all("Complete all of: CS349, CS449", ["CS349", "CS449"], student_courses, hci_reqs)
+    check_complete_all("Complete all of: CS 349, CS 449", ["CS 349", "CS 449"], student_courses, hci_reqs)
 
-    # 2️⃣ Ethics & Society elective
-    check_n_from_list("Complete 1 of: BET360, CS492, GSJ205, MSE442, PACS315, SOC232, STV202, STV205, STV208, STV210, STV302, STV304, STV305, STV306",
-                      ["BET360", "CS492", "GSJ205", "MSE442", "PACS315", "SOC232", "STV202", "STV205", "STV208", "STV210", "STV302", "STV304", "STV305", "STV306"],
+    check_n_from_list("Complete 1 of: BET 360, CS 492, GSJ 205, MSE 442, PACS 315, SOC 232, STV 202, STV 205, STV 208, STV 210, STV 302, STV 304, STV 305, STV 306",
+                      ["BET 360", "CS 492", "GSJ 205", "MSE 442", "PACS 315", "SOC 232", "STV 202", "STV 205", "STV 208", "STV 210", "STV 302", "STV 304", "STV 305", "STV 306"],
                       1, student_courses, hci_reqs)
 
-    # 3️⃣ Cognitive/Psych/Design electives
-    check_n_from_list("Complete 2 of: ENGL108D, ENGL293, ENGL295, FINE100, FINE150, INTEG121, INTEG251, KIN320, PSYCH207, PSYCH261, STAT332, STAT430, VCULT257",
-                      ["ENGL108D", "ENGL293", "ENGL295", "FINE100", "FINE150", "INTEG121", "INTEG251", "KIN320", "PSYCH207", "PSYCH261", "STAT332", "STAT430", "VCULT257"],
+    check_n_from_list("Complete 2 of: ENGL 108D, ENGL 293, ENGL 295, FINE 100, FINE 150, INTEG 121, INTEG 251, KIN 320, PSYCH 207, PSYCH 261, STAT 332, STAT 430, VCULT 257",
+                      ["ENGL 108D", "ENGL 293", "ENGL 295", "FINE 100", "FINE 150", "INTEG 121", "INTEG 251", "KIN 320", "PSYCH 207", "PSYCH 261", "STAT 332", "STAT 430", "VCULT 257"],
                       2, student_courses, hci_reqs)
 
-    # 4️⃣ Advanced technical electives (with group-of-1 logic for CS445/CS446/CS447/CS453)
-    full_list = ["CS454", "CS480", "CS484", "CS486", "CS488"]
+    full_list = ["CS 454", "CS 480", "CS 484", "CS 486", "CS 488"]
 
-    # Handle “only one of” groups:
     groups = [
-        ["CS445", "ECE451", "SE463"],
-        ["CS446", "ECE452", "SE464"],
-        ["CS447", "ECE453", "SE465"],
-        ["CS453", "CS459"]
+        ["CS 445", "ECE 451", "SE 463"],
+        ["CS 446", "ECE 452", "SE 464"],
+        ["CS 447", "ECE 453", "SE 465"],
+        ["CS 453", "CS 459"]
     ]
 
     used_courses = []
@@ -536,10 +537,10 @@ def check_hci_specialization(student_courses):
             if course in student_courses:
                 used_courses.append(course)
                 student_courses.remove(course)
-                break  # only count one from the group
+                break
 
     all_valid_courses = full_list + used_courses
-    check_n_from_list("Complete 2 of: CS454, CS480, CS484, CS486, CS488, (1 of CS445/ECE451/SE463), (1 of CS446/ECE452/SE464), (1 of CS447/ECE453/SE465), (1 of CS453/CS459)",
+    check_n_from_list("Complete 2 of: CS 454, CS 480, CS 484, CS 486, CS 488, (1 of CS 445/ECE 451/SE 463), (1 of CS 446/ECE 452/SE 464), (1 of CS 447/ECE 453/SE 465), (1 of CS 453/CS 459)",
                       all_valid_courses, 2, student_courses, hci_reqs)
 
     return hci_reqs
