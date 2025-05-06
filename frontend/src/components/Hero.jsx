@@ -69,6 +69,19 @@ export default function Hero({ shouldType, name }) {
 	}, []);
 
 	useEffect(() => {
+		if (manualCourses.trim()) {
+			const input = manualCourses.toUpperCase();
+			const matches = input.match(/[A-Z]{2,8}\s?\d{3}[A-Z]?/g) || [];
+
+			const valid = matches.map((c) =>
+				c.replace(/([A-Z]{2,8})\s?(\d{3}[A-Z]?)/, "$1 $2")
+			);
+			const uniqueValid = Array.from(new Set(valid));
+			setValidManualCourses(uniqueValid);
+		}
+	}, [selectedMajor]);
+
+	useEffect(() => {
 		sessionStorage.setItem("selectedMajor", selectedMajor);
 	}, [selectedMajor]);
 
