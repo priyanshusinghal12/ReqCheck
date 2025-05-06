@@ -17,6 +17,7 @@ export default function Hero({ shouldType, name }) {
 	const [fileContent, setFileContent] = useState(null);
 	const [selectedMajor, setSelectedMajor] = useState("");
 	const [manualCourses, setManualCourses] = useState("");
+	const [validManualCourses, setValidManualCourses] = useState([]);
 	const [badCourses, setBadCourses] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
@@ -82,6 +83,7 @@ export default function Hero({ shouldType, name }) {
 
 			const reader = new FileReader();
 			reader.onload = async () => {
+				toast("Parsing transcript...");
 				try {
 					const base64 = reader.result.split(",")[1];
 					const response = await fetch(
@@ -94,6 +96,7 @@ export default function Hero({ shouldType, name }) {
 					);
 					const data = await response.json();
 					setFileContent(data.courses);
+					toast.success("Transcript parsed!");
 					sessionStorage.setItem("parsedCourses", JSON.stringify(data.courses));
 				} catch {
 					toast.error("Failed to parse transcript.");
@@ -221,19 +224,15 @@ export default function Hero({ shouldType, name }) {
 	};
 
 	const handleManualSubmit = () => {
-		// Extract all potential course codes from messy input
 		const matches =
 			manualCourses.toUpperCase().match(/[A-Z]{2,8}\s?\d{3}[A-Z]?/g) || [];
 
-		// Normalize format: add space if missing
 		const valid = matches.map((c) =>
 			c.replace(/([A-Z]{2,8})\s?(\d{3}[A-Z]?)/, "$1 $2")
 		);
-
-		// Remove duplicates
 		const uniqueValid = Array.from(new Set(valid));
+		setValidManualCourses(uniqueValid); // ✅ Track valid courses
 
-		// Show invalid bits (anything not part of matches)
 		const cleanedInput = manualCourses.toUpperCase();
 		const allWords = cleanedInput.split(/[,;\n\s]+/).filter(Boolean);
 		const matchedWords = new Set(matches.map((m) => m.trim()));
@@ -305,6 +304,7 @@ export default function Hero({ shouldType, name }) {
 						} bg-[#1A1A1A] text-white hover:border-yellow-400 transition`}
 						onClick={() => {
 							setShowModal(true);
+							setValidManualCourses([]);
 							sessionStorage.setItem("selectedMajor", selectedMajor);
 						}}>
 						Enter Courses Manually
@@ -350,14 +350,24 @@ export default function Hero({ shouldType, name }) {
 
 						<motion.button
 							onClick={() => handleGoClick(fileContent)}
-							disabled={isLoading}
+							disabled={
+								isLoading || (selectedFile && !fileContent) // disable until transcript is parsed
+							}
 							className={`bg-[#1A1A1A] border border-[#333] px-4 py-3 rounded-xl shadow-md transition-all duration-300 ${
-								isLoading
+								isLoading || (selectedFile && !fileContent)
 									? "opacity-50 cursor-not-allowed"
 									: "hover:bg-white hover:text-black text-white"
 							}`}
-							whileHover={!isLoading ? { scale: 1.1 } : {}}
-							whileTap={!isLoading ? { scale: 0.95 } : {}}>
+							whileHover={
+								!isLoading && (!selectedFile || fileContent)
+									? { scale: 1.1 }
+									: {}
+							}
+							whileTap={
+								!isLoading && (!selectedFile || fileContent)
+									? { scale: 0.95 }
+									: {}
+							}>
 							<FaArrowRight />
 						</motion.button>
 
@@ -480,9 +490,9 @@ export default function Hero({ shouldType, name }) {
 
 						<motion.button
 							onClick={handleManualSubmit}
-							disabled={isLoading}
+							disabled={isLoading || validManualCourses.length === 0}
 							className={`bg-[#FED34C] font-semibold w-full py-3 mt-4 rounded-lg transition ${
-								isLoading
+								isLoading || validManualCourses.length === 0
 									? "opacity-60 cursor-not-allowed"
 									: "hover:bg-yellow-400 text-black"
 							}`}
