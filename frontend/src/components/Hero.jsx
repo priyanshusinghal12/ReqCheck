@@ -224,23 +224,28 @@ export default function Hero({ shouldType, name }) {
 	};
 
 	const handleManualSubmit = () => {
-		const matches =
-			manualCourses.toUpperCase().match(/[A-Z]{2,8}\s?\d{3}[A-Z]?/g) || [];
+		if (!manualCourses.trim()) return; // no input
+
+		const input = manualCourses.toUpperCase();
+		const matches = input.match(/[A-Z]{2,8}\s?\d{3}[A-Z]?/g) || [];
 
 		const valid = matches.map((c) =>
 			c.replace(/([A-Z]{2,8})\s?(\d{3}[A-Z]?)/, "$1 $2")
 		);
 		const uniqueValid = Array.from(new Set(valid));
-		setValidManualCourses(uniqueValid); // ✅ Track valid courses
+		setValidManualCourses(uniqueValid);
 
-		const cleanedInput = manualCourses.toUpperCase();
-		const allWords = cleanedInput.split(/[,;\n\s]+/).filter(Boolean);
+		const allWords = input.split(/[,;\n\s]+/).filter(Boolean);
 		const matchedWords = new Set(matches.map((m) => m.trim()));
 		const invalid = allWords.filter((word) => {
 			return !Array.from(matchedWords).some((m) => m.includes(word));
 		});
-
 		setBadCourses(invalid);
+
+		if (!selectedMajor) {
+			toast.error("Please select a major/minor.");
+			return;
+		}
 
 		if (!uniqueValid.length) {
 			toast.error("Please enter at least one valid course (e.g. CS 136L)");
@@ -305,6 +310,7 @@ export default function Hero({ shouldType, name }) {
 						onClick={() => {
 							setShowModal(true);
 							setValidManualCourses([]);
+							setBadCourses([]);
 							sessionStorage.setItem("selectedMajor", selectedMajor);
 						}}>
 						Enter Courses Manually
@@ -456,15 +462,22 @@ export default function Hero({ shouldType, name }) {
 						<h2 className="text-white text-xl font-semibold mb-3">
 							Enter Courses Manually
 						</h2>
-
 						<textarea
 							rows={4}
 							className="w-full bg-[#1A1A1A] border border-[#333] text-sm text-white rounded-lg px-4 py-3 mb-2"
 							placeholder="Enter courses like MATH 135, ECON 201, CS 136L separated by commas."
 							value={manualCourses}
 							onChange={(e) => {
-								setManualCourses(e.target.value);
+								const input = e.target.value.toUpperCase();
+								setManualCourses(input);
 								setBadCourses([]);
+
+								const matches = input.match(/[A-Z]{2,8}\s?\d{3}[A-Z]?/g) || [];
+								const valid = matches.map((c) =>
+									c.replace(/([A-Z]{2,8})\s?(\d{3}[A-Z]?)/, "$1 $2")
+								);
+								const uniqueValid = Array.from(new Set(valid));
+								setValidManualCourses(uniqueValid);
 							}}
 							onKeyDown={(e) => {
 								if (e.key === "Enter" && !e.shiftKey) {
@@ -473,7 +486,6 @@ export default function Hero({ shouldType, name }) {
 								}
 							}}
 						/>
-
 						<div className="w-full mt-2">
 							<MajorDropdown
 								fullWidth
@@ -481,16 +493,16 @@ export default function Hero({ shouldType, name }) {
 								setSelectedMajor={setSelectedMajor}
 							/>
 						</div>
-
 						{badCourses.length > 0 && (
 							<p className="text-red-400 text-sm mt-2">
 								Ignored: {badCourses.join(", ")}
 							</p>
 						)}
-
 						<motion.button
 							onClick={handleManualSubmit}
-							disabled={isLoading || validManualCourses.length === 0}
+							disabled={
+								isLoading || validManualCourses.length === 0 || !selectedMajor
+							}
 							className={`bg-[#FED34C] font-semibold w-full py-3 mt-4 rounded-lg transition ${
 								isLoading || validManualCourses.length === 0
 									? "opacity-60 cursor-not-allowed"
