@@ -513,11 +513,9 @@ export default function Hero({ shouldType, name }) {
 						)}
 						<motion.button
 							onClick={handleManualSubmit}
-							disabled={
-								isLoading || validManualCourses.length === 0 || !selectedMajor
-							}
+							disabled={isLoading}
 							className={`bg-[#FED34C] font-semibold w-full py-3 mt-4 rounded-lg transition ${
-								isLoading || validManualCourses.length === 0
+								isLoading
 									? "opacity-60 cursor-not-allowed"
 									: "hover:bg-yellow-400 text-black"
 							}`}
