@@ -123,7 +123,7 @@ export default function MajorDropdown({
 				}}
 				onClick={() => setOpen(true)}
 				onKeyDown={handleKeyDown}
-				placeholder="Select Major"
+				placeholder="Select Major/Minor"
 				className="w-full px-4 py-3 bg-[#1A1A1A] text-white border border-[#333] rounded-xl cursor-pointer"
 			/>
 			{open && (

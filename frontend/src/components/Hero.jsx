@@ -162,7 +162,7 @@ export default function Hero({ shouldType, name }) {
 		setIsRetrying(false);
 
 		if (!selectedMajor || !courses?.length) {
-			toast.error("Please select a major and/or provide courses.");
+			toast.error("Please select a major/minor and/or provide courses.");
 			setIsLoading(false);
 			return;
 		}
@@ -328,7 +328,7 @@ export default function Hero({ shouldType, name }) {
 								if (selectedMajor?.trim()) {
 									handleGoClick(fileContent);
 								} else {
-									toast.error("Please select a major.");
+									toast.error("Please select a major/minor.");
 								}
 							}
 						}}>
