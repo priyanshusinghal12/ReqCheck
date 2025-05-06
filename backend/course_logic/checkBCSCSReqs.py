@@ -32,7 +32,7 @@ def check_depth_requirement(student_courses, cs_reqs):
 def check_breadth_requirement(student_courses, cs_reqs):
     breadth_areas = {
         "Breadth Req - Humanities": (
-            ["CHINA", "CLAS", "CMW", "COMMST", "CROAT", "DAC", "DUTCH", "EASIA", "ENGL",
+            ["CHINA", "CLAS", "CMW", "SPCOM", "CROAT", "DAC", "DUTCH", "EASIA", "ENGL",
              "FINE", "FR", "GER", "GRK", "HIST", "HUMSC", "ITAL", "ITALST", "JAPAN", "JS",
              "KOREA", "LAT", "MEDVL", "MUSIC", "PHIL", "PORT", "RCS", "REES", "RUSS", "SI",
              "SPAN", "THPERF", "VCULT"], 2),
@@ -92,10 +92,10 @@ def check_bcs_cs_major(student_courses):
     "Breadth Req - Social Sciences": [False, []],
     }
     
-    list1 = ["COMMST 100", "COMMST 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R"]
+    list1 = ["SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R"]
     
-    list1and2 = ["COMMST 100", "COMMST 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R",
-             "COMMST 225", "COMMST 227", "COMMST 228", "EMLS 103R", "EMLS 104R", "EMLS 110R", "ENGL 101B",
+    list1and2 = ["SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R",
+             "SPCOM 225", "SPCOM 227", "SPCOM 228", "EMLS 103R", "EMLS 104R", "EMLS 110R", "ENGL 101B",
              "ENGL 108B", "ENGL 108D", "ENGL 119", "ENGL 208B", "ENGL 209", "ENGL 210E", "ENGL 210F", "ENGL 378"]
 
     # Core group
@@ -411,13 +411,12 @@ def check_digital_hardware_specialization(student_courses):
 
     return specialization_reqs
 
-
 def check_game_design_specialization(student_courses):
     game_reqs = {
         "Complete all of: DAC 204, DAC 305": [False, []],
-        "Complete 1 of: COMMST 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149": [False, []],
-        "Complete 1 of: COMMST 210, COMMST 339, COMMST 430, COMMST 435, ENGL 293, GSJ 205, SOC 324": [False, []],
-        "Complete 1 of: COMMST 235 or ENGL 294": [False, []],
+        "Complete 1 of: SPCOM 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149": [False, []],
+        "Complete 1 of: SPCOM 210, SPCOM 339, SPCOM 430, SPCOM 435, ENGL 293, GSJ 205, SOC 324": [False, []],
+        "Complete 1 of: SPCOM 235 or ENGL 294": [False, []],
         "Complete 2 of: CS 449, CS 454, CS 488": [False, []],
     }
 
@@ -429,24 +428,24 @@ def check_game_design_specialization(student_courses):
     )
 
     check_n_from_list(
-        "Complete 1 of: COMMST 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149",
-        ["COMMST 149", "DAC 209", "DAC 302", "DAC 309", "ENGL 392A", "ENGL 392B", "ENGL 408C", "FINE 247", "THPERF 149"],
+        "Complete 1 of: SPCOM 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149",
+        ["SPCOM 149", "DAC 209", "DAC 302", "DAC 309", "ENGL 392A", "ENGL 392B", "ENGL 408C", "FINE 247", "THPERF 149"],
         1,
         student_courses,
         game_reqs
     )
 
     check_n_from_list(
-        "Complete 1 of: COMMST 210, COMMST 339, COMMST 430, COMMST 435, ENGL 293, GSJ 205, SOC 324",
-        ["COMMST 210", "COMMST 339", "COMMST 430", "COMMST 435", "ENGL 293", "GSJ 205", "SOC 324"],
+        "Complete 1 of: SPCOM 210, SPCOM 339, SPCOM 430, SPCOM 435, ENGL 293, GSJ 205, SOC 324",
+        ["SPCOM 210", "SPCOM 339", "SPCOM 430", "SPCOM 435", "ENGL 293", "GSJ 205", "SOC 324"],
         1,
         student_courses,
         game_reqs
     )
 
     check_n_from_list(
-        "Complete 1 of: COMMST 235 or ENGL 294",
-        ["COMMST 235", "ENGL 294"],
+        "Complete 1 of: SPCOM 235 or ENGL 294",
+        ["SPCOM 235", "ENGL 294"],
         1,
         student_courses,
         game_reqs
@@ -461,7 +460,6 @@ def check_game_design_specialization(student_courses):
     )
 
     return game_reqs
-
 
 def check_software_engineering_specialization(student_courses):
     software_eng_reqs = {
@@ -501,7 +499,6 @@ def check_software_engineering_specialization(student_courses):
                       1, student_courses, software_eng_reqs)
 
     return software_eng_reqs
-
 
 def check_hci_specialization(student_courses):
     hci_reqs = {
