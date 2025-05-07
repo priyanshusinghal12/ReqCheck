@@ -21,7 +21,7 @@ const faqs = [
 	{
 		question: "Is any personal info stored?",
 		answer:
-			"No. All processing is done locally in your browser. Transcript data is never uploaded, stored, or sent to any server—your data stays completely on your device.",
+			"No. Your transcript is uploaded securely to our server only for processing and is never stored or saved. All data is deleted automatically after generating your results. We do not retain any personal or academic information.",
 	},
 	{
 		question: "Which undergrad calendar do we use?",
