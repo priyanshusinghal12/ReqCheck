@@ -92,11 +92,18 @@ def check_bcs_cs_major(student_courses):
     "Breadth Req - Social Sciences": [False, []],
     }
     
-    list1 = ["SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R"]
+    list1 = [
+        "SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R",
+        "COMMST 100", "COMMST 223"
+    ]
     
-    list1and2 = ["SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R",
-             "SPCOM 225", "SPCOM 227", "SPCOM 228", "EMLS 103R", "EMLS 104R", "EMLS 110R", "ENGL 101B",
-             "ENGL 108B", "ENGL 108D", "ENGL 119", "ENGL 208B", "ENGL 209", "ENGL 210E", "ENGL 210F", "ENGL 378"]
+    list1and2 = [
+        "SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R",
+        "SPCOM 225", "SPCOM 227", "SPCOM 228", "EMLS 103R", "EMLS 104R", "EMLS 110R", "ENGL 101B",
+        "ENGL 108B", "ENGL 108D", "ENGL 119", "ENGL 208B", "ENGL 209", "ENGL 210E", "ENGL 210F", "ENGL 378",
+        "COMMST 100", "COMMST 223", "COMMST 225", "COMMST 227", "COMMST 228"
+    ]
+
 
     # Core group
     check_complete_all("Complete all of: CS 136L, CS 341, CS 350",

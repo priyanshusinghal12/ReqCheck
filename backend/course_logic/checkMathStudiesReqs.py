@@ -59,11 +59,14 @@ def math_studies_reqs(student_courses):
     # Requirement 11: Two EMLS/ENGL/SPCOM courses satisfying the Communication Skills requirement
  
     # Lists of courses for the communication skills requirement
-    list1_courses = ["SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R"]
+    list1_courses = ["SPCOM 100", "SPCOM 223", "EMLS 101R", "EMLS 102R", "EMLS 129R", "ENGL 109", "ENGL 129R", "COMMST 100", "COMMST 223"]
  
-    list2_courses = ["SPCOM 225", "SPCOM 227", "SPCOM 228", "EMLS 103R", "EMLS 104R", "EMLS 110R",
-                     "ENGL 101B", "ENGL 108B", "ENGL 108D", "ENGL 119", "ENGL 208B", "ENGL 209", "ENGL 210E",
-                     "ENGL 210F", "ENGL 378", "MTHEL 300"]
+    list2_courses = [
+        "SPCOM 225", "SPCOM 227", "SPCOM 228", "EMLS 103R", "EMLS 104R", "EMLS 110R",
+        "ENGL 101B", "ENGL 108B", "ENGL 108D", "ENGL 119", "ENGL 208B", "ENGL 209",
+        "ENGL 210E", "ENGL 210F", "ENGL 378", "MTHEL 300",
+        "COMMST 225", "COMMST 227", "COMMST 228"
+    ]
  
     # Check for the first communication skills course (from List 1)
     check_n_from_list("1st Communication Skills Requirement",
