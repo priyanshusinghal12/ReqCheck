@@ -23,7 +23,7 @@ const features = [
 		title: "Secure",
 		icon: <FaLock size={24} />,
 		description:
-			"We don’t store your transcript- all processing is done locally in your browser",
+			"We don’t store your transcript or any other data",
 	},
 	{
 		title: "Save your results!",
