@@ -1,5 +1,6 @@
 from course_logic.helper import *
 from collections import defaultdict
+import re
 
 def check_depth_requirement(student_courses, cs_reqs):
     subject_to_courses = defaultdict(list)
@@ -62,7 +63,42 @@ def check_breadth_requirement(student_courses, cs_reqs):
             cs_reqs[req_name][0] = True
             for c in matching_courses[:num_required]:
                 student_courses.remove(c)
-               
+
+def check_capstone_requirement(student_courses, reqs):
+    requirement_key = "Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)"
+    
+    # Step 1: Check specific courses
+    preferred_courses = ["CO 487", "CS 499T", "STAT 440"]
+    for course in preferred_courses:
+        if course in student_courses:
+            reqs[requirement_key] = [True, [course]]
+            student_courses.remove(course)
+            return
+
+    # Step 2: Check CS 600/700-level course (e.g., "CS 698", "CS 749")
+    for course in student_courses:
+        match = re.match(r"CS (\d{3})", course)
+        if match:
+            number = int(match.group(1))
+            if 600 <= number < 800:
+                reqs[requirement_key] = [True, [course]]
+                student_courses.remove(course)
+                return
+
+    # Step 3: Check CS 440–498 (inclusive)
+    for course in student_courses:
+        match = re.match(r"CS (\d{3})", course)
+        if match:
+            number = int(match.group(1))
+            if 440 <= number <= 498:
+                reqs[requirement_key] = [True, [course]]
+                student_courses.remove(course)
+                return
+
+    # If none of the conditions met
+    reqs[requirement_key] = [False, []]
+
+
 def check_bcs_cs_major(student_courses):
     cs_reqs = {
     "Complete all of: CS 136L, CS 341, CS 350": [False, []],
@@ -157,41 +193,16 @@ def check_bcs_cs_major(student_courses):
     
     check_n_from_list_without_removing("Complete one course from List 1 + List 2 (Communication Requirement 2)",
                       list1and2, 1, student_courses, cs_reqs)
+    
+    check_capstone_requirement(student_courses, cs_reqs)
 
     # Check ranges
+    check_course_range("Complete 2 additional CS courses from CS440-CS489",
+                       "CS", 440, 489, student_courses, cs_reqs, num_courses_required=2)
+    
     check_course_range("Complete 3 additional CS courses from CS340-CS398, CS440-CS489",
                        "CS", 340, 489, student_courses, cs_reqs, num_courses_required=3)
 
-    check_course_range("Complete 2 additional CS courses from CS440-CS489",
-                       "CS", 440, 489, student_courses, cs_reqs, num_courses_required=2)
-
-    
-    #Complete 1 of the following: (1 course from CS440-CS498, a CS course from 600/700 level) 
-    # or (Complete CO 487, CS 499T, STAT 440)
-    sub_req = {"Complete 1 of: CO 487, CS 499T, STAT 440": [False, []],}
-               
-    check_n_from_list("Complete 1 of: CO 487, CS 499T, STAT 440",
-                      ["CO 487", "CS 499T", "STAT 440"], 1, student_courses, sub_req)
-    
-    has_cs_440_to_498 = any(
-    course.startswith("CS ") and 440 <= int(course.split(" ")[1][:3]) <= 498 for course in student_courses
-    )
-
-    if sub_req["Complete 1 of: CO 487, CS 499T, STAT 440"][0]:
-        cs_reqs["Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)"][0] = True
-        cs_reqs["Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)"][1].extend(
-            sub_req["Complete 1 of: CO 487, CS 499T, STAT 440"][1]
-        )
-    elif has_cs_440_to_498:
-        check_course_range("Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)",
-                        "CS", 440, 498, student_courses, cs_reqs, num_courses_required=1)
-    else:
-        check_n_courses("Complete 1 of the following: (Complete 1 of: CO 487, CS 499T, STAT 440) or (1 course from CS440-CS498) or (a CS course from 600/700 level)",
-                        eligible_levels=600,
-                        subject_codes=["CS"],
-                        n=1,
-                        student_courses=student_courses,
-                        major_reqs=cs_reqs)
         
     student_courses = [course for course in student_courses if course not in list1]
 
@@ -421,9 +432,9 @@ def check_digital_hardware_specialization(student_courses):
 def check_game_design_specialization(student_courses):
     game_reqs = {
         "Complete all of: DAC 204, DAC 305": [False, []],
-        "Complete 1 of: SPCOM 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149": [False, []],
-        "Complete 1 of: SPCOM 210, SPCOM 339, SPCOM 430, SPCOM 435, ENGL 293, GSJ 205, SOC 324": [False, []],
-        "Complete 1 of: SPCOM 235 or ENGL 294": [False, []],
+        "Complete 1 of: COMMST 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149": [False, []],
+        "Complete 1 of: COMMST 210, COMMST 339, COMMST 430, COMMST 435, ENGL 293, GSJ 205, SOC 324": [False, []],
+        "Complete 1 of: COMMST 235 or ENGL 294": [False, []],
         "Complete 2 of: CS 449, CS 454, CS 488": [False, []],
     }
 
@@ -435,24 +446,24 @@ def check_game_design_specialization(student_courses):
     )
 
     check_n_from_list(
-        "Complete 1 of: SPCOM 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149",
-        ["SPCOM 149", "DAC 209", "DAC 302", "DAC 309", "ENGL 392A", "ENGL 392B", "ENGL 408C", "FINE 247", "THPERF 149"],
+        "Complete 1 of: COMMST 149, DAC 209, DAC 302, DAC 309, ENGL 392A, ENGL 392B, ENGL 408C, FINE 247, THPERF 149",
+        ["COMMST 149", "DAC 209", "DAC 302", "DAC 309", "ENGL 392A", "ENGL 392B", "ENGL 408C", "FINE 247", "THPERF 149"],
         1,
         student_courses,
         game_reqs
     )
 
     check_n_from_list(
-        "Complete 1 of: SPCOM 210, SPCOM 339, SPCOM 430, SPCOM 435, ENGL 293, GSJ 205, SOC 324",
-        ["SPCOM 210", "SPCOM 339", "SPCOM 430", "SPCOM 435", "ENGL 293", "GSJ 205", "SOC 324"],
+        "Complete 1 of: COMMST 210, COMMST 339, COMMST 430, COMMST 435, ENGL 293, GSJ 205, SOC 324",
+        ["COMMST 210", "COMMST 339", "COMMST 430", "COMMST 435", "ENGL 293", "GSJ 205", "SOC 324"],
         1,
         student_courses,
         game_reqs
     )
 
     check_n_from_list(
-        "Complete 1 of: SPCOM 235 or ENGL 294",
-        ["SPCOM 235", "ENGL 294"],
+        "Complete 1 of: COMMST 235 or ENGL 294",
+        ["COMMST 235", "ENGL 294"],
         1,
         student_courses,
         game_reqs
