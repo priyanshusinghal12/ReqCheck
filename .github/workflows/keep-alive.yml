@@ -1,0 +1,17 @@
+name: Keep Render App Alive
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render app
+        run: |
+          echo "🔄 Pinging Render app to keep it awake..."
+          curl -f https://reqcheck.onrender.com/ || echo "❌ Ping failed"
+          echo "✅ Keep-alive ping completed"
