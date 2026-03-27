@@ -24,7 +24,7 @@ def main():
     print("Pinging https://reqcheck.onrender.com/ every 5 minutes")
     
     # Schedule ping every 5 minutes
-    schedule.every(5).minutes.do(ping_app)
+    schedule.every(2).minutes.do(ping_app)
     
     # Run immediately
     ping_app()
